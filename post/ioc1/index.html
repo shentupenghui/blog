@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+
+<title>SpringIOC(1)-概念和用法 | Mr.Shentu</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<link rel="stylesheet" href="https://cdn.bootcss.com/font-awesome/5.12.1/css/all.min.css" crossorigin="anonymous">
+<link rel="shortcut icon" href="https://blog.xabc.site/favicon.ico?v=1700095858984">
+<link rel="stylesheet" href="https://blog.xabc.site/styles/main.css">
+
+
+
+<link href="https://cdn.bootcss.com/aos/3.0.0-beta.6/aos.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js">
+</script>
+
+
+
+    <meta name="description" content="Author 罗先生
+本文是IOC系列的第一篇。
+
+1.what is IOC
+IOC和DI的联系
+IOC是模板，而DI只是一种实现方式
+IOC的基本概念
+控制反转(Inversion of control, 缩写为IOC)，是面向对象编程..."/>
+    <meta name="keywords" content="IOC,罗先生,Java,Spring"/>
+    <link href="https://cdn.bootcss.com/tocbot/4.10.0/tocbot.css" rel="stylesheet">
+</head>
+<body>
+<div id="app" class="main">
+
+    <div class="sidebar" :class="{ 'full-height': menuVisible }">
+    <div class="top-container" data-aos="fade-right">
+        <div class="top-header-container">
+            <a class="site-title-container" href="https://blog.xabc.site">
+                <img src="https://blog.xabc.site/images/avatar.jpeg?v=1700095858984" class="site-logo">
+                <h1 class="site-title">Mr.Shentu</h1>
+            </a>
+            <div class="menu-btn" @click="menuVisible = !menuVisible">
+                <div class="line"></div>
+            </div>
+        </div>
+        <div>
+            
+                
+                    <a href="/" class="site-nav">
+                        首页
+                    </a>
+                
+            
+                
+                    <a href="/archives" class="site-nav">
+                        归档
+                    </a>
+                
+            
+                
+                    <a href="/tags" class="site-nav">
+                        标签
+                    </a>
+                
+            
+                
+                    <a href="/post/about" class="site-nav">
+                        关于
+                    </a>
+                
+            
+        </div>
+    </div>
+    <div class="bottom-container" data-aos="flip-up" data-aos-offset="0">
+        <div class="social-container">
+            
+                
+            
+                
+            
+                
+            
+                
+            
+                
+            
+        </div>
+        <div class="site-description">
+            <div>公告板</div>
+            —————————————————
+            <br>
+            永远保持热情❤️
+        </div>
+        <div class="site-footer" style="padding: 20px 0">
+            <div style="text-align: center;color:#939393">© 2021 申屠鹏会 版权所有<br><a href="http://www.beian.miit.gov.cn"style="color:#939393">浙ICP备2023016973号</a></div>
+
+            <div style="width:300px;margin:0 auto; padding:5px 0;">
+                <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAAAXNSR0IArs4c6QAAACBjSFJNAAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAAA8mVYSWZNTQAqAAAACAAHARIAAwAAAAEAAQAAARoABQAAAAEAAABiARsABQAAAAEAAABqASgAAwAAAAEAAgAAATEAAgAAACIAAAByATIAAgAAABQAAACUh2kABAAAAAEAAACoAAAAAAAAAEgAAAABAAAASAAAAAFBZG9iZSBQaG90b3Nob3AgQ0MgMjAxNCAoV2luZG93cykAMjAxNToxMToxMCAxNDowNDo1MAAABJAEAAIAAAAUAAAA3qABAAMAAAABAAEAAKACAAQAAAABAAAAFKADAAQAAAABAAAAFAAAAAAyMDE1OjExOjEwIDE0OjA0OjUwALd18ckAAAAJcEhZcwAACxMAAAsTAQCanBgAAAtJaVRYdFhNTDpjb20uYWRvYmUueG1wAAAAAAA8eDp4bXBtZXRhIHhtbG5zOng9ImFkb2JlOm5zOm1ldGEvIiB4OnhtcHRrPSJYTVAgQ29yZSA1LjQuMCI+CiAgIDxyZGY6UkRGIHhtbG5zOnJkZj0iaHR0cDovL3d3dy53My5vcmcvMTk5OS8wMi8yMi1yZGYtc3ludGF4LW5zIyI+CiAgICAgIDxyZGY6RGVzY3JpcHRpb24gcmRmOmFib3V0PSIiCiAgICAgICAgICAgIHhtbG5zOnhtcE1NPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvbW0vIgogICAgICAgICAgICB4bWxuczpzdEV2dD0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL3NUeXBlL1Jlc291cmNlRXZlbnQjIgogICAgICAgICAgICB4bWxuczpwaG90b3Nob3A9Imh0dHA6Ly9ucy5hZG9iZS5jb20vcGhvdG9zaG9wLzEuMC8iCiAgICAgICAgICAgIHhtbG5zOmV4aWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20vZXhpZi8xLjAvIgogICAgICAgICAgICB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iCiAgICAgICAgICAgIHhtbG5zOmRjPSJodHRwOi8vcHVybC5vcmcvZGMvZWxlbWVudHMvMS4xLyIKICAgICAgICAgICAgeG1sbnM6dGlmZj0iaHR0cDovL25zLmFkb2JlLmNvbS90aWZmLzEuMC8iPgogICAgICAgICA8eG1wTU06SW5zdGFuY2VJRD54bXAuaWlkOjgwYmNhOTg1LTRmOWItNmU0ZC05ZmM5LWU4ZjQ5MjY3ZGY0ZTwveG1wTU06SW5zdGFuY2VJRD4KICAgICAgICAgPHhtcE1NOk9yaWdpbmFsRG9jdW1lbnRJRD54bXAuZGlkOmQwMTdiOTRlLTk0YmQtMjY0MS04ZmY5LWJmN2EwYTM2NzdiMTwveG1wTU06T3JpZ2luYWxEb2N1bWVudElEPgogICAgICAgICA8eG1wTU06RG9jdW1lbnRJRD5hZG9iZTpkb2NpZDpwaG90b3Nob3A6ZWRkYWU4MGMtODc3MC0xMWU1LTg0OWEtYmNmZGE2MDI4ZjJlPC94bXBNTTpEb2N1bWVudElEPgogICAgICAgICA8eG1wTU06SGlzdG9yeT4KICAgICAgICAgICAgPHJkZjpTZXE+CiAgICAgICAgICAgICAgIDxyZGY6bGkgcmRmOnBhcnNlVHlwZT0iUmVzb3VyY2UiPgogICAgICAgICAgICAgICAgICA8c3RFdnQ6c29mdHdhcmVBZ2VudD5BZG9iZSBQaG90b3Nob3AgQ0MgMjAxNCAoV2luZG93cyk8L3N0RXZ0OnNvZnR3YXJlQWdlbnQ+CiAgICAgICAgICAgICAgICAgIDxzdEV2dDp3aGVuPjIwMTUtMTEtMTBUMTQ6MDQ6NTArMDg6MDA8L3N0RXZ0OndoZW4+CiAgICAgICAgICAgICAgICAgIDxzdEV2dDppbnN0YW5jZUlEPnhtcC5paWQ6ZDAxN2I5NGUtOTRiZC0yNjQxLThmZjktYmY3YTBhMzY3N2IxPC9zdEV2dDppbnN0YW5jZUlEPgogICAgICAgICAgICAgICAgICA8c3RFdnQ6YWN0aW9uPmNyZWF0ZWQ8L3N0RXZ0OmFjdGlvbj4KICAgICAgICAgICAgICAgPC9yZGY6bGk+CiAgICAgICAgICAgICAgIDxyZGY6bGkgcmRmOnBhcnNlVHlwZT0iUmVzb3VyY2UiPgogICAgICAgICAgICAgICAgICA8c3RFdnQ6c29mdHdhcmVBZ2VudD5BZG9iZSBQaG90b3Nob3AgQ0MgMjAxNCAoV2luZG93cyk8L3N0RXZ0OnNvZnR3YXJlQWdlbnQ+CiAgICAgICAgICAgICAgICAgIDxzdEV2dDpjaGFuZ2VkPi88L3N0RXZ0OmNoYW5nZWQ+CiAgICAgICAgICAgICAgICAgIDxzdEV2dDp3aGVuPjIwMTUtMTEtMTBUMTQ6MDQ6NTArMDg6MDA8L3N0RXZ0OndoZW4+CiAgICAgICAgICAgICAgICAgIDxzdEV2dDppbnN0YW5jZUlEPnhtcC5paWQ6ODBiY2E5ODUtNGY5Yi02ZTRkLTlmYzktZThmNDkyNjdkZjRlPC9zdEV2dDppbnN0YW5jZUlEPgogICAgICAgICAgICAgICAgICA8c3RFdnQ6YWN0aW9uPnNhdmVkPC9zdEV2dDphY3Rpb24+CiAgICAgICAgICAgICAgIDwvcmRmOmxpPgogICAgICAgICAgICA8L3JkZjpTZXE+CiAgICAgICAgIDwveG1wTU06SGlzdG9yeT4KICAgICAgICAgPHBob3Rvc2hvcDpDb2xvck1vZGU+MzwvcGhvdG9zaG9wOkNvbG9yTW9kZT4KICAgICAgICAgPHBob3Rvc2hvcDpJQ0NQcm9maWxlPnNSR0IgSUVDNjE5NjYtMi4xPC9waG90b3Nob3A6SUNDUHJvZmlsZT4KICAgICAgICAgPHBob3Rvc2hvcDpEb2N1bWVudEFuY2VzdG9ycz4KICAgICAgICAgICAgPHJkZjpCYWc+CiAgICAgICAgICAgICAgIDxyZGY6bGk+M0NCOEZFRThDMkVCRTZFNUE0REE5NzMyODM1NDEyNEU8L3JkZjpsaT4KICAgICAgICAgICAgICAgPHJkZjpsaT5hZG9iZTpkb2NpZDpwaG90b3Nob3A6YmRkZmNmNmYtODc3MC0xMWU1LTg0OWEtYmNmZGE2MDI4ZjJlPC9yZGY6bGk+CiAgICAgICAgICAgIDwvcmRmOkJhZz4KICAgICAgICAgPC9waG90b3Nob3A6RG9jdW1lbnRBbmNlc3RvcnM+CiAgICAgICAgIDxleGlmOlBpeGVsWERpbWVuc2lvbj4yMDwvZXhpZjpQaXhlbFhEaW1lbnNpb24+CiAgICAgICAgIDxleGlmOlBpeGVsWURp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">
+                <a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=33010602010374" style="display:inline-block;text-decoration:none;height:20px;line-height:20px;"><img src="" style="float:left;"/><p style="float:left;height:20px;line-height:20px;margin: 0px 0px 0px 5px; color:#939393;">浙公网安备 33010602010374号</p></a>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+    <div class="main-container">
+
+        <nav style="text-align:right;position:fixed;top:40%;right:1%" class="js-toc show-box"></nav>
+
+
+        <div class="content-container" data-aos="fade-up">
+
+            <div class="post-detail">
+
+                <h2 class="post-title">SpringIOC(1)-概念和用法</h2>
+                <div class="post-date">2020-03-14</div>
+                
+
+                <div class="post-content js-toc-content" v-pre>
+
+                    <p><em>Author 罗先生</em><br>
+本文是IOC系列的第一篇。</p>
+<!-- more -->
+<h2 id="1what-is-ioc">1.what is IOC</h2>
+<h3 id="ioc和di的联系">IOC和DI的联系</h3>
+<p>IOC是模板，而DI只是一种实现方式</p>
+<h3 id="ioc的基本概念">IOC的基本概念</h3>
+<p><strong>控制反转(Inversion of control, 缩写为IOC)</strong>，是面向对象编程中的一种设计原则，用来降低代码之间的耦合度。 其中最常见的方式叫做依赖注入(Dependency Injection，简称DI)。 还有一种不常见的方式叫做依赖查找(Depencency Lookup)。</p>
+<h2 id="2依赖查找与依赖注入">2.依赖查找与依赖注入</h2>
+<h3 id="什么叫依赖">什么叫依赖</h3>
+<p>要弄清楚什么叫依赖查找和注入，首先明白什么叫依赖，直接举个Java代码的例子</p>
+<pre><code>public class Test{
+  private OrderDao orderDao;   //这就是依赖
+}
+</code></pre>
+<h3 id="依赖查找">依赖查找</h3>
+<p>举个例子，Java当中有个叫JNDI的东西，JNDI是这么做的</p>
+<pre><code>Connection conn=null; 
+try { 
+	Context ctx = new InitialContext(); 
+	Object datasourceRef = ctx.lookup(&quot;java:MySqlDS&quot;);  //依赖查找
+	//引用数据源 
+	DataSource ds = (Datasource) datasourceRef; 
+	conn = ds.getConnection(); 
+	...... 
+	c.close(); 
+} catch(Exception e) { 
+	e.printStackTrace(); 
+} finally { 
+	if(conn!=null) { 
+		try { 
+			conn.close(); 
+		} catch(SQLException e) {} 
+	} 
+}
+</code></pre>
+<p>有个叫**ctx.lookcp()**的东西，这就叫做依赖查找，使用这模式的好处是这样数据源的配置和应用就解耦了，当数据源里面比如说jdbc地址用户名密码改变后，源代码不用改变</p>
+<h3 id="依赖注入">依赖注入</h3>
+<p>而依赖注入更多的就倾向于自动注入。就是你提供需要注入的位置，容器自己给你注入相应的对象</p>
+<p>##3.为什么要使用SpringIOC<br>
+我们不用SpringIOC是什么样的情况呢？<br>
+比如说如下代码：<br>
+最普通的做法：</p>
+<pre><code>public void test(){
+    OrderService service = new OrderServiceImpl();
+    orderService.getOrder();
+    System.out.println(&quot;test&quot;);
+}
+</code></pre>
+<p>这样做有什么坏处呢：</p>
+<ol>
+<li>当OrderService有很多实现类，而我现在引用的地方要换成OrderServiceImpl1，会出现什么情况呢？需要我把所有引用OrderServiceImpl的地方改成OrderServiceImpl1</li>
+<li>当我需要对OrderService进行代理(事务，切面等)的时候，那么一样的，需要修改所有的实现类，把他出现的地方全改成代理类<br>
+以上都叫做耦合<br>
+改进后的做法：</li>
+</ol>
+<pre><code>private OrderService orderSerivce;
+
+public void setOrderSerivce(OrderService orderSerivce) {
+   this.orderSerivce = orderSerivce;
+}
+
+public void test(){
+    orderService.getOrder();
+    System.out.println(&quot;test&quot;);
+}
+</code></pre>
+<p>应该面向抽象编程，用父类声明，然后用一个set方法，把真实的实现类set进来，然后细想这个set是不是也要外部new一个出来，这样要改实现类的时候不是还会出现上面的问题吗</p>
+<p>在改进后的做法(用容器管理)</p>
+<pre><code>@Resource
+private OrderService orderSerivce;
+
+public void setOrderSerivce(OrderService orderSerivce) {
+   this.orderSerivce = orderSerivce;
+}
+
+public void test(){
+    orderService.getOrder();
+    System.out.println(&quot;test&quot;);
+}
+</code></pre>
+<p>解决了上面的问题，new的动作由容器执行，我们只需要选择注入什么样的类到容器中，可以是是多种实现类或者代理类，最后我们值需要在使用的地方加个声明来表示我们需要注入，当需要改动的时候(其实很少，一般在真实业务开发中一个类就一个实现类)也只需要改变一下声明，声明需要注入的另一个实现类，而代理类也同样如此<br>
+<strong>为什么使用IOC总结</strong>：</p>
+<ul>
+<li>SpringIOC容器帮我们维护了类之间的依赖关系</li>
+<li>SpringIOC可以为我们提供增强类(AOP代理事务)，插件式，可插拔</li>
+<li>SpringIOC提供了很多Bean的拓展点(BeanPostProcessor，BeanFactoryProcessor，FactoryBean)等</li>
+</ul>
+<h2 id="4spring实现ioc的思路和方法">4.Spring实现IOC的思路和方法</h2>
+<p>Spring实现IOC的思路是提供一些配置信息(XML)用来描述类之间的依赖关系，然后由容器去解析配置信息(XML)，继而维护好类之间的依赖关系，这里有个前提是对象之间的关系必须在类中已经定义好，比如A.class中有一个B.class的属性，那么我们可以理解为A依赖了B<br>
+看完，上面一段话会不会以下一个疑问呢？<br>
+既然对象之间的关系已经在类中定义好，为什么我们还要提供配置信息去描述类之间的依赖关系呢？<strong>自动装配</strong>就派上用场了<br>
+###自动装配<br>
+其实就是Spring提供的自动填充依赖的一种方式，可以让容器中的Bean自动注入到需要依赖的位置，值得注意的是我们最常用的形式@Autowired放在属性上，这不叫自动装配，这叫显示声明注入，即按需注入，而不是所有依赖都自动注入<br>
+分以下四种[1]</p>
+<table>
+<thead>
+<tr>
+<th>Mode</th>
+<th>Explanation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>no</td>
+<td>(Default) 默认的，不自动装配。大型项目，更改默认的自动装配模型是不推荐的，因为Spring认为自己明确的指定可以提供更好的控制和看起来更清晰。</td>
+</tr>
+<tr>
+<td>byName</td>
+<td>byName注入，值得注意的是byName的形式他是根据set方法来的，即如果有一个setMaster方法，那么他是去找Spring中有没有一个beanName=master的bean，如果有执行此方法，并把对应的bena赋值给这个方法的参数</td>
+</tr>
+<tr>
+<td>byType</td>
+<td>byType注入，根据class类型进行注入，如果容器中有两个某种类型的bean则报错，但是如果没有此类型的bean，是不会报错的，而且不做任何事(即不进行注入)</td>
+</tr>
+<tr>
+<td>constructor</td>
+<td>constructor注入，与byType是类似的，只是应用在构造方法的参数上，按参数类型进行匹配，如果容器中找不到则报错</td>
+</tr>
+<tr>
+<td>配置可以在<beans>标签里，属性叫default-autowire</td>
+<td></td>
+</tr>
+<tr>
+<td>也可以在单个<bean>里，属性叫default-autowire</td>
+<td></td>
+</tr>
+<tr>
+<td>用注解形式的配置暂时还没找到，当然如果能拿Spring上下文对象也可以设置</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h3 id="自动装配的优点">自动装配的优点：</h3>
+<ul>
+<li>自动装配可以大大减少指定属性或构造函数参数的数量。</li>
+<li>而如果在XML当中，可以大大减少配置量，当增加新的依赖时不需要修改XML文件配置</li>
+</ul>
+<h3 id="自动装配的缺点">自动装配的缺点</h3>
+<ul>
+<li>显示依赖一直都是自动装配的，那么就不能生成简单的属性，比如String，Class(以及这些简单属性的数组等)</li>
+<li>自动装配是没有自己注入清晰的，Spring也不能保证自己注入的一定是正确的，虽然Spring在努力避免。。</li>
+<li>自动注入在注入单值的时候需要注意，是否存在多个类型相同的bean，这样就会产生注入错误</li>
+</ul>
+<h3 id="spring建议怎么使用自动装配">Spring建议怎么使用自动装配</h3>
+<ul>
+<li>第一条就是放弃所有自动装配。。(说明Spring自己很不建议使用此功能，实际业务项目也确实不用此功能)</li>
+<li>放弃部分自动装配。。。。(设置autowire-candidate为false)</li>
+<li>设置Primary，当出现多个时优选Primary的</li>
+<li>实现更细粒度的注解配置，如多个type时，用qualify来限制名字</li>
+</ul>
+<h2 id="5spring编程的风格">5.spring编程的风格</h2>
+<pre><code>schemal-based-------xml
+annotation-based-----annotation @Resource等
+java-based----java Configuration @Configuration
+</code></pre>
+<p>可以联合使用</p>
+<h2 id="6di的两种方法">6.DI的两种方法</h2>
+<p>Spring5官网文档就提供了两种方法<br>
+<img src="https://blog.xabc.site/post-images/1584189461736.png" alt="" loading="lazy"><br>
+Constructor-based Dependency Injection</p>
+<pre><code>public class SimpleMovieLister { 
+
+    // the SimpleMovieLister has a dependency on a MovieFinder
+    private MovieFinder movieFinder;
+
+    // a constructor so that the Spring container can inject a MovieFinder
+    public SimpleMovieLister(MovieFinder movieFinder) {
+        this.movieFinder = movieFinder;
+    }
+
+    // business logic that actually uses the injected MovieFinder is omitted...
+}
+
+
+&lt;beans&gt;
+    &lt;bean id=&quot;beanOne&quot; class=&quot;x.y.ThingOne&quot;&gt;
+        &lt;constructor-arg ref=&quot;beanTwo&quot;/&gt;
+        &lt;constructor-arg ref=&quot;beanThree&quot;/&gt;
+    &lt;/bean&gt;
+
+    &lt;bean id=&quot;beanTwo&quot; class=&quot;x.y.ThingTwo&quot;/&gt;
+
+    &lt;bean id=&quot;beanThree&quot; class=&quot;x.y.ThingThree&quot;/&gt;
+&lt;/beans&gt;
+</code></pre>
+<p>Setter-based Dependency Injection</p>
+<pre><code>public class SimpleMovieLister {
+
+    // the SimpleMovieLister has a dependency on the MovieFinder
+    private MovieFinder movieFinder;
+
+    // a setter method so that the Spring container can inject a MovieFinder
+    public void setMovieFinder(MovieFinder movieFinder) {
+        this.movieFinder = movieFinder;
+    }
+
+    // business logic that actually uses the injected MovieFinder is omitted...
+}
+
+&lt;bean id=&quot;exampleBean&quot; class=&quot;examples.ExampleBean&quot;&gt;
+    &lt;!-- setter injection using the nested ref element --&gt;
+    &lt;property name=&quot;beanOne&quot;&gt;
+        &lt;ref bean=&quot;anotherExampleBean&quot;/&gt;
+    &lt;/property&gt;
+
+    &lt;!-- setter injection using the neater ref attribute --&gt;
+    &lt;property name=&quot;beanTwo&quot; ref=&quot;yetAnotherBean&quot;/&gt;
+    &lt;property name=&quot;integerProperty&quot; value=&quot;1&quot;/&gt;
+&lt;/bean&gt;
+</code></pre>
+<p>上面的例子都是Spring官方文档的例子，还是比较容易看懂的。</p>
+<h3 id="两种注入方法的比较">两种注入方法的比较</h3>
+<p>Spring官方文档同样有说，我就以我拙劣的英语大致翻译一下，大致如下意思：<br>
+我们可以混合使用两种注入方式，而一种比较好的方式是对于强制性的依赖可以使用构造器的方式注入，而对于可选性的依赖则以set方式注入。set方式也可以是必须注入的，只需要加上@Required注入。Spring建议使用构造器注入时要用有参构造方法</p>
+<p>Spring开发团队主张使用<strong>构造器</strong>方式注入，因为他们认为使用构造器注入能让程序的各个组件成为不可变对象且不为空，因为在使用的时候，都是已经初始化好的对象。</p>
+<p>Setter注入应该主要用于可选的依赖，这些依赖可以在类中分配默认值。否则，必须在代码使用依赖项的任何地方执行非空检查。setter注入的一个好处是，<strong>setter方法使该类对象能够在以后进行重新配置或重新注入。</strong></p>
+<p>对于特定类可能只能有某种注入方式。比如第三方的源代码，他们没有提供setter方法，那么构造方法可能就是唯一可用的DI形式</p>
+<p>总结:<br>
+<font color="red"><strong>Spring更为推荐的方式是对于强制性的依赖可以使用构造器的方式注入，而对于可选性的依赖则以set方式注入。</strong></font></p>
+<hr>
+<p>参考资料：<br>
+[1] https://docs.spring.io/spring-framework/docs/current/spring-framework-reference/core.html#beans-factory-autowire   &quot;Spring 官方&quot;</p>
+
+                </div>
+                
+                    <div class="tag-container">
+                        
+                            <a href="https://blog.xabc.site/tag/AQY3jis8R/" class="tag">
+                                IOC
+                            </a>
+                        
+                            <a href="https://blog.xabc.site/tag/qo1IvxU85/" class="tag">
+                                罗先生
+                            </a>
+                        
+                            <a href="https://blog.xabc.site/tag/rmZK4c5AX/" class="tag">
+                                Java
+                            </a>
+                        
+                            <a href="https://blog.xabc.site/tag/NRx_uEd8d8/" class="tag">
+                                Spring
+                            </a>
+                        
+                    </div>
+                
+                
+                    <div class="next-post">
+                        <div class="next">下一篇</div>
+                        <a href="https://blog.xabc.site/post/binary_tree_traversal/">
+                            <h3 class="post-title">
+                                二叉树的遍历(前序、中序、后序)
+                            </h3>
+                        </a>
+                    </div>
+                
+
+                
+
+            </div>
+
+        </div>
+    </div>
+</div>
+<script src="https://cdn.bootcss.com/aos/3.0.0-beta.6/aos.js"></script>
+<script type="application/javascript">
+
+    AOS.init();
+
+    var app = new Vue({
+        el: '#app',
+        data: {
+            menuVisible: false,
+        },
+    })
+
+</script>
+
+    <script src="https://cdn.bootcss.com/highlight.js/9.18.1/highlight.min.js"></script>
+    <script>
+        hljs.initHighlightingOnLoad()
+    </script>
+
+<script src="https://cdn.bootcss.com/tocbot/4.10.0/tocbot.min.js"></script>
+<script>
+tocbot.init({
+  tocSelector: '.js-toc',
+  contentSelector: '.js-toc-content',
+  headingSelector: 'h1, h2, h3',
+  hasInnerContainers: true,
+});
+const slidBox = document.createElement('div')
+const hitbox = document.createElement('div')
+slidBox.classList.add('slid-btn')
+hitbox.classList.add('show-icon')
+hitbox.classList.add('target-icon')
+slidBox.appendChild(hitbox)
+document.querySelector('.js-toc') && document.querySelector('.js-toc').appendChild(slidBox)
+slidBox.addEventListener('click', e => {
+    // document.querySelector('.slid-btn .target-icon').classList.entries()
+    if (document.querySelector('.slid-btn .target-icon').classList.contains(('hide-icon'))) {
+        document.querySelector('.js-toc').classList.add('show-box')
+        document.querySelector('.js-toc').classList.remove('hide-box')
+        document.querySelector('.slid-btn .target-icon').classList.add('show-icon')
+        document.querySelector('.slid-btn .target-icon').classList.remove('hide-icon')
+    } else {
+        document.querySelector('.js-toc').classList.add('hide-box')
+        document.querySelector('.js-toc').classList.remove('show-box')
+        document.querySelector('.slid-btn .target-icon').classList.add('hide-icon')
+        document.querySelector('.slid-btn .target-icon').classList.remove('show-icon')
+    }
+})
+</script>
+
+
+
+
+</body>
+</html>

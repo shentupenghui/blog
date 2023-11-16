@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+
+<title>SpringIOC(4)-SqlSessionFactoryBean | Mr.Shentu</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<link rel="stylesheet" href="https://cdn.bootcss.com/font-awesome/5.12.1/css/all.min.css" crossorigin="anonymous">
+<link rel="shortcut icon" href="https://blog.xabc.site/favicon.ico?v=1700095858984">
+<link rel="stylesheet" href="https://blog.xabc.site/styles/main.css">
+
+
+
+<link href="https://cdn.bootcss.com/aos/3.0.0-beta.6/aos.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js">
+</script>
+
+
+
+    <meta name="description" content="Author 罗先生
+本文是IOC系列第四篇。往期回顾：
+
+FactoryBean是什么？
+首先看懂这篇，需要先看SpringIOC-FactoryBean
+SqlsessionFactoryBean
+类声明：
+public class S..."/>
+    <meta name="keywords" content="IOC,罗先生,Java,Spring"/>
+    <link href="https://cdn.bootcss.com/tocbot/4.10.0/tocbot.css" rel="stylesheet">
+</head>
+<body>
+<div id="app" class="main">
+
+    <div class="sidebar" :class="{ 'full-height': menuVisible }">
+    <div class="top-container" data-aos="fade-right">
+        <div class="top-header-container">
+            <a class="site-title-container" href="https://blog.xabc.site">
+                <img src="https://blog.xabc.site/images/avatar.jpeg?v=1700095858984" class="site-logo">
+                <h1 class="site-title">Mr.Shentu</h1>
+            </a>
+            <div class="menu-btn" @click="menuVisible = !menuVisible">
+                <div class="line"></div>
+            </div>
+        </div>
+        <div>
+            
+                
+                    <a href="/" class="site-nav">
+                        首页
+                    </a>
+                
+            
+                
+                    <a href="/archives" class="site-nav">
+                        归档
+                    </a>
+                
+            
+                
+                    <a href="/tags" class="site-nav">
+                        标签
+                    </a>
+                
+            
+                
+                    <a href="/post/about" class="site-nav">
+                        关于
+                    </a>
+                
+            
+        </div>
+    </div>
+    <div class="bottom-container" data-aos="flip-up" data-aos-offset="0">
+        <div class="social-container">
+            
+                
+            
+                
+            
+                
+            
+                
+            
+                
+            
+        </div>
+        <div class="site-description">
+            <div>公告板</div>
+            —————————————————
+            <br>
+            永远保持热情❤️
+        </div>
+        <div class="site-footer" style="padding: 20px 0">
+            <div style="text-align: center;color:#939393">© 2021 申屠鹏会 版权所有<br><a href="http://www.beian.miit.gov.cn"style="color:#939393">浙ICP备2023016973号</a></div>
+
+            <div style="width:300px;margin:0 auto; padding:5px 0;">
+                <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAAAXNSR0IArs4c6QAAACBjSFJNAAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAAA8mVYSWZNTQAqAAAACAAHARIAAwAAAAEAAQAAARoABQAAAAEAAABiARsABQAAAAEAAABqASgAAwAAAAEAAgAAATEAAgAAACIAAAByATIAAgAAABQAAACUh2kABAAAAAEAAACoAAAAAAAAAEgAAAABAAAASAAAAAFBZG9iZSBQaG90b3Nob3AgQ0MgMjAxNCAoV2luZG93cykAMjAxNToxMToxMCAxNDowNDo1MAAABJAEAAIAAAAUAAAA3qABAAMAAAABAAEAAKACAAQAAAABAAAAFKADAAQAAAABAAAAFAAAAAAyMDE1OjExOjEwIDE0OjA0OjUwALd18ckAAAAJcEhZcwAACxMAAAsTAQCanBgAAAtJaVRYdFhNTDpjb20uYWRvYmUueG1wAAAAAAA8eDp4bXBtZXRhIHhtbG5zOng9ImFkb2JlOm5zOm1ldGEvIiB4OnhtcHRrPSJYTVAgQ29yZSA1LjQuMCI+CiAgIDxyZGY6UkRGIHhtbG5zOnJkZj0iaHR0cDovL3d3dy53My5vcmcvMTk5OS8wMi8yMi1yZGYtc3ludGF4LW5zIyI+CiAgICAgIDxyZGY6RGVzY3JpcHRpb24gcmRmOmFib3V0PSIiCiAgICAgICAgICAgIHhtbG5zOnhtcE1NPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvbW0vIgogICAgICAgICAgICB4bWxuczpzdEV2dD0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL3NUeXBlL1Jlc291cmNlRXZlbnQjIgogICAgICAgICAgICB4bWxuczpwaG90b3Nob3A9Imh0dHA6Ly9ucy5hZG9iZS5jb20vcGhvdG9zaG9wLzEuMC8iCiAgICAgICAgICAgIHhtbG5zOmV4aWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20vZXhpZi8xLjAvIgogICAgICAgICAgICB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iCiAgICAgICAgICAgIHhtbG5zOmRjPSJodHRwOi8vcHVybC5vcmcvZGMvZWxlbWVudHMvMS4xLyIKICAgICAgICAgICAgeG1sbnM6dGlmZj0iaHR0cDovL25zLmFkb2JlLmNvbS90aWZmLzEuMC8iPgogICAgICAgICA8eG1wTU06SW5zdGFuY2VJRD54bXAuaWlkOjgwYmNhOTg1LTRmOWItNmU0ZC05ZmM5LWU4ZjQ5MjY3ZGY0ZTwveG1wTU06SW5zdGFuY2VJRD4KICAgICAgICAgPHhtcE1NOk9yaWdpbmFsRG9jdW1lbnRJRD54bXAuZGlkOmQwMTdiOTRlLTk0YmQtMjY0MS04ZmY5LWJmN2EwYTM2NzdiMTwveG1wTU06T3JpZ2luYWxEb2N1bWVudElEPgogICAgICAgICA8eG1wTU06RG9jdW1lbnRJRD5hZG9iZTpkb2NpZDpwaG90b3Nob3A6ZWRkYWU4MGMtODc3MC0xMWU1LTg0OWEtYmNmZGE2MDI4ZjJlPC94bXBNTTpEb2N1bWVudElEPgogICAgICAgICA8eG1wTU06SGlzdG9yeT4KICAgICAgICAgICAgPHJkZjpTZXE+CiAgICAgICAgICAgICAgIDxyZGY6bGkgcmRmOnBhcnNlVHlwZT0iUmVzb3VyY2UiPgogICAgICAgICAgICAgICAgICA8c3RFdnQ6c29mdHdhcmVBZ2VudD5BZG9iZSBQaG90b3Nob3AgQ0MgMjAxNCAoV2luZG93cyk8L3N0RXZ0OnNvZnR3YXJlQWdlbnQ+CiAgICAgICAgICAgICAgICAgIDxzdEV2dDp3aGVuPjIwMTUtMTEtMTBUMTQ6MDQ6NTArMDg6MDA8L3N0RXZ0OndoZW4+CiAgICAgICAgICAgICAgICAgIDxzdEV2dDppbnN0YW5jZUlEPnhtcC5paWQ6ZDAxN2I5NGUtOTRiZC0yNjQxLThmZjktYmY3YTBhMzY3N2IxPC9zdEV2dDppbnN0YW5jZUlEPgogICAgICAgICAgICAgICAgICA8c3RFdnQ6YWN0aW9uPmNyZWF0ZWQ8L3N0RXZ0OmFjdGlvbj4KICAgICAgICAgICAgICAgPC9yZGY6bGk+CiAgICAgICAgICAgICAgIDxyZGY6bGkgcmRmOnBhcnNlVHlwZT0iUmVzb3VyY2UiPgogICAgICAgICAgICAgICAgICA8c3RFdnQ6c29mdHdhcmVBZ2VudD5BZG9iZSBQaG90b3Nob3AgQ0MgMjAxNCAoV2luZG93cyk8L3N0RXZ0OnNvZnR3YXJlQWdlbnQ+CiAgICAgICAgICAgICAgICAgIDxzdEV2dDpjaGFuZ2VkPi88L3N0RXZ0OmNoYW5nZWQ+CiAgICAgICAgICAgICAgICAgIDxzdEV2dDp3aGVuPjIwMTUtMTEtMTBUMTQ6MDQ6NTArMDg6MDA8L3N0RXZ0OndoZW4+CiAgICAgICAgICAgICAgICAgIDxzdEV2dDppbnN0YW5jZUlEPnhtcC5paWQ6ODBiY2E5ODUtNGY5Yi02ZTRkLTlmYzktZThmNDkyNjdkZjRlPC9zdEV2dDppbnN0YW5jZUlEPgogICAgICAgICAgICAgICAgICA8c3RFdnQ6YWN0aW9uPnNhdmVkPC9zdEV2dDphY3Rpb24+CiAgICAgICAgICAgICAgIDwvcmRmOmxpPgogICAgICAgICAgICA8L3JkZjpTZXE+CiAgICAgICAgIDwveG1wTU06SGlzdG9yeT4KICAgICAgICAgPHBob3Rvc2hvcDpDb2xvck1vZGU+MzwvcGhvdG9zaG9wOkNvbG9yTW9kZT4KICAgICAgICAgPHBob3Rvc2hvcDpJQ0NQcm9maWxlPnNSR0IgSUVDNjE5NjYtMi4xPC9waG90b3Nob3A6SUNDUHJvZmlsZT4KICAgICAgICAgPHBob3Rvc2hvcDpEb2N1bWVudEFuY2VzdG9ycz4KICAgICAgICAgICAgPHJkZjpCYWc+CiAgICAgICAgICAgICAgIDxyZGY6bGk+M0NCOEZFRThDMkVCRTZFNUE0REE5NzMyODM1NDEyNEU8L3JkZjpsaT4KICAgICAgICAgICAgICAgPHJkZjpsaT5hZG9iZTpkb2NpZDpwaG90b3Nob3A6YmRkZmNmNmYtODc3MC0xMWU1LTg0OWEtYmNmZGE2MDI4ZjJlPC9yZGY6bGk+CiAgICAgICAgICAgIDwvcmRmOkJhZz4KICAgICAgICAgPC9waG90b3Nob3A6RG9jdW1lbnRBbmNlc3RvcnM+CiAgICAgICAgIDxleGlmOlBpeGVsWERpbWVuc2lvbj4yMDwvZXhpZjpQaXhlbFhEaW1lbnNpb24+CiAgICAgICAgIDxleGlmOlBpeGVsWURp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">
+                <a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=33010602010374" style="display:inline-block;text-decoration:none;height:20px;line-height:20px;"><img src="" style="float:left;"/><p style="float:left;height:20px;line-height:20px;margin: 0px 0px 0px 5px; color:#939393;">浙公网安备 33010602010374号</p></a>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+    <div class="main-container">
+
+        <nav style="text-align:right;position:fixed;top:40%;right:1%" class="js-toc show-box"></nav>
+
+
+        <div class="content-container" data-aos="fade-up">
+
+            <div class="post-detail">
+
+                <h2 class="post-title">SpringIOC(4)-SqlSessionFactoryBean</h2>
+                <div class="post-date">2020-03-18</div>
+                
+
+                <div class="post-content js-toc-content" v-pre>
+
+                    <p><em>Author 罗先生</em><br>
+本文是IOC系列第四篇。往期回顾：</p>
+<!-- more -->
+<h2 id="factorybean是什么">FactoryBean是什么？</h2>
+<p>首先看懂这篇，需要<strong>先看</strong>SpringIOC-FactoryBean</p>
+<h2 id="sqlsessionfactorybean">SqlsessionFactoryBean</h2>
+<h3 id="类声明">类声明：</h3>
+<pre><code>public class SqlSessionFactoryBean
+    implements FactoryBean&lt;SqlSessionFactory&gt;, InitializingBean, ApplicationListener&lt;ApplicationEvent&gt;
+</code></pre>
+<p>这里我们需要的是<strong>他和SessionFactory没有继承实现关系</strong>，只是FactoryBean声明的泛型是SqlSessionFactory不声明关系也不大。。都是为了严谨)</p>
+<h2 id="没有sqlsessionfactorybean的mybatis">没有SqlsessionFactoryBean的Mybatis</h2>
+<p>举个例子，打开mybatis官网(<a href="https://mybatis.org/mybatis-3/getting-started.html">https://mybatis.org/mybatis-3/getting-started.html</a>)，getstart会教你怎么搭建Mybatis环境，然后就会看到一大堆XMl配置，</p>
+<pre><code>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; ?&gt;
+&lt;!DOCTYPE configuration
+  PUBLIC &quot;-//mybatis.org//DTD Config 3.0//EN&quot;
+  &quot;http://mybatis.org/dtd/mybatis-3-config.dtd&quot;&gt;
+&lt;configuration&gt;
+  &lt;environments default=&quot;development&quot;&gt;
+    &lt;environment id=&quot;development&quot;&gt;
+      &lt;transactionManager type=&quot;JDBC&quot;/&gt;
+      &lt;dataSource type=&quot;POOLED&quot;&gt;
+        &lt;property name=&quot;driver&quot; value=&quot;${driver}&quot;/&gt;
+        &lt;property name=&quot;url&quot; value=&quot;${url}&quot;/&gt;
+        &lt;property name=&quot;username&quot; value=&quot;${username}&quot;/&gt;
+        &lt;property name=&quot;password&quot; value=&quot;${password}&quot;/&gt;
+      &lt;/dataSource&gt;
+    &lt;/environment&gt;
+  &lt;/environments&gt;
+  &lt;mappers&gt;
+    &lt;mapper resource=&quot;org/mybatis/example/BlogMapper.xml&quot;/&gt;
+  &lt;/mappers&gt;
+&lt;/configuration&gt;
+</code></pre>
+<p>之后就是<strong>Building SqlSessionFactory</strong>这个过程，最后会<strong>执行build方法</strong></p>
+<pre><code>DataSource dataSource = BlogDataSourceFactory.getBlogDataSource();
+TransactionFactory transactionFactory =
+  new JdbcTransactionFactory();
+Environment environment =
+  new Environment(&quot;development&quot;, transactionFactory, dataSource);
+Configuration configuration = new Configuration(environment);
+configuration.addMapper(BlogMapper.class);
+SqlSessionFactory sqlSessionFactory =
+  new SqlSessionFactoryBuilder().build(configuration);
+</code></pre>
+<p><strong>可以发现build出来的是DefaultSqlSessionFactory对象，他是SqlSessionFactory的一个实现类，而上面的xml配置最终是为了配置Configuration对象，因为DefaultSqlSessionFactory的实例化需要它</strong>，</p>
+<pre><code>public SqlSessionFactory build(Configuration config) {
+    return new DefaultSqlSessionFactory(config);
+}
+</code></pre>
+<p>既然都贴了这么多文档上的东西，就全部贴完吧，其实下面就是应用了，上面已经把环境配置好了</p>
+<pre><code>try (SqlSession session = sqlSessionFactory.openSession()) {
+  BlogMapper mapper = session.getMapper(BlogMapper.class);
+  Blog blog = mapper.selectBlog(101);
+}
+&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; ?&gt;
+&lt;!DOCTYPE mapper
+  PUBLIC &quot;-//mybatis.org//DTD Mapper 3.0//EN&quot;
+  &quot;http://mybatis.org/dtd/mybatis-3-mapper.dtd&quot;&gt;
+&lt;mapper namespace=&quot;org.mybatis.example.BlogMapper&quot;&gt;
+  &lt;select id=&quot;selectBlog&quot; resultType=&quot;Blog&quot;&gt;
+    select * from Blog where id = #{id}
+  &lt;/select&gt;
+&lt;/mapper&gt;
+</code></pre>
+<h3 id="缺点">缺点:</h3>
+<p><strong>SqlSessionFactory 的构造需要Configuration，而Configuration 需要依赖Environment ，而Environment 依赖比较多，他的构造要一个字符串，dataSource，还有一个TransactionFactory 对象，然后设置好Configuration后，还需要手动add mapper，整个流程下来稍微复杂，而如果Mybatis以后想新增别的依赖，这里的Java代码配置更是复杂度上升，所以Mybatis在整合Spring的时候，就使用了FactoyBean的方式来对外提供一种简单的关系。</strong></p>
+<h2 id="有了sqlsessionfactorybean之后">有了SqlsessionFactoryBean之后</h2>
+<pre><code>@Configuration
+public class Appconfig {
+    @Bean
+    public SqlSessionFactoryBean sqlSessionFactoryBean(DataSource dataSource) {
+        SqlSessionFactoryBean sqlSessionFactoryBean = new SqlSessionFactoryBean();
+        sqlSessionFactoryBean.setDataSource(dataSource);
+        return sqlSessionFactoryBean;
+    }
+    @Bean
+    public DataSource dataSource() {
+        DriverManagerDataSource driverManagerDataSource = new DriverManagerDataSource();
+        driverManagerDataSource.setPassword(&quot;root&quot;);
+        driverManagerDataSource.setUsername(&quot;root&quot;);
+        driverManagerDataSource.setUsername(&quot;jdbc:mysql://localhost:3306/test&quot;);
+        driverManagerDataSource.setDriverClassName(&quot;com.mysql.jdbc.Driver&quot;);
+        return driverManagerDataSource;
+    }
+}
+</code></pre>
+<h3 id="优点">优点:</h3>
+<p><strong>简单了太多</strong>，可以发现<strong>只需要一个数据源 + SqlSessionFactoryBean ，</strong></p>
+<h2 id="sqlsessionfactorybean帮我们做了什么">SqlSessionFactoryBean帮我们做了什么</h2>
+<p>我们在﻿IOC应用-SqlsessionFactoryBean﻿ 说到了<strong>FactoryBean最终会往容器里注册一个getObject()返回的对象，如下:</strong></p>
+<pre><code>@Override
+public SqlSessionFactory getObject() throws Exception {
+  if (this.sqlSessionFactory == null) {
+    afterPropertiesSet();
+  }
+  return this.sqlSessionFactory;
+}
+public void afterPropertiesSet() throws Exception {
+  notNull(dataSource, &quot;Property 'dataSource' is required&quot;);
+  notNull(sqlSessionFactoryBuilder, &quot;Property 'sqlSessionFactoryBuilder' is required&quot;);
+  state((configuration == null &amp;&amp; configLocation == null) || !(configuration != null &amp;&amp; configLocation != null),
+      &quot;Property 'configuration' and 'configLocation' can not specified with together&quot;);
+
+  this.sqlSessionFactory = buildSqlSessionFactory();
+}
+protected SqlSessionFactory buildSqlSessionFactory() throws Exception {
+... //上面都不用看
+targetConfiguration.setEnvironment(new Environment(this.environment,
+    this.transactionFactory == null ? new SpringManagedTransactionFactory() : this.transactionFactory,
+    this.dataSource));
+    return this.sqlSessionFactoryBuilder.build(targetConfiguration);
+}
+</code></pre>
+<p>看到**buildSqlSessionFactory的setEnvironment()**就比较熟悉了。上面的代码还是比较容易看懂的</p>
+<h2 id="总结">总结：</h2>
+<p><strong>SqlSessionFactoryBean其实就是把内部创建SqlSessionFactory的复杂依赖关系都自己维护了，除了需要外部指定的dataSource，所以再把dataSource set进SqlSessionFactoryBean，剩下的SqlSessionFactoryBean会自己解决，最后在getObject()方法中返回的就是一个初始化好的SqlSessionFactory 对象到容器当中。</strong></p>
+
+                </div>
+                
+                    <div class="tag-container">
+                        
+                            <a href="https://blog.xabc.site/tag/AQY3jis8R/" class="tag">
+                                IOC
+                            </a>
+                        
+                            <a href="https://blog.xabc.site/tag/qo1IvxU85/" class="tag">
+                                罗先生
+                            </a>
+                        
+                            <a href="https://blog.xabc.site/tag/rmZK4c5AX/" class="tag">
+                                Java
+                            </a>
+                        
+                            <a href="https://blog.xabc.site/tag/NRx_uEd8d8/" class="tag">
+                                Spring
+                            </a>
+                        
+                    </div>
+                
+                
+                    <div class="next-post">
+                        <div class="next">下一篇</div>
+                        <a href="https://blog.xabc.site/post/FactoryBean/">
+                            <h3 class="post-title">
+                                SpringIOC(3)-FactoryBean
+                            </h3>
+                        </a>
+                    </div>
+                
+
+                
+
+            </div>
+
+        </div>
+    </div>
+</div>
+<script src="https://cdn.bootcss.com/aos/3.0.0-beta.6/aos.js"></script>
+<script type="application/javascript">
+
+    AOS.init();
+
+    var app = new Vue({
+        el: '#app',
+        data: {
+            menuVisible: false,
+        },
+    })
+
+</script>
+
+    <script src="https://cdn.bootcss.com/highlight.js/9.18.1/highlight.min.js"></script>
+    <script>
+        hljs.initHighlightingOnLoad()
+    </script>
+
+<script src="https://cdn.bootcss.com/tocbot/4.10.0/tocbot.min.js"></script>
+<script>
+tocbot.init({
+  tocSelector: '.js-toc',
+  contentSelector: '.js-toc-content',
+  headingSelector: 'h1, h2, h3',
+  hasInnerContainers: true,
+});
+const slidBox = document.createElement('div')
+const hitbox = document.createElement('div')
+slidBox.classList.add('slid-btn')
+hitbox.classList.add('show-icon')
+hitbox.classList.add('target-icon')
+slidBox.appendChild(hitbox)
+document.querySelector('.js-toc') && document.querySelector('.js-toc').appendChild(slidBox)
+slidBox.addEventListener('click', e => {
+    // document.querySelector('.slid-btn .target-icon').classList.entries()
+    if (document.querySelector('.slid-btn .target-icon').classList.contains(('hide-icon'))) {
+        document.querySelector('.js-toc').classList.add('show-box')
+        document.querySelector('.js-toc').classList.remove('hide-box')
+        document.querySelector('.slid-btn .target-icon').classList.add('show-icon')
+        document.querySelector('.slid-btn .target-icon').classList.remove('hide-icon')
+    } else {
+        document.querySelector('.js-toc').classList.add('hide-box')
+        document.querySelector('.js-toc').classList.remove('show-box')
+        document.querySelector('.slid-btn .target-icon').classList.add('hide-icon')
+        document.querySelector('.slid-btn .target-icon').classList.remove('show-icon')
+    }
+})
+</script>
+
+
+
+
+</body>
+</html>

@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+
+<title>11.6 登山计划 | Mr.Shentu</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<link rel="stylesheet" href="https://cdn.bootcss.com/font-awesome/5.12.1/css/all.min.css" crossorigin="anonymous">
+<link rel="shortcut icon" href="https://blog.xabc.site/favicon.ico?v=1700095858984">
+<link rel="stylesheet" href="https://blog.xabc.site/styles/main.css">
+
+
+
+<link href="https://cdn.bootcss.com/aos/3.0.0-beta.6/aos.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js">
+</script>
+
+
+
+    <meta name="description" content="路线描述
+本次路线是走过的一条路线，特点是野趣十足，风景优美，缓急相间。耗时大约5-6小时，共计12公里，总消耗3200千卡，爬升高度1100余米。
+路线途径：龙门岭 - 午潮山惨案遗址 - 午潮山 - 鸡溪弄 - 飞凤岩 - 白龙潭景区 ..."/>
+    <meta name="keywords" content="爬山"/>
+    <link href="https://cdn.bootcss.com/tocbot/4.10.0/tocbot.css" rel="stylesheet">
+</head>
+<body>
+<div id="app" class="main">
+
+    <div class="sidebar" :class="{ 'full-height': menuVisible }">
+    <div class="top-container" data-aos="fade-right">
+        <div class="top-header-container">
+            <a class="site-title-container" href="https://blog.xabc.site">
+                <img src="https://blog.xabc.site/images/avatar.jpeg?v=1700095858984" class="site-logo">
+                <h1 class="site-title">Mr.Shentu</h1>
+            </a>
+            <div class="menu-btn" @click="menuVisible = !menuVisible">
+                <div class="line"></div>
+            </div>
+        </div>
+        <div>
+            
+                
+                    <a href="/" class="site-nav">
+                        首页
+                    </a>
+                
+            
+                
+                    <a href="/archives" class="site-nav">
+                        归档
+                    </a>
+                
+            
+                
+                    <a href="/tags" class="site-nav">
+                        标签
+                    </a>
+                
+            
+                
+                    <a href="/post/about" class="site-nav">
+                        关于
+                    </a>
+                
+            
+        </div>
+    </div>
+    <div class="bottom-container" data-aos="flip-up" data-aos-offset="0">
+        <div class="social-container">
+            
+                
+            
+                
+            
+                
+            
+                
+            
+                
+            
+        </div>
+        <div class="site-description">
+            <div>公告板</div>
+            —————————————————
+            <br>
+            永远保持热情❤️
+        </div>
+        <div class="site-footer" style="padding: 20px 0">
+            <div style="text-align: center;color:#939393">© 2021 申屠鹏会 版权所有<br><a href="http://www.beian.miit.gov.cn"style="color:#939393">浙ICP备2023016973号</a></div>
+
+            <div style="width:300px;margin:0 auto; padding:5px 0;">
+                <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAAAXNSR0IArs4c6QAAACBjSFJNAAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAAA8mVYSWZNTQAqAAAACAAHARIAAwAAAAEAAQAAARoABQAAAAEAAABiARsABQAAAAEAAABqASgAAwAAAAEAAgAAATEAAgAAACIAAAByATIAAgAAABQAAACUh2kABAAAAAEAAACoAAAAAAAAAEgAAAABAAAASAAAAAFBZG9iZSBQaG90b3Nob3AgQ0MgMjAxNCAoV2luZG93cykAMjAxNToxMToxMCAxNDowNDo1MAAABJAEAAIAAAAUAAAA3qABAAMAAAABAAEAAKACAAQAAAABAAAAFKADAAQAAAABAAAAFAAAAAAyMDE1OjExOjEwIDE0OjA0OjUwALd18ckAAAAJcEhZcwAACxMAAAsTAQCanBgAAAtJaVRYdFhNTDpjb20uYWRvYmUueG1wAAAAAAA8eDp4bXBtZXRhIHhtbG5zOng9ImFkb2JlOm5zOm1ldGEvIiB4OnhtcHRrPSJYTVAgQ29yZSA1LjQuMCI+CiAgIDxyZGY6UkRGIHhtbG5zOnJkZj0iaHR0cDovL3d3dy53My5vcmcvMTk5OS8wMi8yMi1yZGYtc3ludGF4LW5zIyI+CiAgICAgIDxyZGY6RGVzY3JpcHRpb24gcmRmOmFib3V0PSIiCiAgICAgICAgICAgIHhtbG5zOnhtcE1NPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvbW0vIgogICAgICAgICAgICB4bWxuczpzdEV2dD0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL3NUeXBlL1Jlc291cmNlRXZlbnQjIgogICAgICAgICAgICB4bWxuczpwaG90b3Nob3A9Imh0dHA6Ly9ucy5hZG9iZS5jb20vcGhvdG9zaG9wLzEuMC8iCiAgICAgICAgICAgIHhtbG5zOmV4aWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20vZXhpZi8xLjAvIgogICAgICAgICAgICB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iCiAgICAgICAgICAgIHhtbG5zOmRjPSJodHRwOi8vcHVybC5vcmcvZGMvZWxlbWVudHMvMS4xLyIKICAgICAgICAgICAgeG1sbnM6dGlmZj0iaHR0cDovL25zLmFkb2JlLmNvbS90aWZmLzEuMC8iPgogICAgICAgICA8eG1wTU06SW5zdGFuY2VJRD54bXAuaWlkOjgwYmNhOTg1LTRmOWItNmU0ZC05ZmM5LWU4ZjQ5MjY3ZGY0ZTwveG1wTU06SW5zdGFuY2VJRD4KICAgICAgICAgPHhtcE1NOk9yaWdpbmFsRG9jdW1lbnRJRD54bXAuZGlkOmQwMTdiOTRlLTk0YmQtMjY0MS04ZmY5LWJmN2EwYTM2NzdiMTwveG1wTU06T3JpZ2luYWxEb2N1bWVudElEPgogICAgICAgICA8eG1wTU06RG9jdW1lbnRJRD5hZG9iZTpkb2NpZDpwaG90b3Nob3A6ZWRkYWU4MGMtODc3MC0xMWU1LTg0OWEtYmNmZGE2MDI4ZjJlPC94bXBNTTpEb2N1bWVudElEPgogICAgICAgICA8eG1wTU06SGlzdG9yeT4KICAgICAgICAgICAgPHJkZjpTZXE+CiAgICAgICAgICAgICAgIDxyZGY6bGkgcmRmOnBhcnNlVHlwZT0iUmVzb3VyY2UiPgogICAgICAgICAgICAgICAgICA8c3RFdnQ6c29mdHdhcmVBZ2VudD5BZG9iZSBQaG90b3Nob3AgQ0MgMjAxNCAoV2luZG93cyk8L3N0RXZ0OnNvZnR3YXJlQWdlbnQ+CiAgICAgICAgICAgICAgICAgIDxzdEV2dDp3aGVuPjIwMTUtMTEtMTBUMTQ6MDQ6NTArMDg6MDA8L3N0RXZ0OndoZW4+CiAgICAgICAgICAgICAgICAgIDxzdEV2dDppbnN0YW5jZUlEPnhtcC5paWQ6ZDAxN2I5NGUtOTRiZC0yNjQxLThmZjktYmY3YTBhMzY3N2IxPC9zdEV2dDppbnN0YW5jZUlEPgogICAgICAgICAgICAgICAgICA8c3RFdnQ6YWN0aW9uPmNyZWF0ZWQ8L3N0RXZ0OmFjdGlvbj4KICAgICAgICAgICAgICAgPC9yZGY6bGk+CiAgICAgICAgICAgICAgIDxyZGY6bGkgcmRmOnBhcnNlVHlwZT0iUmVzb3VyY2UiPgogICAgICAgICAgICAgICAgICA8c3RFdnQ6c29mdHdhcmVBZ2VudD5BZG9iZSBQaG90b3Nob3AgQ0MgMjAxNCAoV2luZG93cyk8L3N0RXZ0OnNvZnR3YXJlQWdlbnQ+CiAgICAgICAgICAgICAgICAgIDxzdEV2dDpjaGFuZ2VkPi88L3N0RXZ0OmNoYW5nZWQ+CiAgICAgICAgICAgICAgICAgIDxzdEV2dDp3aGVuPjIwMTUtMTEtMTBUMTQ6MDQ6NTArMDg6MDA8L3N0RXZ0OndoZW4+CiAgICAgICAgICAgICAgICAgIDxzdEV2dDppbnN0YW5jZUlEPnhtcC5paWQ6ODBiY2E5ODUtNGY5Yi02ZTRkLTlmYzktZThmNDkyNjdkZjRlPC9zdEV2dDppbnN0YW5jZUlEPgogICAgICAgICAgICAgICAgICA8c3RFdnQ6YWN0aW9uPnNhdmVkPC9zdEV2dDphY3Rpb24+CiAgICAgICAgICAgICAgIDwvcmRmOmxpPgogICAgICAgICAgICA8L3JkZjpTZXE+CiAgICAgICAgIDwveG1wTU06SGlzdG9yeT4KICAgICAgICAgPHBob3Rvc2hvcDpDb2xvck1vZGU+MzwvcGhvdG9zaG9wOkNvbG9yTW9kZT4KICAgICAgICAgPHBob3Rvc2hvcDpJQ0NQcm9maWxlPnNSR0IgSUVDNjE5NjYtMi4xPC9waG90b3Nob3A6SUNDUHJvZmlsZT4KICAgICAgICAgPHBob3Rvc2hvcDpEb2N1bWVudEFuY2VzdG9ycz4KICAgICAgICAgICAgPHJkZjpCYWc+CiAgICAgICAgICAgICAgIDxyZGY6bGk+M0NCOEZFRThDMkVCRTZFNUE0REE5NzMyODM1NDEyNEU8L3JkZjpsaT4KICAgICAgICAgICAgICAgPHJkZjpsaT5hZG9iZTpkb2NpZDpwaG90b3Nob3A6YmRkZmNmNmYtODc3MC0xMWU1LTg0OWEtYmNmZGE2MDI4ZjJlPC9yZGY6bGk+CiAgICAgICAgICAgIDwvcmRmOkJhZz4KICAgICAgICAgPC9waG90b3Nob3A6RG9jdW1lbnRBbmNlc3RvcnM+CiAgICAgICAgIDxleGlmOlBpeGVsWERpbWVuc2lvbj4yMDwvZXhpZjpQaXhlbFhEaW1lbnNpb24+CiAgICAgICAgIDxleGlmOlBpeGVsWURp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">
+                <a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=33010602010374" style="display:inline-block;text-decoration:none;height:20px;line-height:20px;"><img src="" style="float:left;"/><p style="float:left;height:20px;line-height:20px;margin: 0px 0px 0px 5px; color:#939393;">浙公网安备 33010602010374号</p></a>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+    <div class="main-container">
+
+        <nav style="text-align:right;position:fixed;top:40%;right:1%" class="js-toc show-box"></nav>
+
+
+        <div class="content-container" data-aos="fade-up">
+
+            <div class="post-detail">
+
+                <h2 class="post-title">11.6 登山计划</h2>
+                <div class="post-date">2022-10-31</div>
+                
+                    <div class="feature-container" style="background-image: url('https://blog.xabc.site/post-images/3B2EFBHqA.jpeg')">
+                    </div>
+                
+
+                <div class="post-content js-toc-content" v-pre>
+
+                    <h2 id="路线描述">路线描述</h2>
+<p>本次路线是走过的一条路线，特点是野趣十足，风景优美，缓急相间。耗时大约5-6小时，共计12公里，总消耗3200千卡，爬升高度1100余米。<br>
+<strong>路线途径：龙门岭 - 午潮山惨案遗址 - 午潮山 - 鸡溪弄 - 飞凤岩 - 白龙潭景区 - 龙吟狮吼 ，最后从上山处下山。</strong><br>
+<img src="https://blog.xabc.site/post-images/1667221951493.png" alt="" loading="lazy"></p>
+<h2 id="出发地点与时间">出发地点与时间</h2>
+<p>时间：11.6 日早上9点出发，务必提早到达。<br>
+集合地点：前一天徒步群会给定位，按定位导航即可，推荐自驾。</p>
+<h2 id="物资准备">物资准备</h2>
+<h3 id="食物">食物</h3>
+<ul>
+<li>方案一
+<ol>
+<li>自热米饭</li>
+<li>自带盒饭</li>
+<li>热狗等</li>
+</ol>
+</li>
+<li>方案二
+<ol>
+<li>零食小吃</li>
+<li>面包巧克力</li>
+</ol>
+</li>
+</ul>
+<h3 id="水">水</h3>
+<p>建议带200ML的热水，刚进山时候人还没热起来，最宜热水润喉；同时带足饮水1.5L以上。</p>
+<h3 id="其他物品">其他物品</h3>
+<pre><code>1. 登山杖，野路较多，登山杖能很好的缓解膝盖压力；
+2. 手套，有地方手脚并用，需要抓取裸露的岩石；
+3. 花露水，蚊虫较多，建议提前喷好；
+</code></pre>
+<h3 id="注意事项️">注意事项⚠️</h3>
+<pre><code>1. 不要穿短裤、短袖，容易被树枝划伤；
+2. 不要穿牛仔裤、皮鞋等不适合运动的装备；
+3. 下山务必结伴同行，避免单人意外无法自救；
+</code></pre>
+<h2 id="路线特点">路线特点</h2>
+<p>驱车能直达位于山坳的入山口，我们便在此集合；<br>
+<img src="https://blog.xabc.site/post-images/1667222789850.jpeg" alt="" loading="lazy"><br>
+集合完毕，由于刚开始的一段路程陡峭、植被遮天蔽日，我们将进行短暂的伸展热身运动，随后便溯溪而上，周围植被丰富，小径只容单人，需前后上山。<br>
+<img src="https://blog.xabc.site/post-images/1667222807770.jpeg" alt="" loading="lazy"><br>
+过了这一段在丛林中的路后，即到达第一个打卡点和补水点——午潮山惨案纪念碑处。该处是当你日寇在杭州犯下的最大屠杀惨案所在地，在1938年3月4日，日军田村联队田中有朋大队荒川永进武融部“扫荡”午潮山，将避居于午潮庙的530名手无寸铁村民悉数屠杀，后杭州市政府立碑于此，在此处稍作休整后，便右拐沿着柏油盘山路上山，稍远处群山红绿相间，是个边走边拍照的好机会。到山脊时，柏油路便要下坡了，而路线也转为右边的山路。刚开始是无遮蔽的茶园小道，随着山势增高，小道逐渐被竹林笼罩，裸露的石头也多了起来。此处近乎垂直上山，只有快到山顶的地方有一块三四人可站立的平地可以休息，同时俯瞰闲林的所有风光。<br>
+<img src="https://blog.xabc.site/post-images/1667223125475.jpeg" alt="" loading="lazy"><br>
+过了山顶后，沿着平稳的山脊这一段风景是最好的，不会有很大的下山-上山过程，遮蔽也较少。直至到达午潮亭，会有一段约三百台阶的路。<br>
+<img src="https://blog.xabc.site/post-images/1667223311876.jpeg" alt="" loading="lazy"><br>
+在午潮亭，我们会休息较长的时间，同时进行能量的补充。午潮亭是杭州最高的山峰，五百余米，四处没有任何遮挡，可以看到余杭、西湖、富阳三区的景色。之后便出发鸡溪弄，这一段路线有的需要手脚并用的爬，有的需要弯下身子匍匐前进，有的需要翻过大块的岩石，有的则是六十度的土坡上山路。走完这一段，会有一个在树林中的休息点，前人做了一些木头小板凳，可以稍事休息，再次补能。<br>
+<img src="https://blog.xabc.site/post-images/1667223576678.jpeg" alt="" loading="lazy"><br>
+再往后，则是西山游步道，有人工的台阶，有大片的茶园，会再经过第二个亭子进行休息。最后经过深山中的茶园，俯瞰白龙潭景区，翻过一个小山丘则回到下山点。</p>
+
+                </div>
+                
+                    <div class="tag-container">
+                        
+                            <a href="https://blog.xabc.site/tag/8Fnz6GY3c/" class="tag">
+                                爬山
+                            </a>
+                        
+                    </div>
+                
+                
+                    <div class="next-post">
+                        <div class="next">下一篇</div>
+                        <a href="https://blog.xabc.site/post/aS6gXznCz/">
+                            <h3 class="post-title">
+                                10.30 登山计划
+                            </h3>
+                        </a>
+                    </div>
+                
+
+                
+
+            </div>
+
+        </div>
+    </div>
+</div>
+<script src="https://cdn.bootcss.com/aos/3.0.0-beta.6/aos.js"></script>
+<script type="application/javascript">
+
+    AOS.init();
+
+    var app = new Vue({
+        el: '#app',
+        data: {
+            menuVisible: false,
+        },
+    })
+
+</script>
+
+    <script src="https://cdn.bootcss.com/highlight.js/9.18.1/highlight.min.js"></script>
+    <script>
+        hljs.initHighlightingOnLoad()
+    </script>
+
+<script src="https://cdn.bootcss.com/tocbot/4.10.0/tocbot.min.js"></script>
+<script>
+tocbot.init({
+  tocSelector: '.js-toc',
+  contentSelector: '.js-toc-content',
+  headingSelector: 'h1, h2, h3',
+  hasInnerContainers: true,
+});
+const slidBox = document.createElement('div')
+const hitbox = document.createElement('div')
+slidBox.classList.add('slid-btn')
+hitbox.classList.add('show-icon')
+hitbox.classList.add('target-icon')
+slidBox.appendChild(hitbox)
+document.querySelector('.js-toc') && document.querySelector('.js-toc').appendChild(slidBox)
+slidBox.addEventListener('click', e => {
+    // document.querySelector('.slid-btn .target-icon').classList.entries()
+    if (document.querySelector('.slid-btn .target-icon').classList.contains(('hide-icon'))) {
+        document.querySelector('.js-toc').classList.add('show-box')
+        document.querySelector('.js-toc').classList.remove('hide-box')
+        document.querySelector('.slid-btn .target-icon').classList.add('show-icon')
+        document.querySelector('.slid-btn .target-icon').classList.remove('hide-icon')
+    } else {
+        document.querySelector('.js-toc').classList.add('hide-box')
+        document.querySelector('.js-toc').classList.remove('show-box')
+        document.querySelector('.slid-btn .target-icon').classList.add('hide-icon')
+        document.querySelector('.slid-btn .target-icon').classList.remove('show-icon')
+    }
+})
+</script>
+
+
+
+
+</body>
+</html>

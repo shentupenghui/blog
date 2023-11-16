@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+
+<title>SpringIOC源码篇-Bean实例化-Spring如何选择类构造器(1) | Mr.Shentu</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<link rel="stylesheet" href="https://cdn.bootcss.com/font-awesome/5.12.1/css/all.min.css" crossorigin="anonymous">
+<link rel="shortcut icon" href="https://blog.xabc.site/favicon.ico?v=1700095858984">
+<link rel="stylesheet" href="https://blog.xabc.site/styles/main.css">
+
+
+
+<link href="https://cdn.bootcss.com/aos/3.0.0-beta.6/aos.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js">
+</script>
+
+
+
+    <meta name="description" content="这节主要是第一篇，讲一讲Spring怎么选择你提供的构造函数的(多个)，而提供了多个怎么选择是下一节的内容
+
+抛出问题:
+@Component
+public class IndexService {
+   @Autowired
+   Ord..."/>
+    <meta name="keywords" content="罗先生,Java"/>
+    <link href="https://cdn.bootcss.com/tocbot/4.10.0/tocbot.css" rel="stylesheet">
+</head>
+<body>
+<div id="app" class="main">
+
+    <div class="sidebar" :class="{ 'full-height': menuVisible }">
+    <div class="top-container" data-aos="fade-right">
+        <div class="top-header-container">
+            <a class="site-title-container" href="https://blog.xabc.site">
+                <img src="https://blog.xabc.site/images/avatar.jpeg?v=1700095858984" class="site-logo">
+                <h1 class="site-title">Mr.Shentu</h1>
+            </a>
+            <div class="menu-btn" @click="menuVisible = !menuVisible">
+                <div class="line"></div>
+            </div>
+        </div>
+        <div>
+            
+                
+                    <a href="/" class="site-nav">
+                        首页
+                    </a>
+                
+            
+                
+                    <a href="/archives" class="site-nav">
+                        归档
+                    </a>
+                
+            
+                
+                    <a href="/tags" class="site-nav">
+                        标签
+                    </a>
+                
+            
+                
+                    <a href="/post/about" class="site-nav">
+                        关于
+                    </a>
+                
+            
+        </div>
+    </div>
+    <div class="bottom-container" data-aos="flip-up" data-aos-offset="0">
+        <div class="social-container">
+            
+                
+            
+                
+            
+                
+            
+                
+            
+                
+            
+        </div>
+        <div class="site-description">
+            <div>公告板</div>
+            —————————————————
+            <br>
+            永远保持热情❤️
+        </div>
+        <div class="site-footer" style="padding: 20px 0">
+            <div style="text-align: center;color:#939393">© 2021 申屠鹏会 版权所有<br><a href="http://www.beian.miit.gov.cn"style="color:#939393">浙ICP备2023016973号</a></div>
+
+            <div style="width:300px;margin:0 auto; padding:5px 0;">
+                <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAAAXNSR0IArs4c6QAAACBjSFJNAAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAAA8mVYSWZNTQAqAAAACAAHARIAAwAAAAEAAQAAARoABQAAAAEAAABiARsABQAAAAEAAABqASgAAwAAAAEAAgAAATEAAgAAACIAAAByATIAAgAAABQAAACUh2kABAAAAAEAAACoAAAAAAAAAEgAAAABAAAASAAAAAFBZG9iZSBQaG90b3Nob3AgQ0MgMjAxNCAoV2luZG93cykAMjAxNToxMToxMCAxNDowNDo1MAAABJAEAAIAAAAUAAAA3qABAAMAAAABAAEAAKACAAQAAAABAAAAFKADAAQAAAABAAAAFAAAAAAyMDE1OjExOjEwIDE0OjA0OjUwALd18ckAAAAJcEhZcwAACxMAAAsTAQCanBgAAAtJaVRYdFhNTDpjb20uYWRvYmUueG1wAAAAAAA8eDp4bXBtZXRhIHhtbG5zOng9ImFkb2JlOm5zOm1ldGEvIiB4OnhtcHRrPSJYTVAgQ29yZSA1LjQuMCI+CiAgIDxyZGY6UkRGIHhtbG5zOnJkZj0iaHR0cDovL3d3dy53My5vcmcvMTk5OS8wMi8yMi1yZGYtc3ludGF4LW5zIyI+CiAgICAgIDxyZGY6RGVzY3JpcHRpb24gcmRmOmFib3V0PSIiCiAgICAgICAgICAgIHhtbG5zOnhtcE1NPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvbW0vIgogICAgICAgICAgICB4bWxuczpzdEV2dD0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL3NUeXBlL1Jlc291cmNlRXZlbnQjIgogICAgICAgICAgICB4bWxuczpwaG90b3Nob3A9Imh0dHA6Ly9ucy5hZG9iZS5jb20vcGhvdG9zaG9wLzEuMC8iCiAgICAgICAgICAgIHhtbG5zOmV4aWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20vZXhpZi8xLjAvIgogICAgICAgICAgICB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iCiAgICAgICAgICAgIHhtbG5zOmRjPSJodHRwOi8vcHVybC5vcmcvZGMvZWxlbWVudHMvMS4xLyIKICAgICAgICAgICAgeG1sbnM6dGlmZj0iaHR0cDovL25zLmFkb2JlLmNvbS90aWZmLzEuMC8iPgogICAgICAgICA8eG1wTU06SW5zdGFuY2VJRD54bXAuaWlkOjgwYmNhOTg1LTRmOWItNmU0ZC05ZmM5LWU4ZjQ5MjY3ZGY0ZTwveG1wTU06SW5zdGFuY2VJRD4KICAgICAgICAgPHhtcE1NOk9yaWdpbmFsRG9jdW1lbnRJRD54bXAuZGlkOmQwMTdiOTRlLTk0YmQtMjY0MS04ZmY5LWJmN2EwYTM2NzdiMTwveG1wTU06T3JpZ2luYWxEb2N1bWVudElEPgogICAgICAgICA8eG1wTU06RG9jdW1lbnRJRD5hZG9iZTpkb2NpZDpwaG90b3Nob3A6ZWRkYWU4MGMtODc3MC0xMWU1LTg0OWEtYmNmZGE2MDI4ZjJlPC94bXBNTTpEb2N1bWVudElEPgogICAgICAgICA8eG1wTU06SGlzdG9yeT4KICAgICAgICAgICAgPHJkZjpTZXE+CiAgICAgICAgICAgICAgIDxyZGY6bGkgcmRmOnBhcnNlVHlwZT0iUmVzb3VyY2UiPgogICAgICAgICAgICAgICAgICA8c3RFdnQ6c29mdHdhcmVBZ2VudD5BZG9iZSBQaG90b3Nob3AgQ0MgMjAxNCAoV2luZG93cyk8L3N0RXZ0OnNvZnR3YXJlQWdlbnQ+CiAgICAgICAgICAgICAgICAgIDxzdEV2dDp3aGVuPjIwMTUtMTEtMTBUMTQ6MDQ6NTArMDg6MDA8L3N0RXZ0OndoZW4+CiAgICAgICAgICAgICAgICAgIDxzdEV2dDppbnN0YW5jZUlEPnhtcC5paWQ6ZDAxN2I5NGUtOTRiZC0yNjQxLThmZjktYmY3YTBhMzY3N2IxPC9zdEV2dDppbnN0YW5jZUlEPgogICAgICAgICAgICAgICAgICA8c3RFdnQ6YWN0aW9uPmNyZWF0ZWQ8L3N0RXZ0OmFjdGlvbj4KICAgICAgICAgICAgICAgPC9yZGY6bGk+CiAgICAgICAgICAgICAgIDxyZGY6bGkgcmRmOnBhcnNlVHlwZT0iUmVzb3VyY2UiPgogICAgICAgICAgICAgICAgICA8c3RFdnQ6c29mdHdhcmVBZ2VudD5BZG9iZSBQaG90b3Nob3AgQ0MgMjAxNCAoV2luZG93cyk8L3N0RXZ0OnNvZnR3YXJlQWdlbnQ+CiAgICAgICAgICAgICAgICAgIDxzdEV2dDpjaGFuZ2VkPi88L3N0RXZ0OmNoYW5nZWQ+CiAgICAgICAgICAgICAgICAgIDxzdEV2dDp3aGVuPjIwMTUtMTEtMTBUMTQ6MDQ6NTArMDg6MDA8L3N0RXZ0OndoZW4+CiAgICAgICAgICAgICAgICAgIDxzdEV2dDppbnN0YW5jZUlEPnhtcC5paWQ6ODBiY2E5ODUtNGY5Yi02ZTRkLTlmYzktZThmNDkyNjdkZjRlPC9zdEV2dDppbnN0YW5jZUlEPgogICAgICAgICAgICAgICAgICA8c3RFdnQ6YWN0aW9uPnNhdmVkPC9zdEV2dDphY3Rpb24+CiAgICAgICAgICAgICAgIDwvcmRmOmxpPgogICAgICAgICAgICA8L3JkZjpTZXE+CiAgICAgICAgIDwveG1wTU06SGlzdG9yeT4KICAgICAgICAgPHBob3Rvc2hvcDpDb2xvck1vZGU+MzwvcGhvdG9zaG9wOkNvbG9yTW9kZT4KICAgICAgICAgPHBob3Rvc2hvcDpJQ0NQcm9maWxlPnNSR0IgSUVDNjE5NjYtMi4xPC9waG90b3Nob3A6SUNDUHJvZmlsZT4KICAgICAgICAgPHBob3Rvc2hvcDpEb2N1bWVudEFuY2VzdG9ycz4KICAgICAgICAgICAgPHJkZjpCYWc+CiAgICAgICAgICAgICAgIDxyZGY6bGk+M0NCOEZFRThDMkVCRTZFNUE0REE5NzMyODM1NDEyNEU8L3JkZjpsaT4KICAgICAgICAgICAgICAgPHJkZjpsaT5hZG9iZTpkb2NpZDpwaG90b3Nob3A6YmRkZmNmNmYtODc3MC0xMWU1LTg0OWEtYmNmZGE2MDI4ZjJlPC9yZGY6bGk+CiAgICAgICAgICAgIDwvcmRmOkJhZz4KICAgICAgICAgPC9waG90b3Nob3A6RG9jdW1lbnRBbmNlc3RvcnM+CiAgICAgICAgIDxleGlmOlBpeGVsWERpbWVuc2lvbj4yMDwvZXhpZjpQaXhlbFhEaW1lbnNpb24+CiAgICAgICAgIDxleGlmOlBpeGVsWURp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">
+                <a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=33010602010374" style="display:inline-block;text-decoration:none;height:20px;line-height:20px;"><img src="" style="float:left;"/><p style="float:left;height:20px;line-height:20px;margin: 0px 0px 0px 5px; color:#939393;">浙公网安备 33010602010374号</p></a>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+    <div class="main-container">
+
+        <nav style="text-align:right;position:fixed;top:40%;right:1%" class="js-toc show-box"></nav>
+
+
+        <div class="content-container" data-aos="fade-up">
+
+            <div class="post-detail">
+
+                <h2 class="post-title">SpringIOC源码篇-Bean实例化-Spring如何选择类构造器(1)</h2>
+                <div class="post-date">2020-05-07</div>
+                
+
+                <div class="post-content js-toc-content" v-pre>
+
+                    <p>这节主要是第一篇，讲一讲Spring怎么选择你提供的构造函数的(多个)，而提供了多个怎么选择是下一节的内容</p>
+<!-- more -->
+<h2 id="抛出问题">抛出问题:</h2>
+<pre><code>@Component
+public class IndexService {
+   @Autowired
+   OrderDao orderDao;
+   public IndexService() {
+   }
+   public IndexService(OrderDao orderDao) {
+      this.orderDao = orderDao;
+   }
+   public IndexService(OrderDao orderDao, Luban luban) {
+   }
+}
+</code></pre>
+<p>这样一个类，Spring在实例化的时候会用哪个构造方法，大部分人应该会猜是无参构造方法，可以说是对的，但不完全对<br>
+再换一个:</p>
+<pre><code>@Component
+public class IndexService {
+   @Autowired
+   OrderDao orderDao;
+   public IndexService(OrderDao orderDao) {
+      this.orderDao = orderDao;
+   }
+   public IndexService(OrderDao orderDao, Luban luban) {
+   }
+}
+</code></pre>
+<p>如果是这样呢？<br>
+Spring还是会选择无参的，小伙伴可以自行尝试</p>
+<h2 id="定位源码">定位源码</h2>
+<p>避免有些小伙伴没看过Spring源码，这里从最最开始的源头开始摘录处理<br>
+(其实这也是实例化Bean的路径。。)</p>
+<blockquote>
+<p>代表一个方法<br>
+org.springframework.context.support.AbstractApplicationContext#refresh<br>
+org.springframework.context.support.AbstractApplicationContext#finishBeanFactoryInitialization<br>
+org.springframework.beans.factory.support.DefaultListableBeanFactory#preInstantiateSingletons<br>
+org.springframework.beans.factory.support.AbstractBeanFactory#getBean(java.lang.String)<br>
+org.springframework.beans.factory.support.AbstractBeanFactory#doGetBean<br>
+org.springframework.beans.factory.support.DefaultSingletonBeanRegistry#getSingleton(java.lang.String, org.springframework.beans.factory.ObjectFactory&lt;?&gt;)<br>
+org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory#createBean(java.lang.String, org.springframework.beans.factory.support.RootBeanDefinition, java.lang.Object[])<br>
+org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory#doCreateBean<br>
+org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory#createBeanInstance</p>
+</blockquote>
+<p>然后就到了我们今天需要看的源码了，先来个概览</p>
+<pre><code>protected BeanWrapper createBeanInstance(String beanName, RootBeanDefinition mbd, @Nullable Object[] args) {
+   // Make sure bean class is actually resolved at this point.
+   Class&lt;?&gt; beanClass = resolveBeanClass(mbd, beanName);
+   /**
+    * 检测一个类的访问权限spring默认情况下对于非public的类是允许访问的。
+    */
+   if (beanClass != null &amp;&amp; !Modifier.isPublic(beanClass.getModifiers()) &amp;&amp; !mbd.isNonPublicAccessAllowed()) {
+      throw new BeanCreationException(mbd.getResourceDescription(), beanName,
+            &quot;Bean class isn't public, and non-public access not allowed: &quot; + beanClass.getName());
+   }
+   Supplier&lt;?&gt; instanceSupplier = mbd.getInstanceSupplier();
+   if (instanceSupplier != null) {
+      return obtainFromSupplier(instanceSupplier, beanName);
+   }
+   /**
+    *
+    * 如果工厂方法不为空，则通过工厂方法构建 bean 对象
+    @Bean其实就是通过这种方法来实例化的
+    */
+   if (mbd.getFactoryMethodName() != null)  {
+      return instantiateUsingFactoryMethod(beanName, mbd, args);
+   }
+   // Shortcut when re-creating the same bean...
+   /**
+    * 从spring的原始注释可以知道这个是一个Shortcut，什么意思呢？
+    * 当多次构建同一个 bean 时，可以使用这个Shortcut，
+    * 也就是说不在需要次推断应该使用哪种方式构造bean
+    *  比如在多次构建同一个prototype类型的 bean 时，就可以走此处的hortcut
+    * 这里的 resolved 和 mbd.constructorArgumentsResolved 将会在 bean 第一次实例化的过程中被设置
+    */
+   boolean resolved = false;
+   boolean autowireNecessary = false;
+   if (args == null) {
+      synchronized (mbd.constructorArgumentLock) {
+         if (mbd.resolvedConstructorOrFactoryMethod != null) {
+            resolved = true;
+            //如果已经解析了构造方法的参数，则必须要通过一个带参构造方法来实例
+            autowireNecessary = mbd.constructorArgumentsResolved;
+         }
+      }
+   }
+   if (resolved) {
+      if (autowireNecessary) {
+         // 通过构造方法自动装配的方式构造 bean 对象
+         return autowireConstructor(beanName, mbd, null, null);
+      }
+      else {
+         //通过默认的无参构造方法进行
+         return instantiateBean(beanName, mbd);
+      }
+   }
+   // Candidate constructors for autowiring?
+   //由后置处理器决定返回哪些构造方法
+   Constructor&lt;?&gt;[] ctors = determineConstructorsFromBeanPostProcessors(beanClass, beanName);
+   if (ctors != null || mbd.getResolvedAutowireMode() == AUTOWIRE_CONSTRUCTOR ||
+         mbd.hasConstructorArgumentValues() || !ObjectUtils.isEmpty(args))  {
+      return autowireConstructor(beanName, mbd, ctors, args);
+   }
+   // No special handling: simply use no-arg constructor.
+   //使用默认的无参构造方法进行初始化
+   return instantiateBean(beanName, mbd);
+}
+</code></pre>
+<p>我们前面都不看，只看一行determineConstructorsFromBeanPostProcessors这个方法。determineConstructorsFromBeanPostProcessors这个方法就是今天的重头戏，他会返回一个 Constructor&lt;?&gt;[]，这个就是Spring会选择的构造器数组，返回一个数组？不要紧，Spring会在autowireConstructor里选择一个来进行初始化，怎么选择这就是第二节的内容</p>
+<h2 id="spring怎么判断类有几个构造器">Spring怎么判断类有几个构造器</h2>
+<h2 id="determineconstructorsfrombeanpostprocessors源码分析">determineConstructorsFromBeanPostProcessors源码分析</h2>
+<pre><code>public Constructor&lt;?&gt;[] determineCandidateConstructors(Class&lt;?&gt; beanClass, final String beanName)
+      throws BeanCreationException {
+   // Let's check for lookup methods here..
+   /**
+    * 处理含有@Lookup注解的方法
+    * 如果集合中没有BeanName，则走一遍Bean中所有的方法，过滤是否含有Lookup方法
+    */
+   if (!this.lookupMethodsChecked.contains(beanName)) {
+      try {
+         /**
+          * 在方法中循环过滤所有的方法
+          */
+         ReflectionUtils.doWithMethods(beanClass, method -&gt; {
+            /**
+             * 获取method上的@Lookup注解
+             */
+            Lookup lookup = method.getAnnotation(Lookup.class);
+            /**
+             * 存在此注解的话，就将方法和注解中的内容构建LookupOverride对象，设置进BeanDefinition中
+             */
+            if (lookup != null) {
+               Assert.state(this.beanFactory != null, &quot;No BeanFactory available&quot;);
+               LookupOverride override = new LookupOverride(method, lookup.value());
+               try {
+                  RootBeanDefinition mbd = (RootBeanDefinition) this.beanFactory.getMergedBeanDefinition(beanName);
+                  mbd.getMethodOverrides().addOverride(override);
+               }
+               catch (NoSuchBeanDefinitionException ex) {
+                  throw new BeanCreationException(beanName,
+                        &quot;Cannot apply @Lookup to beans without corresponding bean definition&quot;);
+               }
+            }
+         });
+      }
+      catch (IllegalStateException ex) {
+         throw new BeanCreationException(beanName, &quot;Lookup method resolution failed&quot;, ex);
+      }
+      /**
+       * 无论对象中是否含有@Lookup方法，过滤完成后都会放到集合中，证明此Bean已经检查完@Lookup注解了
+       */
+      this.lookupMethodsChecked.add(beanName);
+   }
+   // Quick check on the concurrent map first, with minimal locking.
+   /**
+    * 从缓存中拿构造函数，不存在的话就进入代码块中再拿一遍，还不存在的话就进行下方的逻辑
+    * 双重检查
+    */
+   Constructor&lt;?&gt;[] candidateConstructors = this.candidateConstructorsCache.get(beanClass);
+   if (candidateConstructors == null) {
+      // Fully synchronized resolution now...
+      synchronized (this.candidateConstructorsCache) {
+         candidateConstructors = this.candidateConstructorsCache.get(beanClass);
+         if (candidateConstructors == null) {
+            Constructor&lt;?&gt;[] rawCandidates;
+            try {
+               //获取所有构造函数
+               rawCandidates = beanClass.getDeclaredConstructors();
+            }
+            catch (Throwable ex) {
+               throw new BeanCreationException(beanName,
+                     &quot;Resolution of declared constructors on bean Class [&quot; + beanClass.getName() +
+                     &quot;] from ClassLoader [&quot; + beanClass.getClassLoader() + &quot;] failed&quot;, ex);
+            }
+            /**
+             * 候选构造函数列表
+             */
+            List&lt;Constructor&lt;?&gt;&gt; candidates = new ArrayList&lt;&gt;(rawCandidates.length);
+            /**
+             * 用户指定的必须用的构造函数
+             */
+            Constructor&lt;?&gt; requiredConstructor = null;
+            /**
+             * 默认用的构造函数
+             * (其实就是无参构造)
+             */
+            Constructor&lt;?&gt; defaultConstructor = null;
+            /**
+             * 这个不知道什么鬼，看代码是只会在Kotlin语言中存在
+             */
+            Constructor&lt;?&gt; primaryConstructor = BeanUtils.findPrimaryConstructor(beanClass);
+            /**
+             * 构造方法数量计数
+             */
+            int nonSyntheticConstructors = 0;
+            for (Constructor&lt;?&gt; candidate : rawCandidates) {
+               if (!candidate.isSynthetic()) {
+                  nonSyntheticConstructors++;
+               }
+               else if (primaryConstructor != null) {
+                  continue;
+               }
+               //find加了@Autowired的构造函数
+               AnnotationAttributes ann = findAutowiredAnnotation(candidate);
+               /**
+                * 注解不存在,则再通过方法获取用户类，如果是用户类则返回用户类，还判断了CGLIB情况，
+                * CGLIB情况则返回目标类，然后获取参数一致的构造函数再获取注解
+                */
+               if (ann == null) {
+                  Class&lt;?&gt; userClass = ClassUtils.getUserClass(beanClass);
+                  if (userClass != beanClass) {
+                     try {
+                        Constructor&lt;?&gt; superCtor =
+                              userClass.getDeclaredConstructor(candidate.getParameterTypes());
+                        ann = findAutowiredAnnotation(superCtor);
+                     }
+                     catch (NoSuchMethodException ex) {
+                        // Simply proceed, no equivalent superclass constructor found...
+                     }
+                  }
+               }
+               /**
+                * 构造函数上存在注解
+                */
+               if (ann != null) {
+                  if (requiredConstructor != null) {
+                     throw new BeanCreationException(beanName,
+                           &quot;Invalid autowire-marked constructor: &quot; + candidate +
+                           &quot;. Found constructor with 'required' Autowired annotation already: &quot; +
+                           requiredConstructor);
+                  }
+                  /**
+                   * 获取@Autowired注解中required属性的值
+                   * 值得注意的是如果是默认的即没加required
+                   * 这里返回的也会是true
+                   */
+                  boolean required = determineRequiredStatus(ann);
+                  if (required) {
+                     if (!candidates.isEmpty()) {
+                        throw new BeanCreationException(beanName,
+                              &quot;Invalid autowire-marked constructors: &quot; + candidates +
+                              &quot;. Found constructor with 'required' Autowired annotation: &quot; +
+                              candidate);
+                     }
+                     requiredConstructor = candidate;
+                  }
+                  candidates.add(candidate);
+               }
+               else if (candidate.getParameterCount() == 0) {
+                  defaultConstructor = candidate;
+               }
+            }
+            /**
+             * 不为空，则直接用candidates的
+             */
+            if (!candidates.isEmpty()) {
+               // Add default constructor to list of optional constructors, as fallback.
+               if (requiredConstructor == null) {
+                  if (defaultConstructor != null) {
+                     candidates.add(defaultConstructor);
+                  }
+                  else if (candidates.size() == 1 &amp;&amp; logger.isWarnEnabled()) {
+                     logger.warn(&quot;Inconsistent constructor declaration on bean with name '&quot; + beanName +
+                           &quot;': single autowire-marked constructor flagged as optional - &quot; +
+                           &quot;this constructor is effectively required since there is no &quot; +
+                           &quot;default constructor to fall back to: &quot; + candidates.get(0));
+                  }
+               }
+               candidateConstructors = candidates.toArray(new Constructor&lt;?&gt;[0]);
+            }
+            /**
+             * 如果只有一个构造函数，且参数个数大于0的。，那么就选用它
+             */
+            else if (rawCandidates.length == 1 &amp;&amp; rawCandidates[0].getParameterCount() &gt; 0) {
+               candidateConstructors = new Constructor&lt;?&gt;[] {rawCandidates[0]};
+            }
+            /**
+             * 如果有两个，然后primaryConstructor和defaultConstructor都不为null
+             * 且两个不相等，则两个都作为返回值
+             */
+            else if (nonSyntheticConstructors == 2 &amp;&amp; primaryConstructor != null &amp;&amp;
+                  defaultConstructor != null &amp;&amp; !primaryConstructor.equals(defaultConstructor)) {
+               candidateConstructors = new Constructor&lt;?&gt;[] {primaryConstructor, defaultConstructor};
+            }
+            /**
+             * 如果只有primaryConstructor，且primaryConstructor不为null，则使用他
+             */
+            else if (nonSyntheticConstructors == 1 &amp;&amp; primaryConstructor != null) {
+               candidateConstructors = new Constructor&lt;?&gt;[] {primaryConstructor};
+            }
+            /**
+             * 啥都不满足就是没有
+             * 即Spring会用他自己的默认的构造函数(其实就是无参构造)
+             */
+            else {
+               candidateConstructors = new Constructor&lt;?&gt;[0];
+            }
+            this.candidateConstructorsCache.put(beanClass, candidateConstructors);
+         }
+      }
+   }
+   return (candidateConstructors.length &gt; 0 ? candidateConstructors : null);
+}
+</code></pre>
+<p>看注释应该比较清晰了，大致总结一下:</p>
+<ol>
+<li>Spring会首先获取你声明的所有构造函数</li>
+<li>然后会循环获取到的所有构造函数，判断有没加@Autowired注解，有加的会放到候选构造函数集合candidates里面去，默认@Autowired为true，check存在多个@Autowired为true的构造函数，有一个@Autowired为true的构造函数的构造函数就会设置为requiredConstructor，如果存在一个参数个数为0的构造函数(也只会有一个，就是无参构造函数)，会设置为defaultConstructor</li>
+<li>最后判断选择逻辑如下:</li>
+</ol>
+<ul>
+<li>如果candidates不为空，在再加上requiredConstructor为null且defaultConstructor不为null，则选用candidates+defaultConstructor，否则则选用candidates</li>
+<li>如果声明的只有一个构造函数，且参数个数大于0的，则直接选用返回</li>
+<li>如果有两个声明的构造函数，然后primaryConstructor和defaultConstructor都不为null且两个不相等，则两个都作为返回值</li>
+<li>如果只有primaryConstructor，且primaryConstructor不为null，则使用他</li>
+<li>啥都不满足就是没有即Spring会用他自己的默认的构造函数(其实就是无参构造)</li>
+</ul>
+<h2 id="给几个例子">给几个例子</h2>
+<h3 id="例子一只有无参">例子一(只有无参)：</h3>
+<pre><code>@Component
+public class IndexService {
+   @Autowired
+   OrderDao orderDao;
+   public IndexService() {
+   }
+}
+</code></pre>
+<p>值得注意的是这种只有无参的，determineConstructorsFromBeanPostProcessors返回null<br>
+<img src="https://blog.xabc.site/post-images/1588813022741.jpg" alt="" loading="lazy"><br>
+如果看懂了上面代码就很好理解，Spring为什么这么做呢？因为Spring认为你提供一个无参构造的，相当于没有提供构造函数，Spring会使用自己的无参构造，效果是一致的。</p>
+<h3 id="例子二只有一个有参">例子二(只有一个有参)</h3>
+<pre><code>@Component
+public class IndexService {
+   @Autowired
+   OrderDao orderDao;
+   public IndexService(OrderDao orderDao) {
+   }
+}
+</code></pre>
+<p>也很好理解，在上面有一个if，如果只有一个有参那么会返回此构造<br>
+<img src="https://blog.xabc.site/post-images/1588813088888.png" alt="" loading="lazy"></p>
+<h3 id="例子三结合上面两个既提供无参又提供有参">例子三(结合上面两个，既提供无参又提供有参)</h3>
+<p><img src="https://blog.xabc.site/post-images/1588813135947.png" alt="" loading="lazy"><br>
+看上面代码，如果提供了两个构造，但是又没加@Autowired，然后又不满足上面第3.3那个if，那么不会选用你提供的这两个，直接返回Null，因为Spring不知道你想选择哪一个</p>
+<h3 id="例子四我们怎么返回多个构造函数让spring去抉择选用">例子四(我们怎么返回多个构造函数让Spring去抉择选用)</h3>
+<p>其实就是这个方法determineConstructorsFromBeanPostProcessors，怎么返回一个数组<br>
+如果能完全看懂上面代码。那么要返回一个[]。就需要如下写了:</p>
+<pre><code>@Component
+public class IndexService {
+   @Autowired
+   OrderDao orderDao;
+   public IndexService() {
+   }
+   @Autowired(required = false)
+   public IndexService(OrderDao orderDao) {
+      this.orderDao = orderDao;
+   }
+   @Autowired(required = false)
+   public IndexService(OrderDao orderDao, Luban luban) {
+   }
+}
+</code></pre>
+<p><img src="https://blog.xabc.site/post-images/1588813201642.png" alt="" loading="lazy"><br>
+其实也很好理解就是如果你要让Spring后面去判断哪个构造函数最适合，你得先用@Autowired来声明哪些个来参与判断，这里值得注意的是required 这个属性必须显示声明，否则默认为true，那就只能有一个构造被 @Autowired标注了，这里也只会返回一个，其实也就是上面的requiredConstructor<br>
+看完这些例子，就知道抛出问题的第二个肯定会return null了，不信的话大家可以尝试下，如果return null，那么Spring会利用反射调用无参构造进行Bean的初始化<br>
+好，有了多个构造，那么Spring怎么选择哪一个构造进行初始化呢，是选参数多的还是参数少的，或者说是public的呢？这个后面再说</p>
+
+                </div>
+                
+                    <div class="tag-container">
+                        
+                            <a href="https://blog.xabc.site/tag/qo1IvxU85/" class="tag">
+                                罗先生
+                            </a>
+                        
+                            <a href="https://blog.xabc.site/tag/rmZK4c5AX/" class="tag">
+                                Java
+                            </a>
+                        
+                    </div>
+                
+                
+                    <div class="next-post">
+                        <div class="next">下一篇</div>
+                        <a href="https://blog.xabc.site/post/tra_effective_go7/">
+                            <h3 class="post-title">
+                                翻译: Effective Go (7)
+                            </h3>
+                        </a>
+                    </div>
+                
+
+                
+
+            </div>
+
+        </div>
+    </div>
+</div>
+<script src="https://cdn.bootcss.com/aos/3.0.0-beta.6/aos.js"></script>
+<script type="application/javascript">
+
+    AOS.init();
+
+    var app = new Vue({
+        el: '#app',
+        data: {
+            menuVisible: false,
+        },
+    })
+
+</script>
+
+    <script src="https://cdn.bootcss.com/highlight.js/9.18.1/highlight.min.js"></script>
+    <script>
+        hljs.initHighlightingOnLoad()
+    </script>
+
+<script src="https://cdn.bootcss.com/tocbot/4.10.0/tocbot.min.js"></script>
+<script>
+tocbot.init({
+  tocSelector: '.js-toc',
+  contentSelector: '.js-toc-content',
+  headingSelector: 'h1, h2, h3',
+  hasInnerContainers: true,
+});
+const slidBox = document.createElement('div')
+const hitbox = document.createElement('div')
+slidBox.classList.add('slid-btn')
+hitbox.classList.add('show-icon')
+hitbox.classList.add('target-icon')
+slidBox.appendChild(hitbox)
+document.querySelector('.js-toc') && document.querySelector('.js-toc').appendChild(slidBox)
+slidBox.addEventListener('click', e => {
+    // document.querySelector('.slid-btn .target-icon').classList.entries()
+    if (document.querySelector('.slid-btn .target-icon').classList.contains(('hide-icon'))) {
+        document.querySelector('.js-toc').classList.add('show-box')
+        document.querySelector('.js-toc').classList.remove('hide-box')
+        document.querySelector('.slid-btn .target-icon').classList.add('show-icon')
+        document.querySelector('.slid-btn .target-icon').classList.remove('hide-icon')
+    } else {
+        document.querySelector('.js-toc').classList.add('hide-box')
+        document.querySelector('.js-toc').classList.remove('show-box')
+        document.querySelector('.slid-btn .target-icon').classList.add('hide-icon')
+        document.querySelector('.slid-btn .target-icon').classList.remove('show-icon')
+    }
+})
+</script>
+
+
+
+
+</body>
+</html>

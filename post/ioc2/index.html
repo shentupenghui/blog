@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+
+<title>SpringIOC(2)-注解篇 | Mr.Shentu</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<link rel="stylesheet" href="https://cdn.bootcss.com/font-awesome/5.12.1/css/all.min.css" crossorigin="anonymous">
+<link rel="shortcut icon" href="https://blog.xabc.site/favicon.ico?v=1700095858984">
+<link rel="stylesheet" href="https://blog.xabc.site/styles/main.css">
+
+
+
+<link href="https://cdn.bootcss.com/aos/3.0.0-beta.6/aos.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js">
+</script>
+
+
+
+    <meta name="description" content="Author 罗先生
+本文是IOC系列的第二篇，往期回顾：
+
+@Required
+public class SimpleMovieLister {
+    private MovieFinder movieFinder;
+    @Requ..."/>
+    <meta name="keywords" content="IOC,罗先生,Java,Spring"/>
+    <link href="https://cdn.bootcss.com/tocbot/4.10.0/tocbot.css" rel="stylesheet">
+</head>
+<body>
+<div id="app" class="main">
+
+    <div class="sidebar" :class="{ 'full-height': menuVisible }">
+    <div class="top-container" data-aos="fade-right">
+        <div class="top-header-container">
+            <a class="site-title-container" href="https://blog.xabc.site">
+                <img src="https://blog.xabc.site/images/avatar.jpeg?v=1700095858984" class="site-logo">
+                <h1 class="site-title">Mr.Shentu</h1>
+            </a>
+            <div class="menu-btn" @click="menuVisible = !menuVisible">
+                <div class="line"></div>
+            </div>
+        </div>
+        <div>
+            
+                
+                    <a href="/" class="site-nav">
+                        首页
+                    </a>
+                
+            
+                
+                    <a href="/archives" class="site-nav">
+                        归档
+                    </a>
+                
+            
+                
+                    <a href="/tags" class="site-nav">
+                        标签
+                    </a>
+                
+            
+                
+                    <a href="/post/about" class="site-nav">
+                        关于
+                    </a>
+                
+            
+        </div>
+    </div>
+    <div class="bottom-container" data-aos="flip-up" data-aos-offset="0">
+        <div class="social-container">
+            
+                
+            
+                
+            
+                
+            
+                
+            
+                
+            
+        </div>
+        <div class="site-description">
+            <div>公告板</div>
+            —————————————————
+            <br>
+            永远保持热情❤️
+        </div>
+        <div class="site-footer" style="padding: 20px 0">
+            <div style="text-align: center;color:#939393">© 2021 申屠鹏会 版权所有<br><a href="http://www.beian.miit.gov.cn"style="color:#939393">浙ICP备2023016973号</a></div>
+
+            <div style="width:300px;margin:0 auto; padding:5px 0;">
+                <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAAAXNSR0IArs4c6QAAACBjSFJNAAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAAA8mVYSWZNTQAqAAAACAAHARIAAwAAAAEAAQAAARoABQAAAAEAAABiARsABQAAAAEAAABqASgAAwAAAAEAAgAAATEAAgAAACIAAAByATIAAgAAABQAAACUh2kABAAAAAEAAACoAAAAAAAAAEgAAAABAAAASAAAAAFBZG9iZSBQaG90b3Nob3AgQ0MgMjAxNCAoV2luZG93cykAMjAxNToxMToxMCAxNDowNDo1MAAABJAEAAIAAAAUAAAA3qABAAMAAAABAAEAAKACAAQAAAABAAAAFKADAAQAAAABAAAAFAAAAAAyMDE1OjExOjEwIDE0OjA0OjUwALd18ckAAAAJcEhZcwAACxMAAAsTAQCanBgAAAtJaVRYdFhNTDpjb20uYWRvYmUueG1wAAAAAAA8eDp4bXBtZXRhIHhtbG5zOng9ImFkb2JlOm5zOm1ldGEvIiB4OnhtcHRrPSJYTVAgQ29yZSA1LjQuMCI+CiAgIDxyZGY6UkRGIHhtbG5zOnJkZj0iaHR0cDovL3d3dy53My5vcmcvMTk5OS8wMi8yMi1yZGYtc3ludGF4LW5zIyI+CiAgICAgIDxyZGY6RGVzY3JpcHRpb24gcmRmOmFib3V0PSIiCiAgICAgICAgICAgIHhtbG5zOnhtcE1NPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvbW0vIgogICAgICAgICAgICB4bWxuczpzdEV2dD0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL3NUeXBlL1Jlc291cmNlRXZlbnQjIgogICAgICAgICAgICB4bWxuczpwaG90b3Nob3A9Imh0dHA6Ly9ucy5hZG9iZS5jb20vcGhvdG9zaG9wLzEuMC8iCiAgICAgICAgICAgIHhtbG5zOmV4aWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20vZXhpZi8xLjAvIgogICAgICAgICAgICB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iCiAgICAgICAgICAgIHhtbG5zOmRjPSJodHRwOi8vcHVybC5vcmcvZGMvZWxlbWVudHMvMS4xLyIKICAgICAgICAgICAgeG1sbnM6dGlmZj0iaHR0cDovL25zLmFkb2JlLmNvbS90aWZmLzEuMC8iPgogICAgICAgICA8eG1wTU06SW5zdGFuY2VJRD54bXAuaWlkOjgwYmNhOTg1LTRmOWItNmU0ZC05ZmM5LWU4ZjQ5MjY3ZGY0ZTwveG1wTU06SW5zdGFuY2VJRD4KICAgICAgICAgPHhtcE1NOk9yaWdpbmFsRG9jdW1lbnRJRD54bXAuZGlkOmQwMTdiOTRlLTk0YmQtMjY0MS04ZmY5LWJmN2EwYTM2NzdiMTwveG1wTU06T3JpZ2luYWxEb2N1bWVudElEPgogICAgICAgICA8eG1wTU06RG9jdW1lbnRJRD5hZG9iZTpkb2NpZDpwaG90b3Nob3A6ZWRkYWU4MGMtODc3MC0xMWU1LTg0OWEtYmNmZGE2MDI4ZjJlPC94bXBNTTpEb2N1bWVudElEPgogICAgICAgICA8eG1wTU06SGlzdG9yeT4KICAgICAgICAgICAgPHJkZjpTZXE+CiAgICAgICAgICAgICAgIDxyZGY6bGkgcmRmOnBhcnNlVHlwZT0iUmVzb3VyY2UiPgogICAgICAgICAgICAgICAgICA8c3RFdnQ6c29mdHdhcmVBZ2VudD5BZG9iZSBQaG90b3Nob3AgQ0MgMjAxNCAoV2luZG93cyk8L3N0RXZ0OnNvZnR3YXJlQWdlbnQ+CiAgICAgICAgICAgICAgICAgIDxzdEV2dDp3aGVuPjIwMTUtMTEtMTBUMTQ6MDQ6NTArMDg6MDA8L3N0RXZ0OndoZW4+CiAgICAgICAgICAgICAgICAgIDxzdEV2dDppbnN0YW5jZUlEPnhtcC5paWQ6ZDAxN2I5NGUtOTRiZC0yNjQxLThmZjktYmY3YTBhMzY3N2IxPC9zdEV2dDppbnN0YW5jZUlEPgogICAgICAgICAgICAgICAgICA8c3RFdnQ6YWN0aW9uPmNyZWF0ZWQ8L3N0RXZ0OmFjdGlvbj4KICAgICAgICAgICAgICAgPC9yZGY6bGk+CiAgICAgICAgICAgICAgIDxyZGY6bGkgcmRmOnBhcnNlVHlwZT0iUmVzb3VyY2UiPgogICAgICAgICAgICAgICAgICA8c3RFdnQ6c29mdHdhcmVBZ2VudD5BZG9iZSBQaG90b3Nob3AgQ0MgMjAxNCAoV2luZG93cyk8L3N0RXZ0OnNvZnR3YXJlQWdlbnQ+CiAgICAgICAgICAgICAgICAgIDxzdEV2dDpjaGFuZ2VkPi88L3N0RXZ0OmNoYW5nZWQ+CiAgICAgICAgICAgICAgICAgIDxzdEV2dDp3aGVuPjIwMTUtMTEtMTBUMTQ6MDQ6NTArMDg6MDA8L3N0RXZ0OndoZW4+CiAgICAgICAgICAgICAgICAgIDxzdEV2dDppbnN0YW5jZUlEPnhtcC5paWQ6ODBiY2E5ODUtNGY5Yi02ZTRkLTlmYzktZThmNDkyNjdkZjRlPC9zdEV2dDppbnN0YW5jZUlEPgogICAgICAgICAgICAgICAgICA8c3RFdnQ6YWN0aW9uPnNhdmVkPC9zdEV2dDphY3Rpb24+CiAgICAgICAgICAgICAgIDwvcmRmOmxpPgogICAgICAgICAgICA8L3JkZjpTZXE+CiAgICAgICAgIDwveG1wTU06SGlzdG9yeT4KICAgICAgICAgPHBob3Rvc2hvcDpDb2xvck1vZGU+MzwvcGhvdG9zaG9wOkNvbG9yTW9kZT4KICAgICAgICAgPHBob3Rvc2hvcDpJQ0NQcm9maWxlPnNSR0IgSUVDNjE5NjYtMi4xPC9waG90b3Nob3A6SUNDUHJvZmlsZT4KICAgICAgICAgPHBob3Rvc2hvcDpEb2N1bWVudEFuY2VzdG9ycz4KICAgICAgICAgICAgPHJkZjpCYWc+CiAgICAgICAgICAgICAgIDxyZGY6bGk+M0NCOEZFRThDMkVCRTZFNUE0REE5NzMyODM1NDEyNEU8L3JkZjpsaT4KICAgICAgICAgICAgICAgPHJkZjpsaT5hZG9iZTpkb2NpZDpwaG90b3Nob3A6YmRkZmNmNmYtODc3MC0xMWU1LTg0OWEtYmNmZGE2MDI4ZjJlPC9yZGY6bGk+CiAgICAgICAgICAgIDwvcmRmOkJhZz4KICAgICAgICAgPC9waG90b3Nob3A6RG9jdW1lbnRBbmNlc3RvcnM+CiAgICAgICAgIDxleGlmOlBpeGVsWERpbWVuc2lvbj4yMDwvZXhpZjpQaXhlbFhEaW1lbnNpb24+CiAgICAgICAgIDxleGlmOlBpeGVsWURp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">
+                <a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=33010602010374" style="display:inline-block;text-decoration:none;height:20px;line-height:20px;"><img src="" style="float:left;"/><p style="float:left;height:20px;line-height:20px;margin: 0px 0px 0px 5px; color:#939393;">浙公网安备 33010602010374号</p></a>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+    <div class="main-container">
+
+        <nav style="text-align:right;position:fixed;top:40%;right:1%" class="js-toc show-box"></nav>
+
+
+        <div class="content-container" data-aos="fade-up">
+
+            <div class="post-detail">
+
+                <h2 class="post-title">SpringIOC(2)-注解篇</h2>
+                <div class="post-date">2020-03-16</div>
+                
+
+                <div class="post-content js-toc-content" v-pre>
+
+                    <p><em>Author 罗先生</em><br>
+本文是IOC系列的第二篇，往期回顾：</p>
+<!-- more -->
+<h2 id="required">@Required</h2>
+<pre><code>public class SimpleMovieLister {
+    private MovieFinder movieFinder;
+    @Required
+    public void setMovieFinder(MovieFinder movieFinder) {
+        this.movieFinder = movieFinder;
+    }
+    // ...
+}
+</code></pre>
+<p><strong>代表某个类必须被注入</strong>，否则抛错</p>
+<h3 id="在spring51-这个注解已经被deprecated">在spring5.1 这个注解已经被deprecated</h3>
+<h2 id="autowired">@Autowired</h2>
+<p>默认是byType匹配，可以放在属性上，还可以放在构造器，set方法上等。</p>
+<h3 id="放在构造器上">放在构造器上</h3>
+<pre><code>public class OrderService {
+   OrderDao orderDao;
+   
+   @Autowired
+   public OrderService(OrderDao orderDao) {
+      this.orderDao = orderDao;
+   }
+   public void getOrder() {
+      orderDao.selectOrder();
+   }
+}
+</code></pre>
+<p><strong>有多个OrderDao类型的，不指定name，会报错</strong><br>
+<strong>Spring建议，如果有多个构造器时，用@Autowired放在构造器上显示声明使用哪个构造器</strong></p>
+<h3 id="放在set方法上">放在set方法上</h3>
+<p><strong>其实不局限于方法名，放在任意方法上都会执行，只要参数类型匹配就会注入</strong></p>
+<pre><code>public class OrderService {
+   OrderDao orderDao;
+   public OrderService(OrderDao orderDao) {
+      this.orderDao = orderDao;
+   }
+   public void getOrder() {
+      orderDao.selectOrder();
+   }
+   public OrderDao getOrderDao() {
+      return orderDao;
+   }
+   @Autowired
+   public void setOrderDao(OrderDao orderDao) {
+      this.orderDao = orderDao;
+   }
+}
+</code></pre>
+<h3 id="放在集合上">放在集合上</h3>
+<p>这种用法比较少见，也比较少人知道。前段时间就碰到**策略模式，**拿所有实现类怎么写更为优雅，如果知道这一点，就十分方便，<strong>直接把所有实现注入在map上</strong>。</p>
+<p><strong>放到数组和set上</strong></p>
+<pre><code>public class MovieRecommender {
+    @Autowired
+    private MovieCatalog[] movieCatalogs;
+    // ...
+}
+public class MovieRecommender {
+    private Set&lt;MovieCatalog&gt; movieCatalogs;
+    @Autowired
+    public void setMovieCatalogs(Set&lt;MovieCatalog&gt; movieCatalogs) {
+        this.movieCatalogs = movieCatalogs;
+    }
+    // ...
+}
+</code></pre>
+<p><strong>放到map上</strong></p>
+<pre><code>public class MovieRecommender {
+    private Map&lt;String, MovieCatalog&gt; movieCatalogs;
+    @Autowired
+    public void setMovieCatalogs(Map&lt;String, MovieCatalog&gt; movieCatalogs) {
+        this.movieCatalogs = movieCatalogs;
+    }
+    // ...
+}
+</code></pre>
+<p><strong>或者可以直接@Autowired放在属性上也是行得通的</strong><br>
+最后生成的beanName就不用说了吧，如果是注解式的，那最后就是类名首字母小写</p>
+<p>需要注意如果放置到集合上，前提是至少容器中有一个相应类型的bean，否则则报错</p>
+<h3 id="ps">ps:</h3>
+<p>(1):如果是<strong>注入ApplicationContext等Spring内部的类，直接注入即可</strong>，Spring内部初始化的时候这些类已经被自动创建了，如下:</p>
+<pre><code>public class MovieRecommender {
+    @Autowired
+    private ApplicationContext context;
+    public MovieRecommender() {
+    }
+    // ...
+}
+</code></pre>
+<p>(2):默认的required为true，即如果容器中没有对应的类型的bean，那么则会报错，所以<strong>对于非必须的Bean可以设置required为false</strong></p>
+<h3 id="参考">参考:</h3>
+<p><a href="https://docs.spring.io/spring-framework/docs/current/spring-framework-reference/core.html#beans-autowired-annotation">https://docs.spring.io/spring-framework/docs/current/spring-framework-reference/core.html#beans-autowired-annotation</a></p>
+<h2 id="order">@Order</h2>
+<p>控制放入SpringBean容器的顺序，比如就可以以刚才@Autowired注入集合的例子为例，如果加上Order注解，<strong>越小的值那么越先注入</strong>，最终的结果就是在数组中的下标更靠前，遍历的话更容易先被遍历到，即可以做<strong>类似一个优先级队列</strong>。</p>
+<p>但是值得注意的是<strong>如果注入map，那么遍历map的顺序是不受@Order影响的</strong>，因为hashmap内部根据Key hash取余</p>
+<p>ps:</p>
+<p>也<strong>可以结合@Bean一起使用</strong></p>
+<h3 id="结合autowired注入集合控制注入顺序">结合@Autowired注入集合控制注入顺序</h3>
+<pre><code>public class OrderService {
+   @Autowired
+   private OrderDao[] orderDaos;
+   public void selectAllOrderDaoImpl() {
+      for (OrderDao orderDao : orderDaos) {
+         System.out.println(orderDao.getClass());
+      }
+   }
+}
+@Repository
+@Order(1)
+public class OrderDaoImpl implements OrderDao {
+   @Override
+   public void selectOrder() {
+      System.out.println(&quot;OrderDaoImpl selectOrder&quot;);
+   }
+}
+@Repository
+@Order(0)
+public class OrderDaoImpl1 implements OrderDao {
+   @Override
+   public void selectOrder() {
+      System.out.println(&quot;OrderDaoImpl1 selectOrder&quot;);
+   }
+}
+AnnotationConfigApplicationContext annotationConfigApplicationContext
+      = new AnnotationConfigApplicationContext(Appconfig.class);
+OrderService orderService = annotationConfigApplicationContext.getBean(OrderService.class);
+orderService.selectAllOrderDaoImpl();
+//结果
+class com.luban.ioctest.OrderDaoImpl1
+class com.luban.ioctest.OrderDaoImpl
+</code></pre>
+<p>map的可自行尝试</p>
+<h2 id="qualifier">@Qualifier</h2>
+<p>主要就是<strong>配合@Autowired配合使用，注入特定名字的Bean</strong>，因为@Autowired只能根据类型注入，而如果我们要注入指定名字的Bean怎么办，就可以用这个解决。</p>
+<h2 id="resource">@Resource</h2>
+<p>示例:</p>
+<pre><code>public class SimpleMovieLister {
+    private MovieFinder movieFinder;
+    @Resource
+    public void setMovieFinder(MovieFinder movieFinder) {
+        this.movieFinder = movieFinder;
+    }
+}
+</code></pre>
+<p>和@Autowired差不多，但是**@Resource是byName**，看到byName就要知道和名字肯定有关系，所以分三种情况</p>
+<ul>
+<li><strong>放到set方法上，那么会注入的beanName=set方法后的名称，以上面的为例就是movieFinder</strong></li>
+<li><strong>直接放到属性上，beanName等于字段名</strong></li>
+<li><strong>放到构造器上。和构造器参数名一致的beanName</strong></li>
+</ul>
+<h3 id="和autowired的区别">和@Autowired的区别</h3>
+<p>1:<strong>@Autowired是byType的，而@Resource是byName的</strong>，不懂byName、byType的可以看第一篇﻿IOC概念</p>
+<p>2:@Resource本身有name属性，所以不用借助其他注解可以指定注入指定name的bean</p>
+<h3 id="ps-2">ps:</h3>
+<p>1：<strong>@Resource在注入ApplicationContext等对象也是byType的</strong>，原因很简单，Spring只会有一个ApplicationContext对象，如果你自己定义一个，Spring不会处理，这在源码上是有体现的。</p>
+<p><strong>3：需要注意的是不管是@Resource还是@Autowired都是按需装配，和自动装配不一样，带有这个注解的属性就按某种规则进行注入(byName或者byType)，自动装配可见</strong>﻿IOC概念</p>
+<h3 id="参考-2">参考:</h3>
+<p><a href="https://docs.spring.io/spring-framework/docs/current/spring-framework-reference/core.html#beans-resource-annotation">https://docs.spring.io/spring-framework/docs/current/spring-framework-reference/core.html#beans-resource-annotation</a></p>
+<h2 id="autowired和resource">@Autowired和@Resource:</h2>
+<h3 id="底层实现简述">底层实现简述:</h3>
+<p>这里稍微说一下，<strong>@Autowired底层是通过CommonAnnotationBeanPostProcessor</strong>(没记错的应该是这)，是通过Bean的后置处理器进行实现的，即先用构造器(构造器的选择也是一个学问？)实例化一个Bean后，进行populate属性，拿到属性后，自然可以知道是否被@Autowired注释，剩下的过程，如果没有循环依赖(怎么判断有循环依赖？)的Bean则直接从容器中拿注入就行了，有循环依赖，还要有一个递归填充的过程。</p>
+<p>整个过程后面有时间整理原理的时候在讲清楚，现在只要知道有CommonBeanPostProcessor这个东西，Spring自己提供了这个Bean进行依赖注入的就行了。</p>
+<h3 id="一些例子"><strong>一些例子:</strong></h3>
+<p>下面讲一些个人之前会存疑的，现在解决了的例子，后续可能会有补充</p>
+<p>例子一：</p>
+<pre><code>public interface OrderDao {
+
+    void selectOrder();
+}
+@Repository
+public class OrderDaoImpl implements OrderDao {
+
+    public void selectOrder() {
+        System.out.println(&quot;OrderDao1&quot;);
+    }
+}
+@Service
+public class OrderService {
+
+    @Resource//或者@Autowired
+    private OrderDao orderDao;
+
+    public void selectOrder() {
+        orderDao.selectOrder();
+    }
+}
+</code></pre>
+<p>嗯。大家都是这么用的。。Spring也不会报错<br>
+@Autowired好理解，但是在用@Resource的时候会不会有一个问题，既然**@Resource是byName的，现在容器里没有一个叫orderDao的bean，为什么不会报错<strong>呢？原因在于</strong>@Resource找不到对应名称的bean时，会自动转换成byType**</p>
+<p>例子二:</p>
+<p>多了一个实现</p>
+<pre><code>@Repository(&quot;orderDaoImpl1&quot;)
+public class OrderDaoImpl1 implements OrderDao {
+
+
+    public void selectOrder() {
+        System.out.println(&quot;OrderDaoImpl1&quot;);
+    }
+}
+@Repository(&quot;orderDaoImpl&quot;)
+public class OrderDaoImpl implements OrderDao {
+
+
+    public void selectOrder() {
+        System.out.println(&quot;OrderDaoImpl&quot;);
+    }
+}
+@Service
+public class OrderService {
+
+    @Autowired
+    private OrderDao orderDaoimpl;
+
+    public void selectOrder() {
+        orderDaoimpl.selectOrder();
+    }
+}
+</code></pre>
+<p>这么注入是不会报错的，而且<strong>注入的是name为orderDaoimpl的bean</strong><br>
+<strong>总结:</strong></p>
+<p><strong>1：@Autowired和@Resource都可以用属性名来表示需要注入对应beanName的bean</strong></p>
+<p><strong>2：当@Resource找不到对应名称的bean时，会自动转换成byType</strong></p>
+<h2 id="configuration">@Configuration</h2>
+<p><strong>@Configuration标注的类代表是个配置类</strong>，Spring解析这个类标注的类是很复杂的，具体后面有时间搞源码的会说。</p>
+<pre><code>@Configuration
+public class AppConfig {
+    @Bean
+    public Foo foo() {
+        return new Foo(bar());
+    }
+    @Bean
+    public Bar bar() {
+        return new Bar();
+    }
+}
+</code></pre>
+<h3 id="与bean的结合">与@Bean的结合</h3>
+<p><strong>@Bean的含义就是往Spring中注入一个bean，用java代码的形式</strong>，按Spring的话说injecting inter-bean dependencies，beanName为方法名，beanClass为返回值的类型。</p>
+<p>然后来看一个例子:</p>
+<pre><code>@Configuration
+@ComponentScan(&quot;cn.lqw.study&quot;)
+public class Appconfig {
+    @Bean
+    public OrderDao orderDaoImpl() {
+        return new OrderDaoImpl();
+    }
+    @Bean
+    public OrderDao orderDaoImpl1() {
+        orderDaoImpl();
+        return new OrderDaoImpl1();
+    }
+}
+</code></pre>
+<p>让我们提一个问题，容器中此时有几个orderDaoImpl。可以测试一下，答案是一个。原因可以大概说一下，<strong>Spring会对@Configuration的类进行cglib代理</strong>，即执行的orderDaoImpl1()是代理方法，<strong>那么调用orderDaoImpl1()调****orderDaoImpl()时会判断，在执行的方法是不是orderDaoImpl1()，如果是的那么他会不往Spring中注入。</strong></p>
+<h3 id="与import的结合">与@Import的结合</h3>
+<p>可以import三种类，普通类，配置类，实现ImportBeanDefinitionRegistrar的类，Spring源码内部对着三种处理是不同的</p>
+<p><strong>普通类:</strong></p>
+<p><strong>很简单，就是可以import一个没有被@Compoent标注的类，和****annotationConfigApplicationContext.register()效果是一样的</strong></p>
+<p><strong>配置类</strong></p>
+<pre><code>@Configuration
+public class ConfigA {
+    @Bean
+    public A a() {
+        return new A();
+    }
+}
+@Configuration
+@Import(ConfigA.class)
+public class ConfigB {
+    @Bean
+    public B b() {
+        return new B();
+    }
+}
+</code></pre>
+<p><strong>实现****ImportBeanDefinitionRegistrar的类</strong></p>
+<p>这个先不说，但是很重要，讲AOP的时候再说这个类， 很多框架与Spring的集成都靠实现<strong>ImportBeanDefinitionRegistrar来提供往容器中register Bean的功能</strong></p>
+<h3 id="参考-3">参考:</h3>
+<p><a href="https://docs.spring.io/spring/docs/5.0.16.RELEASE/spring-framework-reference/core.html#beans-java-configuration-annotation">https://docs.spring.io/spring/docs/5.0.16.RELEASE/spring-framework-reference/core.html#beans-java-configuration-annotation</a></p>
+<h2 id="dependon">@DependOn</h2>
+<p>这个注解字面意思上可以理解为依赖某个Bean，但是这不是一个直接依赖，什么意思呢？举个例:<strong>A依赖B，有两种方式可以表明，第一种是直接声明在属性上，这是个直接依赖，这种一般我们都需要实例化B，第二种是用@DependOn在A类声明B类在Spring中的beanName，那么此时，A是间接依赖B的，这种是不需要实例化B的，A可能只需要B执行他的静态代码块来初始化一些东西</strong>，所以@DependOn的作用就在于此了，来个例子:</p>
+<pre><code>@Service
+@DependsOn(&quot;orderDaoImpl&quot;)
+public class OrderService  {
+    public void selectOrder() {
+//        orderDaoImpl.selectOrder();
+    }
+}
+@Repository(&quot;orderDaoImpl&quot;)
+public class OrderDaoImpl implements OrderDao {
+
+    static {
+        System.out.println(&quot;static&quot;);
+    }
+
+    public void selectOrder() {
+        System.out.println(&quot;OrderDaoImpl&quot;);
+    }
+}
+public class Test {
+
+    public static void main(String[] args) {
+        AnnotationConfigApplicationContext annotationConfigApplicationContext =
+                new AnnotationConfigApplicationContext(Appconfig.class);
+//        OrderDao orderDao = (OrderDao) annotationConfigApplicationContext.getBean(&quot;orderDaoImpl&quot;);
+//        orderDao.selectOrder();
+    }
+}
+//最后输出static
+</code></pre>
+<h3 id="参考-4">参考:</h3>
+<p><a href="https://docs.spring.io/spring/docs/5.0.16.RELEASE/spring-framework-reference/core.html#beans-factory-dependson">https://docs.spring.io/spring/docs/5.0.16.RELEASE/spring-framework-reference/core.html#beans-factory-dependson</a></p>
+<h2 id="lookup">@Lookup</h2>
+<p>解决单例bean依赖原型bean每次都是获取到同样的bean的问题，原因是Spring容器只初始化一次，也就是说一个依赖注入的机会只有一次，所以就会出现这样的问题，解决问题方式有两种，<strong>第一种就是注入ApplicationContext对象，每次都重新从容器中拿，那么每次都会重新new。</strong></p>
+<p><strong>第二种就是@Lookup。举个例子:</strong></p>
+<pre><code>@Service
+public class OrderService  {
+//    @Autowired
+//    OrderDao orderDao;
+
+    public void selectOrder() {
+        for (int i = 0; i &lt; 3; i++) {
+            System.out.println(getOrderDao().hashCode());
+        }
+//        orderDaoImpl.selectOrder();
+    }
+    @Lookup
+    protected OrderDao getOrderDao(){
+        return null;
+    }
+}
+@Repository(&quot;orderDaoImpl1&quot;)
+@Scope(&quot;prototype&quot;)
+public class OrderDaoImpl1 implements OrderDao {
+
+
+    public void selectOrder() {
+        System.out.println(&quot;OrderDaoImpl1&quot;);
+    }
+}
+//结果
+1241529534
+1082309267
+402405659
+</code></pre>
+<p><strong>结果可以看到是三个不同hashcode。</strong><br>
+然后可以看到<strong>getOrderDao()的返回值是个null，不用在意这个，因为被@Lookup标注的方法会被重写，会根据其返回值的类型，容器会调用BeanFactory的getBean()方法来返回一个bean。</strong></p>
+<p>使用的@Lookup的方法<strong>需要符合如下的签名：</strong></p>
+<pre><code>&lt;public|protected&gt; [abstract] &lt;return-type&gt; theMethodName(no-arguments);
+</code></pre>
+<p><strong>[abstract]是可选的</strong>，Spring官方的例子是抽象方法，但是我们业务开发很少声明抽象类，可以用正常方法，return null就好了。</p>
+<h3 id="参考-5">参考:</h3>
+<p><a href="https://docs.spring.io/spring/docs/5.0.16.RELEASE/spring-framework-reference/core.html#beans-factory-lookup-method-injection">https://docs.spring.io/spring/docs/5.0.16.RELEASE/spring-framework-reference/core.html#beans-factory-lookup-method-injection</a></p>
+
+                </div>
+                
+                    <div class="tag-container">
+                        
+                            <a href="https://blog.xabc.site/tag/AQY3jis8R/" class="tag">
+                                IOC
+                            </a>
+                        
+                            <a href="https://blog.xabc.site/tag/qo1IvxU85/" class="tag">
+                                罗先生
+                            </a>
+                        
+                            <a href="https://blog.xabc.site/tag/rmZK4c5AX/" class="tag">
+                                Java
+                            </a>
+                        
+                            <a href="https://blog.xabc.site/tag/NRx_uEd8d8/" class="tag">
+                                Spring
+                            </a>
+                        
+                    </div>
+                
+                
+                    <div class="next-post">
+                        <div class="next">下一篇</div>
+                        <a href="https://blog.xabc.site/post/tra_how_to_write_go/">
+                            <h3 class="post-title">
+                                翻译：如何编写Golang代码(How to Write Go Code)
+                            </h3>
+                        </a>
+                    </div>
+                
+
+                
+
+            </div>
+
+        </div>
+    </div>
+</div>
+<script src="https://cdn.bootcss.com/aos/3.0.0-beta.6/aos.js"></script>
+<script type="application/javascript">
+
+    AOS.init();
+
+    var app = new Vue({
+        el: '#app',
+        data: {
+            menuVisible: false,
+        },
+    })
+
+</script>
+
+    <script src="https://cdn.bootcss.com/highlight.js/9.18.1/highlight.min.js"></script>
+    <script>
+        hljs.initHighlightingOnLoad()
+    </script>
+
+<script src="https://cdn.bootcss.com/tocbot/4.10.0/tocbot.min.js"></script>
+<script>
+tocbot.init({
+  tocSelector: '.js-toc',
+  contentSelector: '.js-toc-content',
+  headingSelector: 'h1, h2, h3',
+  hasInnerContainers: true,
+});
+const slidBox = document.createElement('div')
+const hitbox = document.createElement('div')
+slidBox.classList.add('slid-btn')
+hitbox.classList.add('show-icon')
+hitbox.classList.add('target-icon')
+slidBox.appendChild(hitbox)
+document.querySelector('.js-toc') && document.querySelector('.js-toc').appendChild(slidBox)
+slidBox.addEventListener('click', e => {
+    // document.querySelector('.slid-btn .target-icon').classList.entries()
+    if (document.querySelector('.slid-btn .target-icon').classList.contains(('hide-icon'))) {
+        document.querySelector('.js-toc').classList.add('show-box')
+        document.querySelector('.js-toc').classList.remove('hide-box')
+        document.querySelector('.slid-btn .target-icon').classList.add('show-icon')
+        document.querySelector('.slid-btn .target-icon').classList.remove('hide-icon')
+    } else {
+        document.querySelector('.js-toc').classList.add('hide-box')
+        document.querySelector('.js-toc').classList.remove('show-box')
+        document.querySelector('.slid-btn .target-icon').classList.add('hide-icon')
+        document.querySelector('.slid-btn .target-icon').classList.remove('show-icon')
+    }
+})
+</script>
+
+
+
+
+</body>
+</html>

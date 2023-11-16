@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+
+<title>翻译: Effective Go (5) | Mr.Shentu</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<link rel="stylesheet" href="https://cdn.bootcss.com/font-awesome/5.12.1/css/all.min.css" crossorigin="anonymous">
+<link rel="shortcut icon" href="https://blog.xabc.site/favicon.ico?v=1700095858984">
+<link rel="stylesheet" href="https://blog.xabc.site/styles/main.css">
+
+
+
+<link href="https://cdn.bootcss.com/aos/3.0.0-beta.6/aos.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js">
+</script>
+
+
+
+    <meta name="description" content="本文是Effective Go的第五篇翻译，对应的章节为：Data
+第一篇翻译在这里,对应的章节为：Introduction, Formatting, Commentary.
+第二篇翻译在这里,对应的章节为：Names, Semicolon..."/>
+    <meta name="keywords" content="翻译,Golang"/>
+    <link href="https://cdn.bootcss.com/tocbot/4.10.0/tocbot.css" rel="stylesheet">
+</head>
+<body>
+<div id="app" class="main">
+
+    <div class="sidebar" :class="{ 'full-height': menuVisible }">
+    <div class="top-container" data-aos="fade-right">
+        <div class="top-header-container">
+            <a class="site-title-container" href="https://blog.xabc.site">
+                <img src="https://blog.xabc.site/images/avatar.jpeg?v=1700095858984" class="site-logo">
+                <h1 class="site-title">Mr.Shentu</h1>
+            </a>
+            <div class="menu-btn" @click="menuVisible = !menuVisible">
+                <div class="line"></div>
+            </div>
+        </div>
+        <div>
+            
+                
+                    <a href="/" class="site-nav">
+                        首页
+                    </a>
+                
+            
+                
+                    <a href="/archives" class="site-nav">
+                        归档
+                    </a>
+                
+            
+                
+                    <a href="/tags" class="site-nav">
+                        标签
+                    </a>
+                
+            
+                
+                    <a href="/post/about" class="site-nav">
+                        关于
+                    </a>
+                
+            
+        </div>
+    </div>
+    <div class="bottom-container" data-aos="flip-up" data-aos-offset="0">
+        <div class="social-container">
+            
+                
+            
+                
+            
+                
+            
+                
+            
+                
+            
+        </div>
+        <div class="site-description">
+            <div>公告板</div>
+            —————————————————
+            <br>
+            永远保持热情❤️
+        </div>
+        <div class="site-footer" style="padding: 20px 0">
+            <div style="text-align: center;color:#939393">© 2021 申屠鹏会 版权所有<br><a href="http://www.beian.miit.gov.cn"style="color:#939393">浙ICP备2023016973号</a></div>
+
+            <div style="width:300px;margin:0 auto; padding:5px 0;">
+                <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAAAXNSR0IArs4c6QAAACBjSFJNAAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAAA8mVYSWZNTQAqAAAACAAHARIAAwAAAAEAAQAAARoABQAAAAEAAABiARsABQAAAAEAAABqASgAAwAAAAEAAgAAATEAAgAAACIAAAByATIAAgAAABQAAACUh2kABAAAAAEAAACoAAAAAAAAAEgAAAABAAAASAAAAAFBZG9iZSBQaG90b3Nob3AgQ0MgMjAxNCAoV2luZG93cykAMjAxNToxMToxMCAxNDowNDo1MAAABJAEAAIAAAAUAAAA3qABAAMAAAABAAEAAKACAAQAAAABAAAAFKADAAQAAAABAAAAFAAAAAAyMDE1OjExOjEwIDE0OjA0OjUwALd18ckAAAAJcEhZcwAACxMAAAsTAQCanBgAAAtJaVRYdFhNTDpjb20uYWRvYmUueG1wAAAAAAA8eDp4bXBtZXRhIHhtbG5zOng9ImFkb2JlOm5zOm1ldGEvIiB4OnhtcHRrPSJYTVAgQ29yZSA1LjQuMCI+CiAgIDxyZGY6UkRGIHhtbG5zOnJkZj0iaHR0cDovL3d3dy53My5vcmcvMTk5OS8wMi8yMi1yZGYtc3ludGF4LW5zIyI+CiAgICAgIDxyZGY6RGVzY3JpcHRpb24gcmRmOmFib3V0PSIiCiAgICAgICAgICAgIHhtbG5zOnhtcE1NPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvbW0vIgogICAgICAgICAgICB4bWxuczpzdEV2dD0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL3NUeXBlL1Jlc291cmNlRXZlbnQjIgogICAgICAgICAgICB4bWxuczpwaG90b3Nob3A9Imh0dHA6Ly9ucy5hZG9iZS5jb20vcGhvdG9zaG9wLzEuMC8iCiAgICAgICAgICAgIHhtbG5zOmV4aWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20vZXhpZi8xLjAvIgogICAgICAgICAgICB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iCiAgICAgICAgICAgIHhtbG5zOmRjPSJodHRwOi8vcHVybC5vcmcvZGMvZWxlbWVudHMvMS4xLyIKICAgICAgICAgICAgeG1sbnM6dGlmZj0iaHR0cDovL25zLmFkb2JlLmNvbS90aWZmLzEuMC8iPgogICAgICAgICA8eG1wTU06SW5zdGFuY2VJRD54bXAuaWlkOjgwYmNhOTg1LTRmOWItNmU0ZC05ZmM5LWU4ZjQ5MjY3ZGY0ZTwveG1wTU06SW5zdGFuY2VJRD4KICAgICAgICAgPHhtcE1NOk9yaWdpbmFsRG9jdW1lbnRJRD54bXAuZGlkOmQwMTdiOTRlLTk0YmQtMjY0MS04ZmY5LWJmN2EwYTM2NzdiMTwveG1wTU06T3JpZ2luYWxEb2N1bWVudElEPgogICAgICAgICA8eG1wTU06RG9jdW1lbnRJRD5hZG9iZTpkb2NpZDpwaG90b3Nob3A6ZWRkYWU4MGMtODc3MC0xMWU1LTg0OWEtYmNmZGE2MDI4ZjJlPC94bXBNTTpEb2N1bWVudElEPgogICAgICAgICA8eG1wTU06SGlzdG9yeT4KICAgICAgICAgICAgPHJkZjpTZXE+CiAgICAgICAgICAgICAgIDxyZGY6bGkgcmRmOnBhcnNlVHlwZT0iUmVzb3VyY2UiPgogICAgICAgICAgICAgICAgICA8c3RFdnQ6c29mdHdhcmVBZ2VudD5BZG9iZSBQaG90b3Nob3AgQ0MgMjAxNCAoV2luZG93cyk8L3N0RXZ0OnNvZnR3YXJlQWdlbnQ+CiAgICAgICAgICAgICAgICAgIDxzdEV2dDp3aGVuPjIwMTUtMTEtMTBUMTQ6MDQ6NTArMDg6MDA8L3N0RXZ0OndoZW4+CiAgICAgICAgICAgICAgICAgIDxzdEV2dDppbnN0YW5jZUlEPnhtcC5paWQ6ZDAxN2I5NGUtOTRiZC0yNjQxLThmZjktYmY3YTBhMzY3N2IxPC9zdEV2dDppbnN0YW5jZUlEPgogICAgICAgICAgICAgICAgICA8c3RFdnQ6YWN0aW9uPmNyZWF0ZWQ8L3N0RXZ0OmFjdGlvbj4KICAgICAgICAgICAgICAgPC9yZGY6bGk+CiAgICAgICAgICAgICAgIDxyZGY6bGkgcmRmOnBhcnNlVHlwZT0iUmVzb3VyY2UiPgogICAgICAgICAgICAgICAgICA8c3RFdnQ6c29mdHdhcmVBZ2VudD5BZG9iZSBQaG90b3Nob3AgQ0MgMjAxNCAoV2luZG93cyk8L3N0RXZ0OnNvZnR3YXJlQWdlbnQ+CiAgICAgICAgICAgICAgICAgIDxzdEV2dDpjaGFuZ2VkPi88L3N0RXZ0OmNoYW5nZWQ+CiAgICAgICAgICAgICAgICAgIDxzdEV2dDp3aGVuPjIwMTUtMTEtMTBUMTQ6MDQ6NTArMDg6MDA8L3N0RXZ0OndoZW4+CiAgICAgICAgICAgICAgICAgIDxzdEV2dDppbnN0YW5jZUlEPnhtcC5paWQ6ODBiY2E5ODUtNGY5Yi02ZTRkLTlmYzktZThmNDkyNjdkZjRlPC9zdEV2dDppbnN0YW5jZUlEPgogICAgICAgICAgICAgICAgICA8c3RFdnQ6YWN0aW9uPnNhdmVkPC9zdEV2dDphY3Rpb24+CiAgICAgICAgICAgICAgIDwvcmRmOmxpPgogICAgICAgICAgICA8L3JkZjpTZXE+CiAgICAgICAgIDwveG1wTU06SGlzdG9yeT4KICAgICAgICAgPHBob3Rvc2hvcDpDb2xvck1vZGU+MzwvcGhvdG9zaG9wOkNvbG9yTW9kZT4KICAgICAgICAgPHBob3Rvc2hvcDpJQ0NQcm9maWxlPnNSR0IgSUVDNjE5NjYtMi4xPC9waG90b3Nob3A6SUNDUHJvZmlsZT4KICAgICAgICAgPHBob3Rvc2hvcDpEb2N1bWVudEFuY2VzdG9ycz4KICAgICAgICAgICAgPHJkZjpCYWc+CiAgICAgICAgICAgICAgIDxyZGY6bGk+M0NCOEZFRThDMkVCRTZFNUE0REE5NzMyODM1NDEyNEU8L3JkZjpsaT4KICAgICAgICAgICAgICAgPHJkZjpsaT5hZG9iZTpkb2NpZDpwaG90b3Nob3A6YmRkZmNmNmYtODc3MC0xMWU1LTg0OWEtYmNmZGE2MDI4ZjJlPC9yZGY6bGk+CiAgICAgICAgICAgIDwvcmRmOkJhZz4KICAgICAgICAgPC9waG90b3Nob3A6RG9jdW1lbnRBbmNlc3RvcnM+CiAgICAgICAgIDxleGlmOlBpeGVsWERpbWVuc2lvbj4yMDwvZXhpZjpQaXhlbFhEaW1lbnNpb24+CiAgICAgICAgIDxleGlmOlBpeGVsWURp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">
+                <a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=33010602010374" style="display:inline-block;text-decoration:none;height:20px;line-height:20px;"><img src="" style="float:left;"/><p style="float:left;height:20px;line-height:20px;margin: 0px 0px 0px 5px; color:#939393;">浙公网安备 33010602010374号</p></a>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+    <div class="main-container">
+
+        <nav style="text-align:right;position:fixed;top:40%;right:1%" class="js-toc show-box"></nav>
+
+
+        <div class="content-container" data-aos="fade-up">
+
+            <div class="post-detail">
+
+                <h2 class="post-title">翻译: Effective Go (5)</h2>
+                <div class="post-date">2020-04-11</div>
+                
+
+                <div class="post-content js-toc-content" v-pre>
+
+                    <p><strong>本文是Effective Go的第五篇翻译，对应的章节为：Data</strong><br>
+第一篇翻译<a href="https://xabc.site/post/tra_effective_go">在这里</a>,对应的章节为：Introduction, Formatting, Commentary.<br>
+第二篇翻译<a href="https://xabc.site/post/tra_effective_go2">在这里</a>,对应的章节为：Names, Semicolons.<br>
+第三篇翻译<a href="https://xabc.site/post/tra_effective_go3">在这里</a>,对应的章节为：Control structures.<br>
+第四篇翻译<a href="https://xabc.site/post/tra_effective_go4">在这里</a>,对应的章节为：Functions<br>
+第六篇翻译<a href="https://xabc.site/post/tra_effective_go6/">在这里</a>,对应的章节为：Initialization, Methods.<br>
+第七篇翻译<a href="https://xabc.site/post/tra_effective_go7/">在这里</a>,对应的章节为：Interfaces and other types，The blank identifier.<br>
+第八篇翻译<a href="https://xabc.site/post/tra_effective_go8/">在这里</a>,对应的章节为：Embedding.</p>
+<!-- more -->
+<h2 id="数据">数据</h2>
+<h3 id="new分配内存">new分配内存</h3>
+<p>Go有两个分配新内存的语法，内置函数new和make。它们执行不同的操作并应用于不同的类型，这虽然有点困惑，但是规则很简单。我们先来讨论new。这是一个内置的函数，可以申请内存空间，但与其他一些语言中的同名函数不同的是，它不对内存进行初始化，只是将内存给予零值。也就是说，new(T)为类型T分配零值内存，并返回它的地址，即*T类型的值。用Go的术语来说，它返回一个指针，指向新分配T类型的零值。<br>
+由于new返回的内存是零值化的，所以在设计数据结构时，每个类型的零值可以不需要初始化函数就可以使用。这意味着数据结构的用户可以用new创建一个数据结构，然后直接开始工作。例如，bytes.Buffer的文档中指出：<em>Buffer的零值是一个准备使用的空缓冲区</em>同样，syn.Mutex也没有一个显示的构造函数或init方法，想法，syn.Mutex的零值被定义为一个未锁定的锁。<br>
+零值可以被用来中间过度，考虑下面的类型声明：</p>
+<pre><code>type SyncedBuffer struct {
+    lock    sync.Mutex
+    buffer  bytes.Buffer
+}
+</code></pre>
+<p>SyncedBuffer类型的值可以通过分配或声明进行使用。下面，p和v不需要额外的处理就会同时正确的工作：</p>
+<pre><code>p := new(SyncedBuffer)  // type *SyncedBuffer
+var v SyncedBuffer      // type  SyncedBuffer
+</code></pre>
+<h2 id="构造函数和复合字面量">构造函数和复合字面量</h2>
+<p>有时候零值并不够用，所以需要一个初始化构造函数，以os包中的一段代码为例：</p>
+<pre><code>func NewFile(fd int, name string) *File {
+    if fd &lt; 0 {
+        return nil
+    }
+    f := new(File)
+    f.fd = fd
+    f.name = name
+    f.dirinfo = nil
+    f.nepipe = 0
+    return f
+}
+</code></pre>
+<p>这段代码非常啰嗦，我们可以用一个<strong>复合字面量</strong>来简化它，复合字面量是一个表达式，每次求值会创建一个新的实例。</p>
+<pre><code>func NewFile(fd int, name string) *File {
+    if fd &lt; 0 {
+        return nil
+    }
+    f := File{fd, name, nil, 0}
+    return &amp;f
+}
+</code></pre>
+<p>注意，与C语言不同的是，Go返回局部变量的地址是完全可以的。在函数返回后，该变量关联的内存会继续存在。事实上，每次获取一个复合字面量的地址时，都会分配一个新的实例， 因此我们可以将上面的最后两行代码进行合并。</p>
+<pre><code>return &amp;File{fd, name, nil, 0}
+</code></pre>
+<p>复合字面量的字段是按顺序排列的，并且必须全部列出。但是，通过字段：值进行明确标注的时候，初始化可以以任意顺序出现，缺失的字段作为零值。因此，我们可以这么写。</p>
+<pre><code>return &amp;File{fd: fd, name: name}
+</code></pre>
+<p>在少数情况下，如果一个复合字面量不包含任何字段，那么它会创建该类型的零值。new(File)和&amp;File{}是等价的。<br>
+复合字面量也可以创建数组，切片(slices),映射(map)，字段自动变为索引或者键(key)。在这些例子中，无论Enone,Eio,Einval的值是什么，只要它们的字段是不同的，都可以进行初始化。</p>
+<pre><code>a := [...]string   {Enone: &quot;no error&quot;, Eio: &quot;Eio&quot;, Einval: &quot;invalid argument&quot;}
+s := []string      {Enone: &quot;no error&quot;, Eio: &quot;Eio&quot;, Einval: &quot;invalid argument&quot;}
+m := map[int]string{Enone: &quot;no error&quot;, Eio: &quot;Eio&quot;, Einval: &quot;invalid argument&quot;}
+</code></pre>
+<h2 id="make分配内存">make分配内存</h2>
+<p>回到内存分配上。内建函数make(T,args)的作用与new(T)不同。它值创建切片，映射和管道，并返回一个类型T(不是*T)初始化后的(不是零值)的值。不同的原因是，这三种类型本质上为引用数据类型，在使用前必须进行初始化。例如，切片是一个具有三项内容的描述符，包含指向数据（在数组内部）的指针，长度和容量。在这些项目被初始化之前，切片是nil。对于切片，映射，管道，make初始化了内部数据结构，并准备好了将要使用的值。例如，</p>
+<pre><code>make([]int, 10, 100)
+</code></pre>
+<p>这行代码分配了一个具有100个int的数组，然后创建一个长度为10，容量为100的并指向前10个元素的切片结构。(make切片时，可以省略容量，更多信息可以看切片这一节)。与make相反，new([]int)返回一个指向新分配的，零值的切片指针，即指向nil的指针。</p>
+<pre><code>var p *[]int = new([]int)       // allocates slice structure; *p == nil; rarely useful
+var v  []int = make([]int, 100) // the slice v now refers to a new array of 100 ints
+
+// Unnecessarily complex:
+var p *[]int = new([]int)
+*p = make([]int, 100, 100)
+
+// Idiomatic:
+v := make([]int, 100)
+</code></pre>
+<p>记住，make只适用于映射，切片和管道，并不返回指针。要获得一个显示的指针，请用new分配或明确的获取变量的地址。</p>
+<h2 id="数组">数组</h2>
+<p>数组在规划详细的内存布局时候很有用，又是还能避免进行内存分配。但主要的是，内存是切片的构件。这是下一节的主题，不过还是要说几句。<br>
+下面是数组在Go和C中主要的不同点，在Go的数组中，</p>
+<ul>
+<li>数组是值，将一个数组赋给另一个数组会复制所有的元素</li>
+<li>当传递一个数组给函数时，函数会收到一个数组的副本，而不是一个指针</li>
+<li>数组的大小是其类型的一部分。类型[10]int和[20]int是不同的</li>
+</ul>
+<p>数组为值的属性很有用，但代价高昂；若需要C一样的高效，可以传递一个指向数组的指针。</p>
+<pre><code>func Sum(a *[3]float64) (sum float64) {
+    for _, v := range *a {
+        sum += v
+    }
+    return
+}
+
+array := [...]float64{7.0, 8.5, 9.1}
+x := Sum(&amp;array)  // Note the explicit address-of operator
+</code></pre>
+<p>但这不是Go的风格，通常会使用切片(slices)</p>
+<h2 id="切片slices">切片(slices)</h2>
+<p>切片封装了数组，为序列化数据提供了一个更通用，强大和方便的接口。除了具有显式唯独的项目，如矩阵变换等，Go中的大多数数组编程都是用切片而不是简单的数组来完成的。<br>
+切片保存了对底层数组的引用，如果你把一个切片赋给另一个切片，那么两个切片都会指向同一个数组。如果一个函数接受一个切片，那么它对切片中元素的修改对调用方也是可见的，这就类似传递一个指向底层数组的指针。因此，Read函数可以接受一个切片参数，而不是一个指针和一个计数count。切片中的长度设置了一个读取数据的上限，下面是os包中的File类型Read方法的签名。</p>
+<pre><code>func (f *File) Read(buf []byte) (n int, err error)
+</code></pre>
+<p>该方法返回读取的字节数和一个错误值(如果有的话)。要从一个较大的缓冲区buf读取前32个字节，只需对其切片即可。</p>
+<pre><code>n, err := f.Read(buf[0:32])
+</code></pre>
+<p>这样的做法很普遍，也非常高效。实际上，抛开效率不谈，下面的代码也能读取缓冲区的前32个字节。</p>
+<pre><code>  var n int
+    var err error
+    for i := 0; i &lt; 32; i++ {
+        nbytes, e := f.Read(buf[i:i+1])  // Read one byte.
+        n += nbytes
+        if nbytes == 0 || e != nil {
+            err = e
+            break
+        }
+    }
+</code></pre>
+<p>切片的长度可以改变，只要它仍然适合底层的数组，只需将它分配给一个自身即可。切片的容量可以通过内置函数cap访问，它表示了切片的最大长度。又一个函数可以将数据追加到切片中，如果数据超过了容量，切片会被重新分配。所得到的切片会被返回。该函数利用len和cap在应用到nil 切片是合法的事实，并返回0.</p>
+<pre><code>func Append(slice, data []byte) []byte {
+    l := len(slice)
+    if l + len(data) &gt; cap(slice) {  // reallocate
+        // Allocate double what's needed, for future growth.
+        newSlice := make([]byte, (l+len(data))*2)
+        // The copy function is predeclared and works for any slice type.
+        copy(newSlice, slice)
+        slice = newSlice
+    }
+    slice = slice[0:l+len(data)]
+    copy(slice[l:], data)
+    return slice
+}
+</code></pre>
+<p>最终我们必须返回slice，因为虽然append可以修改slice的元素，但slice本身(保存指针，长度和容量的运行时数据结构)是通过值传递的。<br>
+向切片追加数据的想法非常有用，所以有了内置的append函数。不过要理解这个函数的设计，需要更多的信息，所以稍后再进行讨论。</p>
+<h2 id="二维切片">二维切片</h2>
+<p>Go的数组和切片是一维的，要创建一个相当于二维数组或二维切片的数组或切片，需要定义一个数组的数组或切片的切片，就像这样：</p>
+<pre><code>type Transform [3][3]float64  // A 3x3 array, really an array of arrays.
+type LinesOfText [][]byte     // A slice of byte slices.
+</code></pre>
+<p>由于切片的长度是可变的，所以可以让每个内部的切片有不同的长度。这可能是一种常见的情况，就像我们的LinesOfText例子：每一行都有一个独立的长度。</p>
+<pre><code>text := LinesOfText{
+	[]byte(&quot;Now is the time&quot;),
+	[]byte(&quot;for all good gophers&quot;),
+	[]byte(&quot;to bring some fun to the party.&quot;),
+}
+</code></pre>
+<p>有时需要分配一个二维的切片，比如在处理按行扫描像素时。有两种方式可以实现。一种是独立分配每个切片；另一种是分配一个单独的数组，并将单个切片指向其中。使用哪种方法取决于你的应用。如果切片可能会增长或缩小，就应该独立分配，以避免覆盖下一行；如果不是，用单个分配来构造会更有效率。下面是两种方式的大概代码，仅供参考。首先，一次一行：</p>
+<pre><code>// Allocate the top-level slice.
+picture := make([][]uint8, YSize) // One row per unit of y.
+// Loop over the rows, allocating the slice for each row.
+for i := range picture {
+	picture[i] = make([]uint8, XSize)
+}
+</code></pre>
+<p>然后是一次分配，按行切片</p>
+<pre><code>// Allocate the top-level slice, the same as before.
+picture := make([][]uint8, YSize) // One row per unit of y.
+// Allocate one large slice to hold all the pixels.
+pixels := make([]uint8, XSize*YSize) // Has type []uint8 even though picture is [][]uint8.
+// Loop over the rows, slicing each row from the front of the remaining pixels slice.
+for i := range picture {
+	picture[i], pixels = pixels[:XSize], pixels[XSize:]
+}
+</code></pre>
+<h2 id="映射">映射</h2>
+<p>映射是一种方便且强大的内建数据结构，可以将一种类型的值(key)与另一种类型的值(value)关联起来。键(key)可以是定义了相等运算符的任意类型，例如整数，浮点数和复数，字符串，指针，接口(只要动态类型支持相等),结构和数组。切片不能用作键，因为它没有定义相等性。和切片一样，映射保存对底层数据结构的引用，如果你把一个映射传递给一个函数并修改其内容，那么此修改对调用方也是可见的。<br>
+映射可以用通常的复合字面量语法进行构建，其key-value键值对使用冒号分隔，因此，在初始化过程中很容易创建映射。</p>
+<pre><code>var timeZone = map[string]int{
+    &quot;UTC&quot;:  0*60*60,
+    &quot;EST&quot;: -5*60*60,
+    &quot;CST&quot;: -6*60*60,
+    &quot;MST&quot;: -7*60*60,
+    &quot;PST&quot;: -8*60*60,
+}
+</code></pre>
+<p>映射的赋值和取值在语法上看起来就像对数组和切片差不多，只是索引不需要整数。</p>
+<pre><code>offset := timeZone[&quot;EST&quot;]
+</code></pre>
+<p>试图用不存在的键来获取映射的值将返回类型的零值。例如，如果映射是整数，那么查找一个不存在的键将返回0.可以用值为布尔类型的映射实现集合。将映射值设为true，将键设为要放入的值，然后通过简单的索引进行测试。</p>
+<pre><code>attended := map[string]bool{
+    &quot;Ann&quot;: true,
+    &quot;Joe&quot;: true,
+    ...
+}
+
+if attended[person] { // will be false if person is not in the map
+    fmt.Println(person, &quot;was at the meeting&quot;)
+}
+</code></pre>
+<p>有时需要区分缺失的值和零值。是有一个“UTC”的value为0，还是它根本不在映射中才返回0？这时可以用一种多重赋值的方式来区分。</p>
+<pre><code>var seconds int
+var ok bool
+seconds, ok = timeZone[tz]
+</code></pre>
+<p>出于明显的原因，这被称为“逗号ok”用法，在这个例子中，如果tz存在，秒数会被设置为true，如果不存在秒数会被设置为0，同时ok则为false。这里有一个函数，将这个用法和错误报告结合在了一起。</p>
+<pre><code>func offset(tz string) int {
+    if seconds, ok := timeZone[tz]; ok {
+        return seconds
+    }
+    log.Println(&quot;unknown time zone:&quot;, tz)
+    return 0
+}
+</code></pre>
+<p>如果只是测试映射中的值是否存在，而不在乎实际值，可以用空白标识符(_)来代替通常的变量。</p>
+<pre><code>_, present := timeZone[tz]
+</code></pre>
+<p>要删除映射的条目，可以使用内建函数delete，参数为映射和要删除的键。就算映射没有键也可以安全的进行删除。</p>
+<pre><code>delete(timeZone, &quot;PDT&quot;)  // Now on Standard Time
+</code></pre>
+<h2 id="打印输出printing">打印输出(printing)</h2>
+<p>Go的格式化打印使用了类似C语言printf系列风格，但是更丰富和通用。这些函数在fmt包中，并首字母大写:fmt.Printf, fmt.Fprintf, fmt.Sprintf等。字符串函数(Stringf等)返回一个字符串，而不是填入提供的缓冲区。<br>
+你不需要提供一个格式化的字符，对于每个Printf, Fprintf和Springf都有另外一对函数，例如Print和Println，这些函数不接受格式字符串，而是为每个参数生成一个默认格式。Println会在参数之间插入一个空格，并在输出中附加一个新行，而Print只在两边的操作符都不是字符串的情况下添加空格。在这个例子中，每一行都会产生相同的输出。</p>
+<pre><code>fmt.Printf(&quot;Hello %d\n&quot;, 23)
+fmt.Fprint(os.Stdout, &quot;Hello &quot;, 23, &quot;\n&quot;)
+fmt.Println(&quot;Hello&quot;, 23)
+fmt.Println(fmt.Sprint(&quot;Hello &quot;, 23))
+</code></pre>
+<p>格式化打印函数fmt.Fprint一类接受任何实现了io.Writer接口的对象作为第一个参数；变量os.Stdout和os.Stderr都是熟知的例子。<br>
+和C不一样，像%d这样的数字格式不接受签名或大小标识；；相反，打印函数使用参数的类型来决定这些属性。</p>
+<pre><code>var x uint64 = 1&lt;&lt;64 - 1
+fmt.Printf(&quot;%d %x; %d %x\n&quot;, x, x, int64(x), int64(x))
+</code></pre>
+<p>会打印</p>
+<pre><code>18446744073709551615 ffffffffffffffff; -1 -1
+</code></pre>
+<p>如果你只是想要默认的转换，例如整数的十进制转换，可以使用通用格式%v(表示value的意思);结果和Print和PrintLn所产生的结果完全一样。此外，该格式还可以打印任何值，甚至是数组，切片，结构和映射。下面是上一节定义的时区映射的打印语句。</p>
+<pre><code>fmt.Printf(&quot;%v\n&quot;, timeZone)  // or just fmt.Println(timeZone)
+</code></pre>
+<p>会输出</p>
+<pre><code>map[CST:-21600 EST:-18000 MST:-25200 PST:-28800 UTC:0]
+</code></pre>
+<p>对于映射来说，Printf类的函数会按照键进行词法排序。当打印一个结构时，修改后的格式% +v会在字段上标注它们的名称，而对于任何值，则用另一种格式%#v以Go的语法打印出该值。</p>
+<pre><code>type T struct {
+    a int
+    b float64
+    c string
+}
+t := &amp;T{ 7, -2.35, &quot;abc\tdef&quot; }
+fmt.Printf(&quot;%v\n&quot;, t)
+fmt.Printf(&quot;%+v\n&quot;, t)
+fmt.Printf(&quot;%#v\n&quot;, t)
+fmt.Printf(&quot;%#v\n&quot;, timeZone)
+</code></pre>
+<p>输出</p>
+<pre><code>&amp;{7 -2.35 abc   def}
+&amp;{a:7 b:-2.35 c:abc     def}
+&amp;main.T{a:7, b:-2.35, c:&quot;abc\tdef&quot;}
+map[string]int{&quot;CST&quot;:-21600, &quot;EST&quot;:-18000, &quot;MST&quot;:-25200, &quot;PST&quot;:-28800, &quot;UTC&quot;:0}
+</code></pre>
+<p>(注意 &amp;号)当遇到字符串类型或[]byte类型的值时，可以用%q获取带引号的字符串。%#q会尽可能使用反引号。(%q适用于整数和rune，产生单引号的字符常量)此外，%x适用于字符串，字节数组和字节切片以及整数，去生成长十六进制字符，带有空格格式的%x还会在字节中插入空格。另一个实用的是%T，它会打印值的类型。<br>
+<code>fmt.Printf(&quot;%T\n&quot;, timeZone)</code><br>
+输出<br>
+<code>map[string]int</code><br>
+如果要自定义类型的默认格式，只需要定义该类型的<code>String() string</code>方法。对于简单的类型T，可能看起来就像这样：</p>
+<pre><code>func (t *T) String() string {
+    return fmt.Sprintf(&quot;%d/%g/%q&quot;, t.a, t.b, t.c)
+}
+fmt.Printf(&quot;%v\n&quot;, t)
+</code></pre>
+<p>会按格式这么输出<br>
+<code>7/-2.35/&quot;abc\tdef&quot;</code><br>
+(如果你需要打印类型T的值以及指向T的指针，则String的接受者必须为值类型；这个例子使用了一个指针，因为它对于结构类型更加有效且更惯用。请参见下面的指针 vs 值接受者以获得更多的信息)<br>
+我们的string方法可以调用Sprintf，因为打印程序是完全可以重入的，并且可以用这种方式封装。关于此方法，又一个重要的细节要理解：不要通过Sprintf来构造String方法，因为会造成无限递归String。如果Sprintf调用试图将接收方直接打印为字符串，则可能会发生这种情况，，而String又会在此调用该方法。如本例所示，是一个常见且容易犯的错误。</p>
+<pre><code>type MyString string
+
+func (m MyString) String() string {
+    return fmt.Sprintf(&quot;MyString=%s&quot;, m) // Error: will recur forever.
+}
+</code></pre>
+<p>不过这很容易修复：将参数变为基本的字符串类型，它就没有String方法了。</p>
+<pre><code>type MyString string
+func (m MyString) String() string {
+    return fmt.Sprintf(&quot;MyString=%s&quot;, string(m)) // OK: note conversion.
+}
+</code></pre>
+<p>在初始化部分，我们可以看到另一种避免无限递归的方式。<br>
+另一种打印技巧是传递一个打印函数给另一个打印函数，Printf使用interface{}作为最后一个参数，以指定可以在格式之后显示任意数量的参数(任意类型)。<br>
+<code>func Printf(format string, v ...interface{}) (n int, err error) {</code><br>
+在函数Printf中，v的作用类似于[]interface{}类型的变量，但如果将其传递给另一个可变参数的函数，则其作用类似于常规的参数列表。这是我们上面使用的功能log.Println的实现。它将其参数直接传递给fmt.Sprintln进行实际的格式化。</p>
+<pre><code>// Println prints to the standard logger in the manner of fmt.Println.
+func Println(v ...interface{}) {
+    std.Output(2, fmt.Sprintln(v...))  // Output takes parameters (int, string)
+}
+</code></pre>
+<p>v后面的...以告诉编译器将v视为参数列表，否则它将v作为单个slice参数进行传递。除了这里介绍的内容外，还有更多有关print的内容，有关详细信息可以参见fmt包的godoc文档。<br>
+顺便提一下，一个...参数可以是具体的类型，例如...int可以用于选择最小整数列表的mini函数。</p>
+<pre><code>func Min(a ...int) int {
+    min := int(^uint(0) &gt;&gt; 1)  // largest int
+    for _, i := range a {
+        if i &lt; min {
+            min = i
+        }
+    }
+    return min
+}
+</code></pre>
+<h2 id="附加append">附加(append)</h2>
+<p>现在我们还没解释内建函数append的设计。append的签名与上面自定义的Append函数不同，大致来说，它是这样的：<br>
+<code>func append(slice []T, elements ...T) []T</code><br>
+其中T是给任何给定类型的占位符，实际上你无法在Go中编写一个由调用者确定类型T的函数。这就是内置append的原因：它需要编译器的支持。<br>
+append操作是将元素附加到切片的末尾并返回结果。因为底层数组会改变，所以需要返回结果。这是一个简单的例子：</p>
+<pre><code>x := []int{1,2,3}
+x = append(x, 4, 5, 6)
+fmt.Println(x)
+</code></pre>
+<p>打印[1 2 3 4 5 6]。所以，append有点像Printf，接受任意数量的参数。<br>
+但是如果我们要对一个切片执行append另一个切片该怎么办？很简单：用...进行传参。下面的代码会和上面的输出一样：</p>
+<pre><code>x := []int{1,2,3}
+y := []int{4,5,6}
+x = append(x, y...)
+fmt.Println(x)
+</code></pre>
+<p>如果没有...，将会因为类型错误而无法变异，因为y不是int类型。</p>
+
+                </div>
+                
+                    <div class="tag-container">
+                        
+                            <a href="https://blog.xabc.site/tag/Uo9mtBIjh/" class="tag">
+                                翻译
+                            </a>
+                        
+                            <a href="https://blog.xabc.site/tag/VKYOe3SsnR/" class="tag">
+                                Golang
+                            </a>
+                        
+                    </div>
+                
+                
+                    <div class="next-post">
+                        <div class="next">下一篇</div>
+                        <a href="https://blog.xabc.site/post/getui/">
+                            <h3 class="post-title">
+                                个推二三事
+                            </h3>
+                        </a>
+                    </div>
+                
+
+                
+
+            </div>
+
+        </div>
+    </div>
+</div>
+<script src="https://cdn.bootcss.com/aos/3.0.0-beta.6/aos.js"></script>
+<script type="application/javascript">
+
+    AOS.init();
+
+    var app = new Vue({
+        el: '#app',
+        data: {
+            menuVisible: false,
+        },
+    })
+
+</script>
+
+    <script src="https://cdn.bootcss.com/highlight.js/9.18.1/highlight.min.js"></script>
+    <script>
+        hljs.initHighlightingOnLoad()
+    </script>
+
+<script src="https://cdn.bootcss.com/tocbot/4.10.0/tocbot.min.js"></script>
+<script>
+tocbot.init({
+  tocSelector: '.js-toc',
+  contentSelector: '.js-toc-content',
+  headingSelector: 'h1, h2, h3',
+  hasInnerContainers: true,
+});
+const slidBox = document.createElement('div')
+const hitbox = document.createElement('div')
+slidBox.classList.add('slid-btn')
+hitbox.classList.add('show-icon')
+hitbox.classList.add('target-icon')
+slidBox.appendChild(hitbox)
+document.querySelector('.js-toc') && document.querySelector('.js-toc').appendChild(slidBox)
+slidBox.addEventListener('click', e => {
+    // document.querySelector('.slid-btn .target-icon').classList.entries()
+    if (document.querySelector('.slid-btn .target-icon').classList.contains(('hide-icon'))) {
+        document.querySelector('.js-toc').classList.add('show-box')
+        document.querySelector('.js-toc').classList.remove('hide-box')
+        document.querySelector('.slid-btn .target-icon').classList.add('show-icon')
+        document.querySelector('.slid-btn .target-icon').classList.remove('hide-icon')
+    } else {
+        document.querySelector('.js-toc').classList.add('hide-box')
+        document.querySelector('.js-toc').classList.remove('show-box')
+        document.querySelector('.slid-btn .target-icon').classList.add('hide-icon')
+        document.querySelector('.slid-btn .target-icon').classList.remove('show-icon')
+    }
+})
+</script>
+
+
+
+
+</body>
+</html>

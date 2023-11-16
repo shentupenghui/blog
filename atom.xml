@@ -1,0 +1,433 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+    <id>https://blog.xabc.site</id>
+    <title>Mr.Shentu</title>
+    <updated>2023-11-16T00:51:05.707Z</updated>
+    <generator>https://github.com/jpmonette/feed</generator>
+    <link rel="alternate" href="https://blog.xabc.site"/>
+    <link rel="self" href="https://blog.xabc.site/atom.xml"/>
+    <subtitle>永远保持热情❤️</subtitle>
+    <logo>https://blog.xabc.site/images/avatar.png</logo>
+    <icon>https://blog.xabc.site/favicon.ico</icon>
+    <rights>All rights reserved 2023, Mr.Shentu</rights>
+    <entry>
+        <title type="html"><![CDATA[大语言模型“战国时代”，未来将如何发展？]]></title>
+        <id>https://blog.xabc.site/post/1sP_TEZIH/</id>
+        <link href="https://blog.xabc.site/post/1sP_TEZIH/">
+        </link>
+        <updated>2023-11-16T00:47:39.000Z</updated>
+        <content type="html"><![CDATA[<p>近年来，随着大语言模型迅速崛起，明星公司、明星产品、知名企业家的逐渐进入赛道，大语言模型俨然成为人工智能领域的新宠。它是什么?简单来说，大语言模型是一种被训练用来预测文字的巨大神经网络。随着模型规模的不断扩大和训练数据的增加，大语言模型的理解和创造能力都在稳步提升。</p>
+<p>GPT-3 的出现预示着未来<br>
+2020 年，OpenAI 发布的 GPT-3 可以说是引爆了这个领域的导火线。它是当时最大的语言模型，拥有高达 1750 亿个参数。GPT-3 展示了惊人的文本生成能力，可以根据提示创造出逼真的文章、代码、诗歌等。用户给出几句话的提示，它就可以编写出一篇数百字的文章，同时支持判断语气和确保语义上的连贯性，让生成文本内容栩栩如生。这预示着人工智能正在朝着更加智能化的方向飞速发展。</p>
+<p>截止目前，各大公司均推出了不同风格、领域的大模型，在这个“战国时代”，大语言模型会走向何方呢，笔者浅谈以下几个趋势。</p>
+<p>趋势一：模型继续扩大规模<br>
+业内预计，语言模型将持续增大规模，参数数量将从万亿级增长到万万亿级。以 GPT-3 为例，它的后续版本 GPT-3.5 参数量将达到 1000 亿；Anthropic 公司开发的 Claude 模型已经达到 2000 亿参数。由于底层原理的特性，参数越多，模型的学习能力就越强。未来的大语言模型将拥有更强大的理解、记忆和创造能力。</p>
+<p>目前来说，大语言模型参数数量的增加主要依赖于两方面：一是算力的提升，包括 GPU 性能的提高、集群规模的扩大等；二是模型结构的优化，通过更高效的参数配置来增加参数量。随着科技的进步，在可预见的未来，模型参数总量每年至少会翻倍，最终可能达到万亿或十万亿量级。到那时，或许量变引起质变，大模型的能力将带来翻天覆地的变化。</p>
+<p>趋势二：多模态能力进一步增强<br>
+未来的大语言模型不仅会处理文字，还会理解图片、语音、视频等多种模态，不同模态之间实现深度融合。这将使语言模型具备更灵活的交互能力和更丰富的创造力。</p>
+<p>以图片为例，大语言模型未来可以分析图像的细节，判断包含的对象、场景等，并生成相应的文字描述。用户可以输入一张图片，语言模型自动生成这张图片的文字说明。这种图文理解和生成能力，将对很多领域产生深远影响。</p>
+<p>在视频处理方面，大语言模型未来也可进行自动字幕、视频内容总结等操作。结合语音识别，它可以进行听打语音转文字，并生成语音内容的文本记录。这将大大提高智能助手和其他交互系统的对话能力。</p>
+<p>趋势三：知识增强，理解世界</p>
+<p>现有的大语言模型主要是通过无监督训练获得能力，还缺乏丰富的世界知识。未来可通过整合知识图谱等方式进行知识增强，让模型对世界有更多的“常识”，提高实用性。</p>
+<p>知识图谱可以整合各领域的结构化知识，涵盖常识、词汇关系等。将这些知识注入到大语言模型中，可以显著提升其对话的合理性和减少错误。语言模型可以“记住”常识知识，而不仅是机械预测下个单词。</p>
+<p>此外，也可以通过让语言模型阅读大规模专业资料、百科全书等方式进行知识获取。未来的语言模型不仅会大幅提高文本理解能力，也会像人类一样拥有丰富的世界常识。</p>
+<p>这方面可能有两个发展方向，一个是专注各领域的大模型各自发展，互相协作；另一个是融会贯通，大模型朝着全领域超大规模发展。</p>
+<p>假如在互联网行业，未来可能出现这样一个大模型，它能够承担产品经理的角色，对业务需求进行概括总结，然后输出给编程领域的专业大模型，生成可运行的代码，随后代码交给另一个图片大模型，生成相应的前端页面...甚至对接金融大模型，估算投入产出、营销费用等等，彻底解放生产力。<br>
+趋势四：可解释性和安全性</p>
+<p>随着能力提升，模型的判断也需要更加透明和可解释。大语言模型的决策理由不够清晰，未来需要在模型内部加入解读模块，对其判断过程进行解析，输出每个决策的依据，提高可解释性</p>
+<p>同时，也需要加强对潜在安全风险和伦理问题的考量，让技术向着更可控的方向发展。例如，监控语言模型生成的文本，避免具有欺诈性、歧视性或非法的内容。建立内容审查和风险评估机制，防止模型生成有害文本。</p>
+<p>亚马逊全力布局大语言模型</p>
+<p>亚马逊云计算服务 AWS 在硬件设施上占据优势地位，在自定义 AI 芯片领域也进行了大规模投入。这些丰富的技术和资源优势，标志着大语言模型领域将迎来新的激烈角逐。<br>
+如 AI 智能编码助手——Amazon CodeWhisperer，经过数十亿行代码的训练，可以根据代码注释和现有代码实时生成相关代码，还能提供安全扫描、规范扫描等功能。<br>
+而如此的能力，亚马逊提供给个人用户免费使用，包含无限的代码提示和有限的代码扫描。</p>
+<p>可以预见，伴随计算力的增强，大语言模型必将以我们难以想象的速度进化。它将成为推动人工智能新突破的重要引擎，带来令人兴奋的应用前景。让我们拭目以待，见证这个日新月异的领域将给我们带来怎样的新机遇</p>
+<p>*我的博客即将同步至腾讯云开发者社区，邀请大家一同入驻：https://cloud.tencent.com/developer/support-plan?invite_code=25o7tonlm43og *</p>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[2.4 轻徒步路线]]></title>
+        <id>https://blog.xabc.site/post/FWvP97A3Z/</id>
+        <link href="https://blog.xabc.site/post/FWvP97A3Z/">
+        </link>
+        <updated>2023-01-31T01:35:51.000Z</updated>
+        <summary type="html"><![CDATA[<p>2023 新年首爬！<strong>无野路！无荒山！交通便利！风景秀丽！</strong></p>
+]]></summary>
+        <content type="html"><![CDATA[<p>2023 新年首爬！<strong>无野路！无荒山！交通便利！风景秀丽！</strong></p>
+<!-- more -->
+<h2 id="路线">路线</h2>
+<p><img src="https://blog.xabc.site/post-images/1675140877173.png" alt="" loading="lazy"><br>
+<strong>时间</strong>：2023.2.4 早上八点半集合，九点出发<br>
+<strong>集合地点</strong>：汽车西站<br>
+<strong>线路</strong>：汽车西站 - 马家坞 - 灵峰山 - 老和山 - 老和云起 - 西山游步道 - 报先寺 - 马家坞</p>
+<p>上山下山点为同一个，交通便利，同时线路无野路，均是铺装的石阶路，走起来非常轻松。新建的观景台风景视野非常好。大约用时3-4小时。</p>
+<figure data-type="image" tabindex="1"><img src="https://blog.xabc.site/post-images/1675140510946.png" alt="" loading="lazy"></figure>
+<h2 id="准备事项">准备事项</h2>
+<p>根据天气和自身情况，穿戴透气的衣服，舒适的鞋子；充足的水，小零食若干；</p>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[11.20 徒步路线]]></title>
+        <id>https://blog.xabc.site/post/0MVupFK_s/</id>
+        <link href="https://blog.xabc.site/post/0MVupFK_s/">
+        </link>
+        <updated>2022-11-16T05:13:33.000Z</updated>
+        <summary type="html"><![CDATA[<p>天气预报显示周四周五可能下雨，周六爬山估计比较泥泞，所以本周路线安排在周日。</p>
+]]></summary>
+        <content type="html"><![CDATA[<p>天气预报显示周四周五可能下雨，周六爬山估计比较泥泞，所以本周路线安排在周日。</p>
+<!-- more -->
+<h2 id="线路描述">线路描述</h2>
+<p>从归隐灵山出发，在群山中经过536米的如意尖、黄公望隐居地、狗头山、野山头、巴台山再回到出发点。出发点是在水库边的一个山坳，适合开车前往。具体如下图：<br>
+<img src="https://blog.xabc.site/post-images/1668576018832.png" alt="" loading="lazy"></p>
+<h2 id="注意事项">注意事项</h2>
+<ul>
+<li>出发时间：11.20 早上9点</li>
+<li>自备干粮和充足的水（1.5L以上）</li>
+<li>天气冷了，新手徒步比较危险，如果没有参加过前期的徒步请勿前往。</li>
+</ul>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[11.12 环西湖爱心线徒步计划]]></title>
+        <id>https://blog.xabc.site/post/MOkFuSO_X/</id>
+        <link href="https://blog.xabc.site/post/MOkFuSO_X/">
+        </link>
+        <updated>2022-11-03T04:39:29.000Z</updated>
+        <summary type="html"><![CDATA[<p>本次环西湖爱心线共计20km，预计耗时六小时，累计爬升600米，轨迹图形似爱心，是一个难度较低、强度较低的线路</p>
+]]></summary>
+        <content type="html"><![CDATA[<p>本次环西湖爱心线共计20km，预计耗时六小时，累计爬升600米，轨迹图形似爱心，是一个难度较低、强度较低的线路</p>
+<!-- more -->
+<h2 id="时间">时间</h2>
+<p>11.12 早上9点西湖音乐喷泉集合</p>
+<h2 id="路线">路线</h2>
+<p>从音乐喷泉出发，沿着环湖绿岛向北出发，途径湖滨路、钱塘门、北山街、保俶塔、宝石山、栖霞岭路、玉古路、灵峰山、天竺路、少年儿童公园、雷峰塔，最后沿着南山路回到音乐喷泉。<br>
+<img src="https://blog.xabc.site/post-images/1667914539575.png" alt="" loading="lazy"></p>
+<h2 id="路线特点">路线特点</h2>
+<ul>
+<li>轨迹图好看</li>
+<li>线路下撤点非常多，体力不支可随时后撤</li>
+<li>路线很轻松，补给购买非常方便</li>
+</ul>
+<h2 id="注意事项">注意事项</h2>
+<ol>
+<li>建议自带1.5L以上水</li>
+<li>中途不安排吃饭，需自带面包、干粮</li>
+</ol>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[k8s源码解读一：调度器的核心实现]]></title>
+        <id>https://blog.xabc.site/post/Hl5HoA6ua/</id>
+        <link href="https://blog.xabc.site/post/Hl5HoA6ua/">
+        </link>
+        <updated>2022-11-01T02:10:10.000Z</updated>
+        <summary type="html"><![CDATA[<p>随着Kubernetes的发展，控制平面各组件愈发稳定，除了了解各组件的作用、实践外，了解其设计也很重要。本专栏拟试着从源码角度，解析K8s关键源码，如关键的数据结构、存储的实现、核心机制、关键对象、组件设计等。本文为第一篇，以1.25版本源码为基础介绍<strong>kube-apiserver</strong>中调度器的核心实现。</p>
+]]></summary>
+        <content type="html"><![CDATA[<p>随着Kubernetes的发展，控制平面各组件愈发稳定，除了了解各组件的作用、实践外，了解其设计也很重要。本专栏拟试着从源码角度，解析K8s关键源码，如关键的数据结构、存储的实现、核心机制、关键对象、组件设计等。本文为第一篇，以1.25版本源码为基础介绍<strong>kube-apiserver</strong>中调度器的核心实现。</p>
+<!-- more -->
+<h2 id="调度器总览">调度器总览</h2>
+<p>整个调度过程由<code>kubernetes/pkg/scheduler/scheduler.go#L421</code>的 <code>func (sched *Scheduler) scheduleOne(ctx context.Context)</code>完成。这个函数有两百多行，可以分为四个部分：<br>
+<img src="https://blog.xabc.site/post-images/1639380005639.png" alt="" loading="lazy"></p>
+<ol>
+<li>获取待调度Pod对象：通过<code>sched.NextPod()</code>从优先级队列中获取一个优先级最高的待调度Pod资源对象，该过程是阻塞模式的，当优先级队列中不存在任何Pod资源对象时，sched.config.NextPod函数处于等待状态。</li>
+<li>调度阶段：通过<code>sched.Algorithm.Schedule(schedulingCycleCtx, sched.Extenders, fwk, state, pod)</code>调度函数执行预选调度算法和优选调度算法，为Pod资源对象选择一个合适的节点。</li>
+<li>抢占阶段：当高优先级的Pod资源对象没有找到合适的节点时，调度器会通过sched.preempt函数尝试抢占低优先级的Pod资源对象的节点。</li>
+<li>绑定阶段：当调度器为Pod资源对象选择了一个合适的节点时，通过sched.bind函数将合适的节点与Pod资源对象绑定在一起。</li>
+</ol>
+<h2 id="调度过程">调度过程</h2>
+<h3 id="进入过滤阶段前的节点数量计算">进入过滤阶段前的节点数量计算</h3>
+<p>在初始化调度器的时候，kube-scheduler会对节点数量进行优化。如下图：<br>
+路径：<br>
+<img src="https://blog.xabc.site/post-images/1638946974592.png" alt="" loading="lazy"><br>
+其中红框是调度器的一个性能优化，通过PercentageOfNodesToScore机制，在集群节点数量很多的时候，只加载指定百分比的节点，这样在大集群中，可以显著优化调度性能；这个百分比数值可以调整，默认为50，即加载一半的节点；具体的节点数量由一个不复杂的计算过程得出：<br>
+<img src="https://blog.xabc.site/post-images/1638948519356.png" alt="" loading="lazy"><br>
+其中，<code>minFeasibleNodesToFind</code>为预设的参与预选的最小可用节点数，现在的值为100。见上图172行，当集群节点数量小于该值或percentageOfNodesToScore百分比大于等于100时候，直接返回所有节点。当大于100个节点的时候，使用了一个公式，<code>adaptivePercentage = basePercentageOfNodesToScore - numAllNodes/125</code>，翻译一下的话就是<strong>自适应百分比数=默认百分比数-所有节点数/125</strong>，见178行，默认百分比为50，假设有1000个节点，那么<strong>自适应百分比数=50-1000/125=42</strong>；180和181行则是指定了一个百分比下限minFeasibleNodesPercentageToFind，现在的值为5。即前面算出来的百分比如果小于5，则取下限5。按照这个机制，那么<strong>参与过滤的节点数=1000*42%=420个</strong>。当这个节点数小于minFeasibleNodesToFind的时候，则返回minFeasibleNodesToFind。因此，1000个节点的集群最终参与预选的是420个；同理可以计算，5000个节点的集群，参与预选的是5000*(50-5000/125)%=500个。可以看到，尽管节点数量从1000增加到了5000，但参与预选的只从420增加到了500。</p>
+<h3 id="过滤阶段">过滤阶段</h3>
+<p>通过PercentageOfNodesToScore得到参与预选调度的节点数量之后，scheduler会通过<code>podInfo := sched.NextPod()</code>从调度队列中获取pod信息；然后进入Schedule，<strong>这是一个定义了schedule的接口，k8s实现了一个genericScheduler，如果要自定义自己的调度器，实现该接口，然后在deployment中指定用该调度器就行</strong>。</p>
+<pre><code>type ScheduleAlgorithm interface {
+	Schedule(context.Context, []framework.Extender, framework.Framework, *framework.CycleState, *v1.Pod) (scheduleResult ScheduleResult, err error)
+}
+</code></pre>
+<p>进入genericScheduler后，首先就进入预选阶段<code>findNodesThatFitPod</code>，或者称为过滤阶段，此阶段会获得过滤之后可用的所有节点，供下一阶段使用，即<code>feasibleNodes</code>。<br>
+<img src="https://blog.xabc.site/post-images/1639450508280.png" alt="" loading="lazy"><br>
+<code>findNodesThatFitPod</code>供包含以下四部分：<br>
+<img src="https://blog.xabc.site/post-images/1639461490966.png" alt="" loading="lazy"></p>
+<ul>
+<li>fwk.RunPreFilterPlugins：运行过滤前的处理插件。RunPreFilterPlugins 负责运行一组框架已配置的 PreFilter 插件。如果任何插件返回除 Success 之外的任何内容，它将设置返回的*Status::code为non-success 。则调度周期中止。</li>
+<li>g.evaluateNominatedNode：将某个节点单独执行过滤。如果Pod指定了某个Node上运行，这个节点很可能是唯一适合Pod的候选节点，那么会<strong>在过滤所有节点之前，检查该Node</strong>，具体条件为：<code>len(pod.Status.NominatedNodeName) &gt; 0 &amp;&amp; feature.DefaultFeatureGate.Enabled(features.PreferNominatedNode) </code>，这个机制也叫“提名节点”。</li>
+<li>g.findNodesThatPassFilters：将所有节点进行预选过滤。这个函数会创建一个可用node的节点<code>feasibleNodes := make([]*v1.Node, numNodesToFind)</code>，然后通过checkNode遍历node，检查node是否符合运行Pod的条件，即运行所有的预选调度算法(如下所示），如果符合则加入feasibelNodes列表。</li>
+</ul>
+<pre><code>for _, pl := range f.filterPlugins {
+		pluginStatus := f.runFilterPlugin(ctx, pl, state, pod, nodeInfo)
+		if !pluginStatus.IsSuccess() {
+			if !pluginStatus.IsUnschedulable() {
+				// Filter plugins are not supposed to return any status other than
+				// Success or Unschedulable.
+				errStatus := framework.AsStatus(fmt.Errorf(&quot;running %q filter plugin: %w&quot;, pl.Name(), pluginStatus.AsError())).WithFailedPlugin(pl.Name())
+				return map[string]*framework.Status{pl.Name(): errStatus}
+			}
+			pluginStatus.SetFailedPlugin(pl.Name())
+			statuses[pl.Name()] = pluginStatus
+			if !f.runAllFilters {
+				// Exit early if we don't need to run all filters.
+				return statuses
+			}
+		}
+	}
+</code></pre>
+<ul>
+<li>findNodesThatPassExtenders：将上一步经过预选的Node再通过扩展过滤器过滤一遍。这个其实是k8s留给用户的自定义过滤器。它遍历所有的extender来确定是否关心对应的资源，如果关心就会调用Filter接口来进行远程调用<code>feasibleList, failedMap, failedAndUnresolvableMap, err := extender.Filter(pod, feasibleNodes)</code>，并将筛选结果传递给下一个extender，逐步缩小筛选集合。远程调用是一个http的实现，如下图：<br>
+<img src="https://blog.xabc.site/post-images/1639463996230.png" alt="" loading="lazy"><br>
+至此，预选阶段结束。整个预选过程逻辑上很自然，预处理-&gt;过滤-&gt;用户自定义过滤-&gt;结束。<br>
+在预处理阶段(PreFilterPlugin)，官方主要定义了：</li>
+</ul>
+<ol>
+<li>InterPodAffinity: 实现Pod之间的亲和性和反亲和性，InterPodAffinity实现了PreFilterExtensions，因为抢占调度的Pod可能与当前的Pod具有亲和性或者反亲和性；</li>
+<li>NodePorts: 检查Pod请求的端口在Node是否可用，NodePorts未实现PreFilterExtensions;</li>
+<li>NodeResourcesFit: 检查Node是否拥有Pod请求的所有资源，NodeResourcesFit未实现PreFilterEtensions;</li>
+<li>PodTopologySpread: 实现Pod拓扑分布；</li>
+<li>ServiceAffinity: 检查属于某个服务(Service)的Pod与配置的标签所定义的Node集合是否适配，这个插件还支持将属于某个服务的Pod分散到各个Node，ServiceAffinity实现了PreFilterExtensions接口；</li>
+<li>VolumeBinding: 检查Node是否有请求的卷，是否可以绑定请求的卷，VolumeBinding未实现PreFilterExtensions接口；<br>
+过滤插件在早期版本叫做预选算法，但在较新的版本已经删除了/pkg/scheduler/algorithem这个包，因为用过滤更贴切一点。在这个目录下可以找到所有的插件实现：<br>
+<img src="https://blog.xabc.site/post-images/1639465062467.png" alt="" loading="lazy"><br>
+基本上通过名字就知道是做什么的,不赘述，如</li>
+<li>InterPodAffinity: 实现Pod之间的亲和性和反亲和性；</li>
+<li>NodeAffinity: 实现了Node选择器和节点亲和性</li>
+<li>NodeLabel: 根据配置的标签过滤Node；</li>
+<li>NodeName: 检查Pod指定的Node名称与当前Node是否匹配；</li>
+<li>NodePorts: 检查Pod请求的端口在Node是否可用；<br>
+...</li>
+</ol>
+<h3 id="优选阶段">优选阶段</h3>
+<p>预选的结果是true或false，意味着一个节点要么满足Pod的运行要求，要么不满足；得到众多满足的节点后，最终决定Pod调度到哪个节点。<br>
+<img src="https://blog.xabc.site/post-images/1639465250190.png" alt="" loading="lazy"><br>
+在调度器中，优选的过程由<code>prioritizeNodes</code>负责，它会返回一个带分数的节点列表，定义如下：</p>
+<pre><code>// NodeScore is a struct with node name and score.
+type NodeScore struct {
+	Name  string
+	Score int64
+}
+</code></pre>
+<p>最终由<code>selectHost</code>返回一个node名字，作为最终的<code>ScheduleResult</code>.下面进行具体分析。<br>
+<code>prioritizeNodes</code>分为三部分，<strong>运行打分前处理插件，运行所有的打分插件，将所有分数相加</strong>：<br>
+<img src="https://blog.xabc.site/post-images/1639465730476.png" alt="" loading="lazy"><br>
+优选阶段最主要的就是运行各种打分插件，kube-scheduler会调用ScorePlugin对通过FilterPlugin的Node评分，所有ScorePlugin的评分都有一个明确的整数范围，比如[0, 100]，这个过程称之为标准化评分。在标准化评分之后，kube-scheduler将根据配置的插件权重合并所有插件的Node评分得出Node的最终评分。根据Node的最终评分对Node进行排序，得分最高者就是最合适Pod的Node。</p>
+<pre><code>type ScorePlugin interface {
+    Plugin
+    // 计算节点的评分，此时需要注意的是参数Node名字，而不是Node对象。
+    // 如果实现了PreScorePlugin就从CycleState获取状态， 如果没实现，调度框架在创建插件的时候传入了句柄，可以获取指定的Node。
+    // 返回值的评分是一个64位整数，是一个由插件自定义实现取值范围的分数。
+    Score(ctx context.Context, state *CycleState, p *v1.Pod, nodeName string) (int64, *Status)
+    // 返回ScoreExtensions接口，此类设计与PreFilterPlugin相似
+    ScoreExtensions() ScoreExtensions
+}
+
+// ScorePlugin的扩展接口
+type ScoreExtensions interface {
+    // ScorePlugin().Score()返回的分数没有任何约束，但是多个ScorePlugin之间需要标准化分数范围，否则无法合并分数。
+    // 比如ScorePluginA的分数范围是[0, 10]，ScorePluginB的分数范围是[0, 100]，那么ScorePluginA的分数再高对于ScorePluginB的影响也是非常有限的。
+    NormalizeScore(ctx context.Context, state *CycleState, p *v1.Pod, scores NodeScoreList) *Status
+}
+</code></pre>
+<p>实现该接口的插件有：</p>
+<ol>
+<li>ImageLocality: 选择已经存在Pod运行所需容器镜像的Node，这样可以省去下载镜像的过程，对于镜像非常大的容器是一个非常有价值的特性，因为启动时间可以节约几秒甚至是几十秒；</li>
+<li>InterPodAffinity: 实现Pod之间的亲和性和反亲和性；</li>
+<li>NodeAffinity: 实现了Node选择器和节点亲和性</li>
+<li>NodeLabel: 根据配置的标签过滤Node；</li>
+<li>NodePreferAvoidPods: 基于Node的注解 scheduler.alpha.kubernetes.io/preferAvoidPods打分；</li>
+<li>NodeResourcesBalancedAllocation: 调度Pod时，选择资源分配更为均匀的Node；</li>
+<li>NodeResourcesLeastAllocation: 调度Pod时，选择资源分配较少的Node；</li>
+<li>NodeResourcesMostAllocation: 调度Pod时，选择资源分配较多的Node；</li>
+<li>RequestedToCapacityRatio: 根据已分配资源的配置函数选择偏爱Node；</li>
+<li>PodTopologySpread: 实现Pod拓扑分布；</li>
+<li>SelectorSpread: 对于属于Services、ReplicaSets和StatefulSets的Pod，偏好跨多节点部署；</li>
+<li>ServiceAffinity: 检查属于某个服务(Service)的Pod与配置的标签所定义的Node集合是否适配，这个插件还支持将属于某个服务的Pod分散到各个Node；</li>
+<li>TaintToleration: 实现了污点和容忍度；</li>
+</ol>
+<p>打分之后通过<code>selectHost</code>选择最终pod将被调度的节点：</p>
+<pre><code>func (g *genericScheduler) selectHost(nodeScoreList framework.NodeScoreList) (string, error) {
+	if len(nodeScoreList) == 0 {
+		return &quot;&quot;, fmt.Errorf(&quot;empty priorityList&quot;)
+	}
+	maxScore := nodeScoreList[0].Score
+	selected := nodeScoreList[0].Name
+	cntOfMaxScore := 1
+	for _, ns := range nodeScoreList[1:] {
+		if ns.Score &gt; maxScore {
+			maxScore = ns.Score
+			selected = ns.Name
+			cntOfMaxScore = 1
+		} else if ns.Score == maxScore {
+			cntOfMaxScore++
+			if rand.Intn(cntOfMaxScore) == 0 {
+				// Replace the candidate with probability of 1/cntOfMaxScore
+				selected = ns.Name
+			}
+		}
+	}
+	return selected, nil
+}
+</code></pre>
+<p>至此，优选阶段结束。</p>
+<h2 id="总结">总结</h2>
+<p>总结，k8s定义了调度的接口，并实现了genericScheduler（也是k8s中唯一的官方调度器）以及众多的插件，这层抽象其实为开发人员自定义调度器提供了很大的便利。往小的说，各类插件以及扩展插件也提供了丰富的细粒度控制。当然，最简单的还是去根据实际需要调整优选的打分逻辑，使得Pod的调度满足生产需要。</p>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[11.6 登山计划]]></title>
+        <id>https://blog.xabc.site/post/3B2EFBHqA/</id>
+        <link href="https://blog.xabc.site/post/3B2EFBHqA/">
+        </link>
+        <updated>2022-10-31T13:03:29.000Z</updated>
+        <content type="html"><![CDATA[<h2 id="路线描述">路线描述</h2>
+<p>本次路线是走过的一条路线，特点是野趣十足，风景优美，缓急相间。耗时大约5-6小时，共计12公里，总消耗3200千卡，爬升高度1100余米。<br>
+<strong>路线途径：龙门岭 - 午潮山惨案遗址 - 午潮山 - 鸡溪弄 - 飞凤岩 - 白龙潭景区 - 龙吟狮吼 ，最后从上山处下山。</strong><br>
+<img src="https://blog.xabc.site/post-images/1667221951493.png" alt="" loading="lazy"></p>
+<h2 id="出发地点与时间">出发地点与时间</h2>
+<p>时间：11.6 日早上9点出发，务必提早到达。<br>
+集合地点：前一天徒步群会给定位，按定位导航即可，推荐自驾。</p>
+<h2 id="物资准备">物资准备</h2>
+<h3 id="食物">食物</h3>
+<ul>
+<li>方案一
+<ol>
+<li>自热米饭</li>
+<li>自带盒饭</li>
+<li>热狗等</li>
+</ol>
+</li>
+<li>方案二
+<ol>
+<li>零食小吃</li>
+<li>面包巧克力</li>
+</ol>
+</li>
+</ul>
+<h3 id="水">水</h3>
+<p>建议带200ML的热水，刚进山时候人还没热起来，最宜热水润喉；同时带足饮水1.5L以上。</p>
+<h3 id="其他物品">其他物品</h3>
+<pre><code>1. 登山杖，野路较多，登山杖能很好的缓解膝盖压力；
+2. 手套，有地方手脚并用，需要抓取裸露的岩石；
+3. 花露水，蚊虫较多，建议提前喷好；
+</code></pre>
+<h3 id="注意事项️">注意事项⚠️</h3>
+<pre><code>1. 不要穿短裤、短袖，容易被树枝划伤；
+2. 不要穿牛仔裤、皮鞋等不适合运动的装备；
+3. 下山务必结伴同行，避免单人意外无法自救；
+</code></pre>
+<h2 id="路线特点">路线特点</h2>
+<p>驱车能直达位于山坳的入山口，我们便在此集合；<br>
+<img src="https://blog.xabc.site/post-images/1667222789850.jpeg" alt="" loading="lazy"><br>
+集合完毕，由于刚开始的一段路程陡峭、植被遮天蔽日，我们将进行短暂的伸展热身运动，随后便溯溪而上，周围植被丰富，小径只容单人，需前后上山。<br>
+<img src="https://blog.xabc.site/post-images/1667222807770.jpeg" alt="" loading="lazy"><br>
+过了这一段在丛林中的路后，即到达第一个打卡点和补水点——午潮山惨案纪念碑处。该处是当你日寇在杭州犯下的最大屠杀惨案所在地，在1938年3月4日，日军田村联队田中有朋大队荒川永进武融部“扫荡”午潮山，将避居于午潮庙的530名手无寸铁村民悉数屠杀，后杭州市政府立碑于此，在此处稍作休整后，便右拐沿着柏油盘山路上山，稍远处群山红绿相间，是个边走边拍照的好机会。到山脊时，柏油路便要下坡了，而路线也转为右边的山路。刚开始是无遮蔽的茶园小道，随着山势增高，小道逐渐被竹林笼罩，裸露的石头也多了起来。此处近乎垂直上山，只有快到山顶的地方有一块三四人可站立的平地可以休息，同时俯瞰闲林的所有风光。<br>
+<img src="https://blog.xabc.site/post-images/1667223125475.jpeg" alt="" loading="lazy"><br>
+过了山顶后，沿着平稳的山脊这一段风景是最好的，不会有很大的下山-上山过程，遮蔽也较少。直至到达午潮亭，会有一段约三百台阶的路。<br>
+<img src="https://blog.xabc.site/post-images/1667223311876.jpeg" alt="" loading="lazy"><br>
+在午潮亭，我们会休息较长的时间，同时进行能量的补充。午潮亭是杭州最高的山峰，五百余米，四处没有任何遮挡，可以看到余杭、西湖、富阳三区的景色。之后便出发鸡溪弄，这一段路线有的需要手脚并用的爬，有的需要弯下身子匍匐前进，有的需要翻过大块的岩石，有的则是六十度的土坡上山路。走完这一段，会有一个在树林中的休息点，前人做了一些木头小板凳，可以稍事休息，再次补能。<br>
+<img src="https://blog.xabc.site/post-images/1667223576678.jpeg" alt="" loading="lazy"><br>
+再往后，则是西山游步道，有人工的台阶，有大片的茶园，会再经过第二个亭子进行休息。最后经过深山中的茶园，俯瞰白龙潭景区，翻过一个小山丘则回到下山点。</p>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[10.30 登山计划]]></title>
+        <id>https://blog.xabc.site/post/aS6gXznCz/</id>
+        <link href="https://blog.xabc.site/post/aS6gXznCz/">
+        </link>
+        <updated>2022-10-25T02:35:03.000Z</updated>
+        <content type="html"><![CDATA[<h2 id="时间">时间</h2>
+<p>10.30日 9:00（务必提早到，争取九点准时出发）</p>
+<h2 id="路线">路线</h2>
+<p>从四喜凉亭出发，经龙门岭-午潮山-鸡西弄-飞凤岩-西风山-白龙潭再回到四喜凉亭，具体如下图：<br>
+<img src="https://blog.xabc.site/post-images/1666665345754.png" alt="" loading="lazy"></p>
+<h2 id="线路特点">线路特点：</h2>
+<ul>
+<li>上下山为同一个地方，开车方便，部分路线已经爬过，比较熟悉</li>
+<li>路线野趣较多，还有大片的茶园，拍照风景都很好；前半段急，后半段相对轻松</li>
+<li>休息点很多，耗时5小时左右</li>
+<li>爬完山后有大学的美食街，觅食比较方便</li>
+</ul>
+<h2 id="准备物品">准备物品</h2>
+<ol>
+<li>1.5L 以上的水</li>
+<li>登山杖</li>
+<li>补充能量的食物</li>
+<li>背包</li>
+</ol>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[10.22 爬山小记]]></title>
+        <id>https://blog.xabc.site/post/ghUKKgiEk/</id>
+        <link href="https://blog.xabc.site/post/ghUKKgiEk/">
+        </link>
+        <updated>2022-10-22T13:49:36.000Z</updated>
+        <summary type="html"><![CDATA[<p>秋天的杭州略带桂花的甜味，进入10月，温度愈发适宜爬山。本次路线由杭州西部群山出发，跨越G25长深高速，由大清谷再次上山，直至西溪路。</p>
+]]></summary>
+        <content type="html"><![CDATA[<p>秋天的杭州略带桂花的甜味，进入10月，温度愈发适宜爬山。本次路线由杭州西部群山出发，跨越G25长深高速，由大清谷再次上山，直至西溪路。</p>
+<!-- more -->
+<p>早上九点是原定的出发时间，乘坐地铁到达石马站时才发现距离上山的路还有五百米，加之团队中不止一人出现了此类情况，实际九点半出发。山脚是“杭州第二公墓”，简单的刻在松柏间一块长石板上，若不刻意观察，很难发现。公墓的区域名称颇有一种荒诞现实主义，用最喜悦的名词定义最安静的环境。山脚停车方便，也有公共厕所，是一个很好的上山点。沿着山蜿蜒两折，柏油路便消失了，尽头则是一条小溪从茂密的树林中钻出来的一小段野路——这便是真的开始上山了。</p>
+<p>在我们爬山队伍的前面是一对家长领着三个孩子爬山，原本逼仄的野路便堵上了。不过有了小孩子们的欢声笑语，安静得有点阴森的小路也变得有些风趣。<br>
+<img src="https://blog.xabc.site/post-images/1666696612728.jpeg" alt="" loading="lazy"><br>
+不多时，到达第一个分叉点，孩子们的目的地是午潮山，我们的下一个打卡点是小和山，于是一左一右分开了。此时从野路也转换成了石阶路，树木不再遮天蔽日，阳光得以从缝隙落下，洒在身上。近乎平直的五十米后，眼前出现的是漫山的矮茶，以及一左一右两个分叉。左边岔路的尽头是一座凉亭，右边岔路则是通往白龙景区，很遗憾带错了路，好在走不过二十米发现，于是返回走左侧岔路。在凉亭中能俯瞰整个茶山，沿着山起伏的茶树，有了海浪一样的感觉。稍事歇息，吃过小吃后，边继续向东，前往老焦山。通往老焦山的路铺装的并没有很好，同时路程很长，两边的竹子、灌木几乎把小路包围了起来。<br>
+<img src="https://blog.xabc.site/post-images/1666697246151.jpeg" alt="" loading="lazy"><br>
+而穿过这些路后，出现了杭州山区很难得的裸岩石路，树木很少，接近九十度，生锈的红色栏杆。但是能俯瞰整个小和山区域，迎面吹来的风也带走一些疲惫。<br>
+<img src="https://blog.xabc.site/post-images/1666697502903.jpeg" alt="" loading="lazy"><br>
+山顶看过风景之后，往里华山和屏峰山的路好走一些，最终从大岭西下山，历时四小时。<br>
+<img src="https://blog.xabc.site/post-images/1666697666491.jpeg" alt="" loading="lazy"><br>
+山脚跨越高速后，到达大清村。村口有个小卖部和公厕，补充水源后便穿过村庄，从大清庙上山。从大清庙到灵隐山的路是接近六十度的石阶，几乎望不到尽头，这应该是全程第二难的路了，团队中已经开始有人爬两步休息两分钟，但是从全程来说，已经快走完二分之一了，每个人都是“痛并快乐着”。<br>
+从竹竿山途径九曲岭、狮子笼、石人岭的山路，有铺装，但可能走的人少，杂草丛生。起伏也是比较大，水源告急。在龙门岭，太阳正在慢慢下山，见到了可能是在杭州最美的落日。<br>
+<img src="https://blog.xabc.site/post-images/1666698163672.jpeg" alt="" loading="lazy"><br>
+在此处有一块高三米有余的小石峰，顶上可以看到西部的群山，竟有一种“会当凌绝顶”的感觉。而之后的路，已经有点出乎团队的预料了，太阳落山的速度比想象中更快，还没走到美人峰，树木遮蔽下已经天黑了。<br>
+<img src="https://blog.xabc.site/post-images/1666698241747.jpeg" alt="" loading="lazy"><br>
+最后于晚上六点半到达山脚，此时几乎算是精疲力尽了。总计耗时九个半小时，走了21公里的山路。<br>
+<img src="https://blog.xabc.site/post-images/1666698698245.jpeg" alt="" loading="lazy"><br>
+不过大家都很快乐，爬山看风景的同时何尝不是挑战自己。不过该条线路还是很有提升的空间，如要一天走完，那么前半段的休息时间就不能多；后半段其实水需要准备的更多；期待下一次的探索！<br>
+<img src="https://blog.xabc.site/post-images/1666698507550.jpeg" alt="" loading="lazy"></p>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[10.22登山计划]]></title>
+        <id>https://blog.xabc.site/post/LEfh0UNPK/</id>
+        <link href="https://blog.xabc.site/post/LEfh0UNPK/">
+        </link>
+        <updated>2022-10-19T11:30:04.000Z</updated>
+        <content type="html"><![CDATA[<h1 id="路线概览">路线概览</h1>
+<p>四喜凉亭 - 龙门岭 - 午潮山遗址 - 小和山 - 金莲寺 - 老焦山 - 里哗山 - 屏峰山 - 杭州西湖香料公司 - 飞龙亭 -大清庙 - 竹竿山 - 石人亭 - 龙门山- 美人峰 - 灵峰山 - 老和山 - 老和云起</p>
+<p>大约耗时6小时，大家可根据自己体力在下山点下山</p>
+<h1 id="详情地图">详情地图</h1>
+<p>红色的为我们的爬山路线，每个有蓝色的均为下山点，为安全着想，不允许单人下山</p>
+<figure data-type="image" tabindex="1"><img src="https://res.craft.do/user/full/322e5cbf-1e1f-e080-f480-188fe10a2261/doc/FF3B8EFD-5DA2-44FE-86EC-1FF7BEE063C3/8BFB42DB-BE2A-4C94-847C-CBDABBD2FC39_2/tTj7HWOvZSus4ymWqt1ejuhSmxs06qVjgMA0S7jM7Qsz/Image.png" alt="image" loading="lazy"></figure>
+<figure data-type="image" tabindex="2"><img src="https://res.craft.do/user/full/322e5cbf-1e1f-e080-f480-188fe10a2261/doc/FF3B8EFD-5DA2-44FE-86EC-1FF7BEE063C3/1BA56A66-275E-4A79-BB89-C9EAB0AA4E40_2/8FAdqcfqLIxxJ50TadPgu8BFmIuDpVrubmx8aMp3aaoz/Image.png" alt="image" loading="lazy"></figure>
+<figure data-type="image" tabindex="3"><img src="https://res.craft.do/user/full/322e5cbf-1e1f-e080-f480-188fe10a2261/doc/FF3B8EFD-5DA2-44FE-86EC-1FF7BEE063C3/CFF5962B-0EE5-49FB-88C5-F8AAEB3DE37F_2/9Gyzp6Tydh3Cwg27spyuQSb3RMW96wfV0a2GcUL2thgz/Image.png" alt="image" loading="lazy"></figure>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[技术团队管理者的四计]]></title>
+        <id>https://blog.xabc.site/post/aavVVGqYW/</id>
+        <link href="https://blog.xabc.site/post/aavVVGqYW/">
+        </link>
+        <updated>2022-08-17T07:25:02.000Z</updated>
+        <summary type="html"><![CDATA[<p>三十六计是根据中国古代军事思想和丰富的斗争经验总结而成的兵书，是中华民族悠久非物质文化遗产之一，作为技术管理者，通过汲取古人的思想并结合现代的实践，一定可以把自己的团队打造成“军团”，所向披靡。笔者也略知一二，特贡献四计作为参考：</p>
+]]></summary>
+        <content type="html"><![CDATA[<p>三十六计是根据中国古代军事思想和丰富的斗争经验总结而成的兵书，是中华民族悠久非物质文化遗产之一，作为技术管理者，通过汲取古人的思想并结合现代的实践，一定可以把自己的团队打造成“军团”，所向披靡。笔者也略知一二，特贡献四计作为参考：</p>
+<!-- more -->
+<h2 id="计一-擒贼擒王">计一 擒贼擒王</h2>
+<p>面对Bug怎么办，面对项目延期怎么办？面对这些软件开发管理过程中最常见的问题，笔者有一妙计：擒贼擒王。我们都知道，只要程序员写了程序，那么就有Bug，有Bug，软件产品的质量就会有问题，相应修Bug的时间也会变得难以预测，因此，只要我们拿捏住了开发人员，就拿捏住了产品质量。<strong>我们需要定制严格的缺陷密度指标，测试如果测出问题，开发人员一定要好好反思，充分分析问题，阐述开发阶段未发现问题的原因，以及提升或者规避的办法</strong>。这样一来，下一次就不会产生同类型的Bug了，假以时日Bug数量便会越来越少，轻松让团队产出无Bug的软件产品。<br>
+我们都知道每天进步0.1%，一年就可以进步到宇宙边缘，因此每一次定OKR或者KPI，一定要量化他们的指标，并且要有提升。上个月目标是5个Bug，那么这个月就是4个，只要五个月，就可以降到0个Bug。</p>
+<h2 id="计二-无中生有">计二 无中生有</h2>
+<p>对于一个团队的管理者来说，开发人员的工作效率约等于产品交付的时间，时间就是金钱，因此，提高开发人员的工作效率直接关系到成本，关系到钱。那么，<strong>如何在不给钱的情况下提高工作效率</strong>就成了众多管理者追逐的团队目标之一。对此，笔者的妙计是：无中生有。这一计在实战中很常见，比如明明没有升P的机会，大可拍着开发的肩膀说：“项目的重要性不再赘述，最关键的是这个工作领导能看得到，并且项目如果能在明年7月前漂亮的结束，那么正好赶上述职..”。一句没有提到升迁，但确实句句戳到开发的心坎里，所谓画饼，其实是不够的，开发人员不会对假饼感兴趣，<strong>只有激发他们的想象力，才能让他们狂咽口水</strong>。因此，开发团队一定要围绕流口水的开发人员建立，并且Title一定要多。通常这样的团队，才有加班的主心骨，才有超越时间的工作量。适时配合福报和狼性，效果更好，开发人员可以带上行军床在公司战斗！</p>
+<p>##计三 兵贵神速<br>
+用速度缓解老板的焦虑，用快递迭代弥补设计和架构的缺陷，用扁平化的沟通代替繁琐的需求讨论，笔者称之：兵贵神速。我们都知道在互联网行业中拼杀，最追求效率，可能晚一天上线，公司就倒闭了。因此，我们需要速度，以下为常见用法：</p>
+<ul>
+<li><strong>开会</strong>。速度快了容易翻车，容易闯红灯，因此团队需要经常开会了解彼此的活动和领导的想法。一日之际最重要的就是站会，我们需要通过站会，让团队每一个人都知道其他人前一天做了什么，今天打算做什么，遇到了什么困难，如果有的话怎么解决，并且为了避免开会影响工作，如果9点上班，务必让站会在八点半开始，如果时间不够，那么务必在下班后开始，想开多久就开多久；到了周五，一定要开周会，每个人都需要汇报本周的进展，风险以及Bug的数量，同时还要传达领导的指示和下周的安排。你说为什么不通过邮件？那是因为语言的信息密度是要高过文字一个层级的！</li>
+<li><strong>汇报</strong> 开会能从信息密度上传达更多的信息，还需要通过小时报、日报、隔日报、周报、双周报、月报、里程碑报，充分了解下属的工作，并形成纸面记录，以报告的好坏决定对开发人员的印象，并以此作为绩效考核的重要参考。</li>
+<li><strong>扁平化迭代开发</strong> 规划阶段，如果我们没有脑子，那么可以拍屁股决定，周一设计，周二开发，周三测试，周四投产，周五开发人员按计一写问题分析报告；如果按月迭代，更可以一周设计，一周开发，一周测试，一周投产。设计阶段，只要不直接面对用户的，可以省略设计，自己人要什么用户体验；为了更好的理解需求，可以省略产品，由老板口头描述需求，开发直接上手代码，不用关注架构的设计，代码的优良，能跑就行，大不了我们可以通过快读迭代解决这些问题。</li>
+</ul>
+<p>##计四 远交近攻<br>
+尽管我们通过以上三计，已经大幅提高了团队的软件质量、人效、迭代速度，但我们仍不满足。因为远交近攻告诉我们，想要成功，光是对内“近攻”是远远不够的，我们还需要远交。作为管理者，酒香也怕巷子深，我们一定要去参加各类峰会、技术轮胎、圆桌会，充分展现团队的风采。同时要维持团队的工作量，确保每年都需要招人。多多锻炼应届生，让他们负责跨部门的合作，没有人会不理睬一个客客气气的应届生，对吧？</p>
+<hr>
+<p>在你的管理过程中，还遇到过哪些计，欢迎分享～</p>
+]]></content>
+    </entry>
+</feed>

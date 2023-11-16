@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+
+<title>翻译：如何编写Golang代码(How to Write Go Code) | Mr.Shentu</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<link rel="stylesheet" href="https://cdn.bootcss.com/font-awesome/5.12.1/css/all.min.css" crossorigin="anonymous">
+<link rel="shortcut icon" href="https://blog.xabc.site/favicon.ico?v=1700095858984">
+<link rel="stylesheet" href="https://blog.xabc.site/styles/main.css">
+
+
+
+<link href="https://cdn.bootcss.com/aos/3.0.0-beta.6/aos.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js">
+</script>
+
+
+
+    <meta name="description" content="本文是Golang官方文档How to Write Go Code的翻译。由于众所周知的原因，国内是打不开golang.org的，而百度搜索的Golang教程良莠不齐，很多都有错误。尤其当Go 1.14发布后，基于Gopath的组织方式已经..."/>
+    <meta name="keywords" content="翻译,Golang"/>
+    <link href="https://cdn.bootcss.com/tocbot/4.10.0/tocbot.css" rel="stylesheet">
+</head>
+<body>
+<div id="app" class="main">
+
+    <div class="sidebar" :class="{ 'full-height': menuVisible }">
+    <div class="top-container" data-aos="fade-right">
+        <div class="top-header-container">
+            <a class="site-title-container" href="https://blog.xabc.site">
+                <img src="https://blog.xabc.site/images/avatar.jpeg?v=1700095858984" class="site-logo">
+                <h1 class="site-title">Mr.Shentu</h1>
+            </a>
+            <div class="menu-btn" @click="menuVisible = !menuVisible">
+                <div class="line"></div>
+            </div>
+        </div>
+        <div>
+            
+                
+                    <a href="/" class="site-nav">
+                        首页
+                    </a>
+                
+            
+                
+                    <a href="/archives" class="site-nav">
+                        归档
+                    </a>
+                
+            
+                
+                    <a href="/tags" class="site-nav">
+                        标签
+                    </a>
+                
+            
+                
+                    <a href="/post/about" class="site-nav">
+                        关于
+                    </a>
+                
+            
+        </div>
+    </div>
+    <div class="bottom-container" data-aos="flip-up" data-aos-offset="0">
+        <div class="social-container">
+            
+                
+            
+                
+            
+                
+            
+                
+            
+                
+            
+        </div>
+        <div class="site-description">
+            <div>公告板</div>
+            —————————————————
+            <br>
+            永远保持热情❤️
+        </div>
+        <div class="site-footer" style="padding: 20px 0">
+            <div style="text-align: center;color:#939393">© 2021 申屠鹏会 版权所有<br><a href="http://www.beian.miit.gov.cn"style="color:#939393">浙ICP备2023016973号</a></div>
+
+            <div style="width:300px;margin:0 auto; padding:5px 0;">
+                <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAAAXNSR0IArs4c6QAAACBjSFJNAAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAAA8mVYSWZNTQAqAAAACAAHARIAAwAAAAEAAQAAARoABQAAAAEAAABiARsABQAAAAEAAABqASgAAwAAAAEAAgAAATEAAgAAACIAAAByATIAAgAAABQAAACUh2kABAAAAAEAAACoAAAAAAAAAEgAAAABAAAASAAAAAFBZG9iZSBQaG90b3Nob3AgQ0MgMjAxNCAoV2luZG93cykAMjAxNToxMToxMCAxNDowNDo1MAAABJAEAAIAAAAUAAAA3qABAAMAAAABAAEAAKACAAQAAAABAAAAFKADAAQAAAABAAAAFAAAAAAyMDE1OjExOjEwIDE0OjA0OjUwALd18ckAAAAJcEhZcwAACxMAAAsTAQCanBgAAAtJaVRYdFhNTDpjb20uYWRvYmUueG1wAAAAAAA8eDp4bXBtZXRhIHhtbG5zOng9ImFkb2JlOm5zOm1ldGEvIiB4OnhtcHRrPSJYTVAgQ29yZSA1LjQuMCI+CiAgIDxyZGY6UkRGIHhtbG5zOnJkZj0iaHR0cDovL3d3dy53My5vcmcvMTk5OS8wMi8yMi1yZGYtc3ludGF4LW5zIyI+CiAgICAgIDxyZGY6RGVzY3JpcHRpb24gcmRmOmFib3V0PSIiCiAgICAgICAgICAgIHhtbG5zOnhtcE1NPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvbW0vIgogICAgICAgICAgICB4bWxuczpzdEV2dD0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL3NUeXBlL1Jlc291cmNlRXZlbnQjIgogICAgICAgICAgICB4bWxuczpwaG90b3Nob3A9Imh0dHA6Ly9ucy5hZG9iZS5jb20vcGhvdG9zaG9wLzEuMC8iCiAgICAgICAgICAgIHhtbG5zOmV4aWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20vZXhpZi8xLjAvIgogICAgICAgICAgICB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iCiAgICAgICAgICAgIHhtbG5zOmRjPSJodHRwOi8vcHVybC5vcmcvZGMvZWxlbWVudHMvMS4xLyIKICAgICAgICAgICAgeG1sbnM6dGlmZj0iaHR0cDovL25zLmFkb2JlLmNvbS90aWZmLzEuMC8iPgogICAgICAgICA8eG1wTU06SW5zdGFuY2VJRD54bXAuaWlkOjgwYmNhOTg1LTRmOWItNmU0ZC05ZmM5LWU4ZjQ5MjY3ZGY0ZTwveG1wTU06SW5zdGFuY2VJRD4KICAgICAgICAgPHhtcE1NOk9yaWdpbmFsRG9jdW1lbnRJRD54bXAuZGlkOmQwMTdiOTRlLTk0YmQtMjY0MS04ZmY5LWJmN2EwYTM2NzdiMTwveG1wTU06T3JpZ2luYWxEb2N1bWVudElEPgogICAgICAgICA8eG1wTU06RG9jdW1lbnRJRD5hZG9iZTpkb2NpZDpwaG90b3Nob3A6ZWRkYWU4MGMtODc3MC0xMWU1LTg0OWEtYmNmZGE2MDI4ZjJlPC94bXBNTTpEb2N1bWVudElEPgogICAgICAgICA8eG1wTU06SGlzdG9yeT4KICAgICAgICAgICAgPHJkZjpTZXE+CiAgICAgICAgICAgICAgIDxyZGY6bGkgcmRmOnBhcnNlVHlwZT0iUmVzb3VyY2UiPgogICAgICAgICAgICAgICAgICA8c3RFdnQ6c29mdHdhcmVBZ2VudD5BZG9iZSBQaG90b3Nob3AgQ0MgMjAxNCAoV2luZG93cyk8L3N0RXZ0OnNvZnR3YXJlQWdlbnQ+CiAgICAgICAgICAgICAgICAgIDxzdEV2dDp3aGVuPjIwMTUtMTEtMTBUMTQ6MDQ6NTArMDg6MDA8L3N0RXZ0OndoZW4+CiAgICAgICAgICAgICAgICAgIDxzdEV2dDppbnN0YW5jZUlEPnhtcC5paWQ6ZDAxN2I5NGUtOTRiZC0yNjQxLThmZjktYmY3YTBhMzY3N2IxPC9zdEV2dDppbnN0YW5jZUlEPgogICAgICAgICAgICAgICAgICA8c3RFdnQ6YWN0aW9uPmNyZWF0ZWQ8L3N0RXZ0OmFjdGlvbj4KICAgICAgICAgICAgICAgPC9yZGY6bGk+CiAgICAgICAgICAgICAgIDxyZGY6bGkgcmRmOnBhcnNlVHlwZT0iUmVzb3VyY2UiPgogICAgICAgICAgICAgICAgICA8c3RFdnQ6c29mdHdhcmVBZ2VudD5BZG9iZSBQaG90b3Nob3AgQ0MgMjAxNCAoV2luZG93cyk8L3N0RXZ0OnNvZnR3YXJlQWdlbnQ+CiAgICAgICAgICAgICAgICAgIDxzdEV2dDpjaGFuZ2VkPi88L3N0RXZ0OmNoYW5nZWQ+CiAgICAgICAgICAgICAgICAgIDxzdEV2dDp3aGVuPjIwMTUtMTEtMTBUMTQ6MDQ6NTArMDg6MDA8L3N0RXZ0OndoZW4+CiAgICAgICAgICAgICAgICAgIDxzdEV2dDppbnN0YW5jZUlEPnhtcC5paWQ6ODBiY2E5ODUtNGY5Yi02ZTRkLTlmYzktZThmNDkyNjdkZjRlPC9zdEV2dDppbnN0YW5jZUlEPgogICAgICAgICAgICAgICAgICA8c3RFdnQ6YWN0aW9uPnNhdmVkPC9zdEV2dDphY3Rpb24+CiAgICAgICAgICAgICAgIDwvcmRmOmxpPgogICAgICAgICAgICA8L3JkZjpTZXE+CiAgICAgICAgIDwveG1wTU06SGlzdG9yeT4KICAgICAgICAgPHBob3Rvc2hvcDpDb2xvck1vZGU+MzwvcGhvdG9zaG9wOkNvbG9yTW9kZT4KICAgICAgICAgPHBob3Rvc2hvcDpJQ0NQcm9maWxlPnNSR0IgSUVDNjE5NjYtMi4xPC9waG90b3Nob3A6SUNDUHJvZmlsZT4KICAgICAgICAgPHBob3Rvc2hvcDpEb2N1bWVudEFuY2VzdG9ycz4KICAgICAgICAgICAgPHJkZjpCYWc+CiAgICAgICAgICAgICAgIDxyZGY6bGk+M0NCOEZFRThDMkVCRTZFNUE0REE5NzMyODM1NDEyNEU8L3JkZjpsaT4KICAgICAgICAgICAgICAgPHJkZjpsaT5hZG9iZTpkb2NpZDpwaG90b3Nob3A6YmRkZmNmNmYtODc3MC0xMWU1LTg0OWEtYmNmZGE2MDI4ZjJlPC9yZGY6bGk+CiAgICAgICAgICAgIDwvcmRmOkJhZz4KICAgICAgICAgPC9waG90b3Nob3A6RG9jdW1lbnRBbmNlc3RvcnM+CiAgICAgICAgIDxleGlmOlBpeGVsWERpbWVuc2lvbj4yMDwvZXhpZjpQaXhlbFhEaW1lbnNpb24+CiAgICAgICAgIDxleGlmOlBpeGVsWURpbWVuc2lvbj4yMDwvZXhpZjpQaXhlbFlEaW1lbnNpb24+CiAgICAgICAgIDxleGlmOkNvbG9yU3BhY2U+MTwvZXhpZjpDb2xvclNwYWNlPgogICAgICAgICA8eG1wOkNyZWF0b3JUb29sPkFkb2JlIFBob3Rvc2hvcCBDQyAyMDE0IChXaW5kb3dzKTwveG1wOkNyZWF0b3JUb29sPgogICAgICAgICA8eG1wOk1ldGFkYXRhRGF0ZT4yMDE1LTExLTEwVDE0OjA0OjUwKzA4OjAwPC94bXA6TWV0YWRhdGFEYXRlPgogICAgICAgICA8eG1wOk1vZGlmeURhdGU+MjAxNS0xMS0xMFQxNDowNDo1MCswODowMDwveG1wOk1vZGlmeURhdGU+CiAgICAgICAgIDx4bXA6Q3JlYXRlRGF0ZT4yMDE1LTExLTEwVDE0OjA0OjUwKzA4OjAwPC94bXA6Q3JlYXRlRGF0ZT4KICAgICAgICAgPGRjOmZvcm1hdD5pbWFnZS9wbmc8L2RjOmZvcm1hdD4KICAgICAgICAgPHRpZmY6UmVzb2x1dGlvblVuaXQ+MjwvdGlmZjpSZXNvbHV0aW9uVW5pdD4KICAgICAgICAgPHRpZmY6T3JpZW50YXRpb24+MTwvdGlmZjpPcmllbnRhdGlvbj4KICAgICAgPC9yZGY6RGVzY3JpcHRpb24+CiAgIDwvcmRmOlJERj4KPC94OnhtcG1ldGE+ChPFtVYAAATISURBVDgRfZR/bBNlGMe/d71er9df165r17RIGCOjk0GR4c/KZDEZKJswEgQ1UQwGo1HiD/5QNGI0Rv9ZwBAiWWIihD9QTEjYRHEZArIIiWEyFuhGtzna/byuP669u/Z6Pa8kaxB/vLnkvfd53+eT532+z/MS+J+haWM1YnSo/dyPV17JS0W6uTXUVdW4+hRBLIv9lxvxbxua9Mv64bO9r/afibRr0ghzO8/C4OSw2M1A4tliuKX2dLCt42uCCXXf60/da9A0jek7+GLfvs8ieP4pDautBrQSMzAxAtKPhHGVZ6ldu3/e8tH48JbyWYIg8nczyLsXmpYI5K/u++ng8TR27KrFS4EMHEeGkIioSERVpDd9hWfUQew5uh1d3yvQIge+09PC3M2oAPPaeHCie1903abBdVydF6+7BzF2PANyEQdVKAD5EohqDv1vXMI29iq8j63Gk5t62uZ+7Rqdu3mgfgFaAdJij/V0xEZfmWzCxiYB2QEdNpEGwZlgmlchX5qBcUkVmKwE/pvL6GgtoO9WA45dVH0OMmX+GzDxx7mAeuVcZ4nQ7ZQIuzCJzDRgVBVgXgaxlAW9hgM5lQONEvgxCX6XnjqCQDJLwlhNd2pSakkZeifC2OgPW5V4POy00kDRBM3ngztcgyw0CI9WQd0RgPXjENg9K0FWs/CscSMn6mnQNPg8LBAbWJ+YOv9yBWixOIMZQUFttQwwVTh7mQXVYkeibTHUuADiWg5izwyUsRTovWG43lqFk0eTur8FoUYKuegs5InRQAWozk+1ZZIUVgQEBB6kcfiYBec/jyG01gcHa4M4lERpNg95MAlbPIXrnwzjy6MmeEMcGv1p8PE8iskb4QqQpHKckCFhnxvGtlYVRcUKpXsaVSd+B+k3olBtQMlDwd3ig69vFHzXdeQKBnS0G2FLjEDIUDDYDMYy8E5hm9n7esn68XbV68fOhwR0+qtxOB6EcnsIVboD6TBD0qMU6jyIO334ltTFs3PY+fAsirYAuPsJmJ2BngpQl8ujZTRMRgWsCI7h03fX4IO969AtNAIZBe1iAi6OxMkemy6ULgKcePs1BmvrRjA5oi9lEZqSXVUBUpzSVLR5oUwriM3ewJthEzp6Leg7I+ImuRIbGm7BZ+ZRPO1HISlh0XIW728Yx0z/OESFAeOmQTlNy8vAO49DPnv5Of63L45L0wXkeb32Yn9i6eYQTF69q9SE/lHIzkpwLHEBi6v0fR5jpyKQbG5Ya60w17BwLtvRbHQ+faHy2hSzAy8krnceUmXJwV+cBmXRUNMchDovQRFzIFk9EpcFBG1Eoj+KokrB0bQUiowEV//Edqt3a2/lyuUfgZfj8rRZYrwlh7elDmo6p/dwBmBpGGgOtK5DIZVFLpYEo0fJBLzIp0TIcUGT9dJZGJVeNmoX3vM8YKsx6irm0yWU9AhKqgHynKB3RAmFRBrZkTkQ5erQW06e4mE0k/A+7nObrNnd/wBaTC2bBYk7JMZiOdqQgt1ThJEQQRMKDPkUNEmCbbkb9jo7SDoLykGDcNZMFKnQh1bP/LMLwEoOFwyRI++4M3NTG+VirNkfdDeoGc3KOEmX0WyGmNEmzB6XSLkbBhJRvrf+mnqW2L+/tOBbnv8CuZEFUx6bz18AAAAASUVORK5CYII=">
+                <a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=33010602010374" style="display:inline-block;text-decoration:none;height:20px;line-height:20px;"><img src="" style="float:left;"/><p style="float:left;height:20px;line-height:20px;margin: 0px 0px 0px 5px; color:#939393;">浙公网安备 33010602010374号</p></a>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+    <div class="main-container">
+
+        <nav style="text-align:right;position:fixed;top:40%;right:1%" class="js-toc show-box"></nav>
+
+
+        <div class="content-container" data-aos="fade-up">
+
+            <div class="post-detail">
+
+                <h2 class="post-title">翻译：如何编写Golang代码(How to Write Go Code)</h2>
+                <div class="post-date">2020-03-16</div>
+                
+
+                <div class="post-content js-toc-content" v-pre>
+
+                    <p>本文是Golang官方文档<a href="https://golang.org/doc/code.html">How to Write Go Code</a>的翻译。由于众所周知的原因，国内是打不开golang.org的，而百度搜索的Golang教程良莠不齐，很多都有错误。尤其当Go 1.14发布后，基于Gopath的组织方式已经过期了，取而代之的是Mudule。因为网上缺少此类的教程，所以特翻译官方文档，供自己回顾也供大家学习。勘误请发邮件。</p>
+<!-- more -->
+<p>以下是本文的目录。</p>
+<ul>
+<li><a href="#%E4%BB%8B%E7%BB%8D">介绍</a>
+<ul>
+<li><a href="#%E4%BB%A3%E7%A0%81%E7%9A%84%E7%BB%84%E7%BB%87">代码的组织</a></li>
+</ul>
+</li>
+<li><a href="#%E7%AC%AC%E4%B8%80%E4%B8%AA%E7%A8%8B%E5%BA%8F">第一个程序</a>
+<ul>
+<li><a href="###%E4%BB%8E%E8%87%AA%E5%B7%B1%E7%9A%84%E6%A8%A1%E5%9D%97%E5%AF%BC%E5%85%A5%E5%8C%85">从自己的模块导入包</a></li>
+<li><a href="###%E4%BB%8E%E8%BF%9C%E7%A8%8B%E6%A8%A1%E5%9D%97%E5%AF%BC%E5%85%A5%E5%8C%85">从远程模块导入包</a></li>
+</ul>
+</li>
+<li><a href="##%E6%B5%8B%E8%AF%95">测试</a></li>
+<li><a href="##%E6%8E%A5%E4%B8%8B%E6%9D%A5%E8%AF%A5%E7%9C%8B%E4%BB%80%E4%B9%88">接下来该看什么</a></li>
+</ul>
+<p>一些关键词汇</p>
+<table>
+<thead>
+<tr>
+<th>单词</th>
+<th>采取的翻译</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>module</td>
+<td>模块</td>
+</tr>
+<tr>
+<td>package</td>
+<td>包</td>
+</tr>
+<tr>
+<td>fetch</td>
+<td>获取</td>
+</tr>
+<tr>
+<td>build</td>
+<td>构建</td>
+</tr>
+<tr>
+<td>install</td>
+<td>安装</td>
+</tr>
+<tr>
+<td>function</td>
+<td>方法</td>
+</tr>
+<tr>
+<td>type</td>
+<td>类型</td>
+</tr>
+<tr>
+<td>repository</td>
+<td>库</td>
+</tr>
+</tbody>
+</table>
+<h2 id="介绍">介绍</h2>
+<p>本文演示了一个包括模块(module)的简单Go包的开发，并介绍了Go的一些工具，这是获取(fetch)，构建(build)和安装(install) Go模块，包和命令的标准方式。</p>
+<blockquote>
+<p>注意：<em>本文档假定读者使用的是<strong>Go 1.13或更高版本，并未设置Go111MODULE环境变量</strong></em>。如果在寻找老版本的使用方法，可以点击<a href="https://golang.org/doc/code.html#next">此处</a></p>
+</blockquote>
+<h2 id="代码的组织">代码的组织</h2>
+<p>Go程序由包进行管理。包是同一个目录中被一起编译的源文件的集合。在一个源文件中定义的方法，类型，变量和常量对于包内所有其他源文件都是可见的。<br>
+一个库中包含一个或多个模块。模块是一起发布相关联的Go包的集合。Go库通常只包含一个位于根目录的模块。名为go.mod的文件声明了这个模块的路径：模块内所有包的导入路径前缀。该模块包含了go.mod文件所在目录中的包，以及该目录的子目录，直到包含另一个go.mod文件的下一个子目录（如果有的话）<br>
+需要注意的是，在构建代码之前，无需将代码发布到远程仓库。可以在本地定义一个不属于库的模块，但是，未来总是会发布代码的，所以提前组织好自己的代码是一个好习惯。<br>
+每个模块的路径不仅充当了其他包的导入路径前缀，而且还表明了go command下载该模块的地方。例如，为了下载模块 <em>golang.org/x/tools</em>,go command会查询<em>https://golang.org/x/tools</em>所在的库。<br>
+导入路径是用来导入包的字符串。包的导入路径由其模块路径加上其所在模块中的子目录组成。例如，模块<em>github.com/google/go-cmp</em>包含了在目录*cmp/*中的一个包，那么该包的导入路径为：<em>github.com/google/go-cmp/cmp</em>. 标准库中的包没有模块路径前缀。</p>
+<h2 id="第一个程序">第一个程序</h2>
+<p>为了编译和执行一个简单的程序，首先需要选择一个模块路径(我们将会使用<em>example.com/user/hello</em>),然后创建一个声明模块的go.mod文件。(译者注：以下操作需要打开终端，均为终端命令)</p>
+<pre><code>$ mkdir hello
+$ cd hello
+$ go mod init example.com/user/hello
+go: creating new go.mod: module example.com/user/hello
+$ cat go.mod
+module example.com/user/hello
+
+go 1.14
+$
+</code></pre>
+<p>Go 源文件的第一句语句必须是<strong>包名</strong>。可执行命令则必须使用<em>package main</em>.<br>
+接下来，在该目录下创建一个hello.go文件，其中包含以下代码：</p>
+<pre><code>package main
+
+import &quot;fmt&quot;
+
+func main() {
+    fmt.Println(&quot;Hello World.&quot;)
+}
+</code></pre>
+<p>现在可以使用go tool构建并安装这个程序了。<br>
+<code> $ go install example.com/user/hello</code><br>
+这个命令会生成hello命令，生成一个可执行二进制文件，然后将该二进制文件安装为<code>$HOME/go/bin/hello</code>(如果是Windows，则为：<code>%USERPROFILE%\go\bin\hello.exe</code>).<br>
+这个安装目录由<em>GOPATH</em>和<em>GOBIN</em>环境变量进行控制。如果设置了<em>GOBIN</em>，则二进制文件将安装到此目录，如果设置了<em>GOPATH</em>，二进制将安装到<strong>GOPATH列表中第一个目录的bin子目录中。否则，二进制文件将默认安装到到GOPATH的bin子目录</strong>。(<code>$HOME/go</code> 或<code>%USERPROFILE%\go</code>)<br>
+你可以使用<code>go env</code>命令去设置默认的环境变量：<br>
+<code>$ go env -w GOBIN=/somewhere/else/bin</code><br>
+要取消先前由<code>go env -w</code>设置的变量，可以使用<em>go env -u</em>：<br>
+<code>$ go env -u GOBIN</code><br>
+诸如go install 之类的命令适用于包含当前工作目录的模块的上下文，如果工作目录不在example.com/user/hello模块内，则安装可能会失败。<br>
+为了方便起见，go 命令接受相对路径，如果没有其他路径，则默认使用当前工作目录的包，因此，在我们的工作目录中，以下命令都是等效的<br>
+<code>go install example.com/user/hello</code><br>
+<code>go install .</code><br>
+<code>go install</code><br>
+接下来，让我们运行该程序以确保其能正常工作。为了更加方便，我们将安装目录添加到PATH中，使运行二进制文件变得容易：</p>
+<pre><code>$  export PATH=$PATH:$(dirname $(go list -f '{{.Target}}' .))
+$ hello
+Hello,World.
+$
+</code></pre>
+<p>如果你在使用源代码版本控制系统，那么现在将是初始化仓库，添加文件并提交第一个更改的好时机。 同样，此步骤是可选的：你无需使用源代码版本控制系统来编写Go代码。</p>
+<pre><code>$ git init
+Initialized empty Git repository in /home/user/hello/.git/
+$ git add go mod hello.go
+$ git commit -m &quot;initial commit&quot;
+[master (root-commit) 0b4507d] initial commit
+ 1 file changed, 7 insertion(+)
+ create mode 100644 go.mod hello.go
+$
+</code></pre>
+<p>Go命令通过请求响应的HTTPS URL并读取HTML响应中嵌入的元数据来查找包含给定模块路径的仓库(请参阅go help importpath)。许多托管服务已经为包含Go代码的仓库提供了元数据，因此使你的模块可供他人使用的最简单方法通常是使其模块路径与仓库的URL相匹配。</p>
+<h3 id="从自己的模块导入包">从自己的模块导入包</h3>
+<p>让我们编写一个<em>morestrings</em>包，并在hello程序中使用。首先，为名为*$ HOME/hello/morestrings*的包创建一个目录，然后在该目录中创建一个名为reverse.go的文件，其中包含以下内容：</p>
+<pre><code>package morestrings
+
+func ReverseRunes(s string) string {
+	r := []rune(s)
+	for i, j := 0, len(r)-1; i &lt; len(r)/2; i, j = i+1, j-1 {
+		r[i], r[j] = r[j], r[i]
+	}
+	return string(r)
+}
+</code></pre>
+<p>因为ReverseRunes以大写字母开头，所以它是可导出的，即可以在其他已导入morestrings包的代码中使用。<br>
+让我们测试一下go build编译该包</p>
+<pre><code>$ cd $HOME/hello/morestrings
+$ go build
+$
+</code></pre>
+<p>这不会产生输出文件，而是将已编译的包保存在本地构建缓存中。<br>
+确认已构建morestrings包后，让我们在hello程序中使用它。为此，需要修改下原始的*$HOME/hello/hello.go以使用morestrings包：</p>
+<pre><code>package main
+
+import (
+	&quot;fmt&quot;
+
+	&quot;example.com/user/hello/morestrings&quot;
+)
+
+func main() {
+	fmt.Println(morestrings.ReverseRunes(&quot;!oG ,olleH&quot;))
+}
+</code></pre>
+<p>安装hello程序<br>
+<code>$ go install example.com/user/hello</code><br>
+运行新版本的hello程序，你应该可以见到新的反转过后的消息：</p>
+<pre><code>$ hello
+Hello, Go!
+</code></pre>
+<h3 id="从远程模块导入包">从远程模块导入包</h3>
+<p>导入路径可以描述如何去Git或Mercuial等版本控制系统获取包的源码。Go tool使用此属性自动的从远程仓库获取包。例如，要在程序中使用<em>github.comn/google/go-cmp/cmp</em>:</p>
+<pre><code>package main
+
+import (
+	&quot;fmt&quot;
+
+	&quot;example.com/user/hello/morestrings&quot;
+	&quot;github.com/google/go-cmp/cmp&quot;
+)
+
+func main() {
+	fmt.Println(morestrings.ReverseRunes(&quot;!oG ,olleH&quot;))
+	fmt.Println(cmp.Diff(&quot;Hello World&quot;, &quot;Hello Go&quot;))
+}
+</code></pre>
+<p>当运行诸如*go install, go build,或者go run等命令时，go命令会自动下载远程模块，并将其版本记录在go.mod文件中：</p>
+<pre><code>$ go install example.com/user/hello
+go: finding module for package github.com/google/go-cmp/cmp
+go: downloading github.com/google/go-cmp v0.4.0
+go: found github.com/google/go-cmp/cmp in github.com/google/go-cmp v0.4.0
+$ hello
+Hello, Go!
+  string(
+- 	&quot;Hello World&quot;,
++ 	&quot;Hello Go&quot;,
+  )
+$ cat go.mod
+module example.com/user/hello
+
+go 1.14
+
+require github.com/google/go-cmp v0.4.0
+$
+</code></pre>
+<p>模块的依赖会自动下载到GOPATH环境变量设置的目录pkg/mod子目录中。给定版本的模块的下载内容在需要该版本的所有其他模块之间共享，因此go命令将这些文件和目录标记为只读。要删除所有下载的模块，可以使用<code>go clean -modcache</code></p>
+<pre><code>$ go clean -modcache`
+$
+</code></pre>
+<h2 id="测试">测试</h2>
+<p>Go有一个由<code>go test</code>命令和testing包组成的轻量级测试框架。<br>
+你可以通过创建一个名称以_test.go结尾的文件来编写测试，文件里包含名为TestXXX且具有签名func(t <em>testing.T)的方法。测试框架会运行每一个这样的方法，如果该方法的调用结果为t.Error或t.Fail之类的失败调用，则认为该测试已失败。<br>
+通过创建包含以下Go代码的文件</em>$HOME/hello/morestrings/reverse_test.go*可在morestrings包中添加一个测试。</p>
+<pre><code>package morestrings
+
+import &quot;testing&quot;
+
+func TestReverseRunes(t *testing.T) {
+	cases := []struct {
+		in, want string
+	}{
+		{&quot;Hello, world&quot;, &quot;dlrow ,olleH&quot;},
+		{&quot;Hello, 世界&quot;, &quot;界世 ,olleH&quot;},
+		{&quot;&quot;, &quot;&quot;},
+	}
+	for _, c := range cases {
+		got := ReverseRunes(c.in)
+		if got != c.want {
+			t.Errorf(&quot;ReverseRunes(%q) == %q, want %q&quot;, c.in, got, c.want)
+		}
+	}
+}
+</code></pre>
+<p>然后用<code>go test</code>运行这个测试：</p>
+<pre><code>$ go test
+PASS
+ok  	example.com/user/morestrings 0.165s
+$
+</code></pre>
+<p>运行<code>go help test</code> 或查阅testing 包文档可以获得更多的细节信息。</p>
+<h2 id="接下来该看什么">接下来该看什么</h2>
+<ul>
+<li>订阅golang的公告邮件，以便在发布新的稳定版时收到通知。</li>
+<li>有关编写清晰，惯用的Go代码可以参见Effective Go。</li>
+<li>参见 A Tour of Go去学习基础语法。</li>
+<li>访问文档中心获取有关Go语言以及库和工具的更多文章。</li>
+</ul>
+
+                </div>
+                
+                    <div class="tag-container">
+                        
+                            <a href="https://blog.xabc.site/tag/Uo9mtBIjh/" class="tag">
+                                翻译
+                            </a>
+                        
+                            <a href="https://blog.xabc.site/tag/VKYOe3SsnR/" class="tag">
+                                Golang
+                            </a>
+                        
+                    </div>
+                
+                
+                    <div class="next-post">
+                        <div class="next">下一篇</div>
+                        <a href="https://blog.xabc.site/post/network_travel1/">
+                            <h3 class="post-title">
+                                TCP/IP学习(1):创建套接字
+                            </h3>
+                        </a>
+                    </div>
+                
+
+                
+
+            </div>
+
+        </div>
+    </div>
+</div>
+<script src="https://cdn.bootcss.com/aos/3.0.0-beta.6/aos.js"></script>
+<script type="application/javascript">
+
+    AOS.init();
+
+    var app = new Vue({
+        el: '#app',
+        data: {
+            menuVisible: false,
+        },
+    })
+
+</script>
+
+    <script src="https://cdn.bootcss.com/highlight.js/9.18.1/highlight.min.js"></script>
+    <script>
+        hljs.initHighlightingOnLoad()
+    </script>
+
+<script src="https://cdn.bootcss.com/tocbot/4.10.0/tocbot.min.js"></script>
+<script>
+tocbot.init({
+  tocSelector: '.js-toc',
+  contentSelector: '.js-toc-content',
+  headingSelector: 'h1, h2, h3',
+  hasInnerContainers: true,
+});
+const slidBox = document.createElement('div')
+const hitbox = document.createElement('div')
+slidBox.classList.add('slid-btn')
+hitbox.classList.add('show-icon')
+hitbox.classList.add('target-icon')
+slidBox.appendChild(hitbox)
+document.querySelector('.js-toc') && document.querySelector('.js-toc').appendChild(slidBox)
+slidBox.addEventListener('click', e => {
+    // document.querySelector('.slid-btn .target-icon').classList.entries()
+    if (document.querySelector('.slid-btn .target-icon').classList.contains(('hide-icon'))) {
+        document.querySelector('.js-toc').classList.add('show-box')
+        document.querySelector('.js-toc').classList.remove('hide-box')
+        document.querySelector('.slid-btn .target-icon').classList.add('show-icon')
+        document.querySelector('.slid-btn .target-icon').classList.remove('hide-icon')
+    } else {
+        document.querySelector('.js-toc').classList.add('hide-box')
+        document.querySelector('.js-toc').classList.remove('show-box')
+        document.querySelector('.slid-btn .target-icon').classList.add('hide-icon')
+        document.querySelector('.slid-btn .target-icon').classList.remove('show-icon')
+    }
+})
+</script>
+
+
+
+
+</body>
+</html>

@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+
+<title>翻译: Effective Go (7) | Mr.Shentu</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<link rel="stylesheet" href="https://cdn.bootcss.com/font-awesome/5.12.1/css/all.min.css" crossorigin="anonymous">
+<link rel="shortcut icon" href="https://blog.xabc.site/favicon.ico?v=1700095858984">
+<link rel="stylesheet" href="https://blog.xabc.site/styles/main.css">
+
+
+
+<link href="https://cdn.bootcss.com/aos/3.0.0-beta.6/aos.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js">
+</script>
+
+
+
+    <meta name="description" content="本文是Effective Go的第六篇翻译，对应的章节为：Interfaces and other types，The blank identifier
+第一篇翻译在这里,对应的章节为：Introduction, Formatting, C..."/>
+    <meta name="keywords" content="翻译,Golang"/>
+    <link href="https://cdn.bootcss.com/tocbot/4.10.0/tocbot.css" rel="stylesheet">
+</head>
+<body>
+<div id="app" class="main">
+
+    <div class="sidebar" :class="{ 'full-height': menuVisible }">
+    <div class="top-container" data-aos="fade-right">
+        <div class="top-header-container">
+            <a class="site-title-container" href="https://blog.xabc.site">
+                <img src="https://blog.xabc.site/images/avatar.jpeg?v=1700095858984" class="site-logo">
+                <h1 class="site-title">Mr.Shentu</h1>
+            </a>
+            <div class="menu-btn" @click="menuVisible = !menuVisible">
+                <div class="line"></div>
+            </div>
+        </div>
+        <div>
+            
+                
+                    <a href="/" class="site-nav">
+                        首页
+                    </a>
+                
+            
+                
+                    <a href="/archives" class="site-nav">
+                        归档
+                    </a>
+                
+            
+                
+                    <a href="/tags" class="site-nav">
+                        标签
+                    </a>
+                
+            
+                
+                    <a href="/post/about" class="site-nav">
+                        关于
+                    </a>
+                
+            
+        </div>
+    </div>
+    <div class="bottom-container" data-aos="flip-up" data-aos-offset="0">
+        <div class="social-container">
+            
+                
+            
+                
+            
+                
+            
+                
+            
+                
+            
+        </div>
+        <div class="site-description">
+            <div>公告板</div>
+            —————————————————
+            <br>
+            永远保持热情❤️
+        </div>
+        <div class="site-footer" style="padding: 20px 0">
+            <div style="text-align: center;color:#939393">© 2021 申屠鹏会 版权所有<br><a href="http://www.beian.miit.gov.cn"style="color:#939393">浙ICP备2023016973号</a></div>
+
+            <div style="width:300px;margin:0 auto; padding:5px 0;">
+                <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAAAXNSR0IArs4c6QAAACBjSFJNAAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAAA8mVYSWZNTQAqAAAACAAHARIAAwAAAAEAAQAAARoABQAAAAEAAABiARsABQAAAAEAAABqASgAAwAAAAEAAgAAATEAAgAAACIAAAByATIAAgAAABQAAACUh2kABAAAAAEAAACoAAAAAAAAAEgAAAABAAAASAAAAAFBZG9iZSBQaG90b3Nob3AgQ0MgMjAxNCAoV2luZG93cykAMjAxNToxMToxMCAxNDowNDo1MAAABJAEAAIAAAAUAAAA3qABAAMAAAABAAEAAKACAAQAAAABAAAAFKADAAQAAAABAAAAFAAAAAAyMDE1OjExOjEwIDE0OjA0OjUwALd18ckAAAAJcEhZcwAACxMAAAsTAQCanBgAAAtJaVRYdFhNTDpjb20uYWRvYmUueG1wAAAAAAA8eDp4bXBtZXRhIHhtbG5zOng9ImFkb2JlOm5zOm1ldGEvIiB4OnhtcHRrPSJYTVAgQ29yZSA1LjQuMCI+CiAgIDxyZGY6UkRGIHhtbG5zOnJkZj0iaHR0cDovL3d3dy53My5vcmcvMTk5OS8wMi8yMi1yZGYtc3ludGF4LW5zIyI+CiAgICAgIDxyZGY6RGVzY3JpcHRpb24gcmRmOmFib3V0PSIiCiAgICAgICAgICAgIHhtbG5zOnhtcE1NPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvbW0vIgogICAgICAgICAgICB4bWxuczpzdEV2dD0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL3NUeXBlL1Jlc291cmNlRXZlbnQjIgogICAgICAgICAgICB4bWxuczpwaG90b3Nob3A9Imh0dHA6Ly9ucy5hZG9iZS5jb20vcGhvdG9zaG9wLzEuMC8iCiAgICAgICAgICAgIHhtbG5zOmV4aWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20vZXhpZi8xLjAvIgogICAgICAgICAgICB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iCiAgICAgICAgICAgIHhtbG5zOmRjPSJodHRwOi8vcHVybC5vcmcvZGMvZWxlbWVudHMvMS4xLyIKICAgICAgICAgICAgeG1sbnM6dGlmZj0iaHR0cDovL25zLmFkb2JlLmNvbS90aWZmLzEuMC8iPgogICAgICAgICA8eG1wTU06SW5zdGFuY2VJRD54bXAuaWlkOjgwYmNhOTg1LTRmOWItNmU0ZC05ZmM5LWU4ZjQ5MjY3ZGY0ZTwveG1wTU06SW5zdGFuY2VJRD4KICAgICAgICAgPHhtcE1NOk9yaWdpbmFsRG9jdW1lbnRJRD54bXAuZGlkOmQwMTdiOTRlLTk0YmQtMjY0MS04ZmY5LWJmN2EwYTM2NzdiMTwveG1wTU06T3JpZ2luYWxEb2N1bWVudElEPgogICAgICAgICA8eG1wTU06RG9jdW1lbnRJRD5hZG9iZTpkb2NpZDpwaG90b3Nob3A6ZWRkYWU4MGMtODc3MC0xMWU1LTg0OWEtYmNmZGE2MDI4ZjJlPC94bXBNTTpEb2N1bWVudElEPgogICAgICAgICA8eG1wTU06SGlzdG9yeT4KICAgICAgICAgICAgPHJkZjpTZXE+CiAgICAgICAgICAgICAgIDxyZGY6bGkgcmRmOnBhcnNlVHlwZT0iUmVzb3VyY2UiPgogICAgICAgICAgICAgICAgICA8c3RFdnQ6c29mdHdhcmVBZ2VudD5BZG9iZSBQaG90b3Nob3AgQ0MgMjAxNCAoV2luZG93cyk8L3N0RXZ0OnNvZnR3YXJlQWdlbnQ+CiAgICAgICAgICAgICAgICAgIDxzdEV2dDp3aGVuPjIwMTUtMTEtMTBUMTQ6MDQ6NTArMDg6MDA8L3N0RXZ0OndoZW4+CiAgICAgICAgICAgICAgICAgIDxzdEV2dDppbnN0YW5jZUlEPnhtcC5paWQ6ZDAxN2I5NGUtOTRiZC0yNjQxLThmZjktYmY3YTBhMzY3N2IxPC9zdEV2dDppbnN0YW5jZUlEPgogICAgICAgICAgICAgICAgICA8c3RFdnQ6YWN0aW9uPmNyZWF0ZWQ8L3N0RXZ0OmFjdGlvbj4KICAgICAgICAgICAgICAgPC9yZGY6bGk+CiAgICAgICAgICAgICAgIDxyZGY6bGkgcmRmOnBhcnNlVHlwZT0iUmVzb3VyY2UiPgogICAgICAgICAgICAgICAgICA8c3RFdnQ6c29mdHdhcmVBZ2VudD5BZG9iZSBQaG90b3Nob3AgQ0MgMjAxNCAoV2luZG93cyk8L3N0RXZ0OnNvZnR3YXJlQWdlbnQ+CiAgICAgICAgICAgICAgICAgIDxzdEV2dDpjaGFuZ2VkPi88L3N0RXZ0OmNoYW5nZWQ+CiAgICAgICAgICAgICAgICAgIDxzdEV2dDp3aGVuPjIwMTUtMTEtMTBUMTQ6MDQ6NTArMDg6MDA8L3N0RXZ0OndoZW4+CiAgICAgICAgICAgICAgICAgIDxzdEV2dDppbnN0YW5jZUlEPnhtcC5paWQ6ODBiY2E5ODUtNGY5Yi02ZTRkLTlmYzktZThmNDkyNjdkZjRlPC9zdEV2dDppbnN0YW5jZUlEPgogICAgICAgICAgICAgICAgICA8c3RFdnQ6YWN0aW9uPnNhdmVkPC9zdEV2dDphY3Rpb24+CiAgICAgICAgICAgICAgIDwvcmRmOmxpPgogICAgICAgICAgICA8L3JkZjpTZXE+CiAgICAgICAgIDwveG1wTU06SGlzdG9yeT4KICAgICAgICAgPHBob3Rvc2hvcDpDb2xvck1vZGU+MzwvcGhvdG9zaG9wOkNvbG9yTW9kZT4KICAgICAgICAgPHBob3Rvc2hvcDpJQ0NQcm9maWxlPnNSR0IgSUVDNjE5NjYtMi4xPC9waG90b3Nob3A6SUNDUHJvZmlsZT4KICAgICAgICAgPHBob3Rvc2hvcDpEb2N1bWVudEFuY2VzdG9ycz4KICAgICAgICAgICAgPHJkZjpCYWc+CiAgICAgICAgICAgICAgIDxyZGY6bGk+M0NCOEZFRThDMkVCRTZFNUE0REE5NzMyODM1NDEyNEU8L3JkZjpsaT4KICAgICAgICAgICAgICAgPHJkZjpsaT5hZG9iZTpkb2NpZDpwaG90b3Nob3A6YmRkZmNmNmYtODc3MC0xMWU1LTg0OWEtYmNmZGE2MDI4ZjJlPC9yZGY6bGk+CiAgICAgICAgICAgIDwvcmRmOkJhZz4KICAgICAgICAgPC9waG90b3Nob3A6RG9jdW1lbnRBbmNlc3RvcnM+CiAgICAgICAgIDxleGlmOlBpeGVsWERpbWVuc2lvbj4yMDwvZXhpZjpQaXhlbFhEaW1lbnNpb24+CiAgICAgICAgIDxleGlmOlBpeGVsWURp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">
+                <a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=33010602010374" style="display:inline-block;text-decoration:none;height:20px;line-height:20px;"><img src="" style="float:left;"/><p style="float:left;height:20px;line-height:20px;margin: 0px 0px 0px 5px; color:#939393;">浙公网安备 33010602010374号</p></a>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+    <div class="main-container">
+
+        <nav style="text-align:right;position:fixed;top:40%;right:1%" class="js-toc show-box"></nav>
+
+
+        <div class="content-container" data-aos="fade-up">
+
+            <div class="post-detail">
+
+                <h2 class="post-title">翻译: Effective Go (7)</h2>
+                <div class="post-date">2020-04-21</div>
+                
+
+                <div class="post-content js-toc-content" v-pre>
+
+                    <p><strong>本文是Effective Go的第六篇翻译，对应的章节为：Interfaces and other types，The blank identifier</strong><br>
+第一篇翻译<a href="https://xabc.site/post/tra_effective_go">在这里</a>,对应的章节为：Introduction, Formatting, Commentary.<br>
+第二篇翻译<a href="https://xabc.site/post/tra_effective_go2">在这里</a>,对应的章节为：Names, Semicolons.<br>
+第三篇翻译<a href="https://xabc.site/post/tra_effective_go3">在这里</a>,对应的章节为：Control structures.<br>
+第四篇翻译<a href="https://xabc.site/post/tra_effective_go4">在这里</a>,对应的章节为：Functions<br>
+第五篇翻译<a href="https://xabc.site/post/tra_effective_go5/">在这里</a>,对应的章节为：Data.<br>
+第六篇翻译<a href="https://xabc.site/post/tra_effective_go6/">在这里</a>,对应的章节为：Initialization, Methods.<br>
+第八篇翻译<a href="https://xabc.site/post/tra_effective_go8/">在这里</a>,对应的章节为：Embedding.</p>
+<!-- more -->
+<h2 id="接口和其他类型">接口和其他类型</h2>
+<h3 id="接口">接口</h3>
+<p>Go的接口提供了一种指定对象行为的方式：如果某个东西可以做到这些行为，则可以在这使用。我们已经见过一些简单的例子。自定义printer可以通过String方法实现，而Fprintf可以使用Write方法生成任意内容的输出。只有一个或两个方法的接口在Go代码中很常见，并且通常会从该方法派生一个名称，例如io.Writer来实现Write。<br>
+一个类型可以实现多个接口。例如，如果一个集合实现了sort.Interface，则可以使用sort包的程序进行排序。sort.Interface包含了<code>Len(), Less(i, j int)bool, Swap(i, j int)</code>,当然也可以有自定义的格式化器。在这个特别的例子中，Sequence满足了这些方法。</p>
+<pre><code>type Sequence []int
+
+// Methods required by sort.Interface.
+func (s Sequence) Len() int {
+    return len(s)
+}
+func (s Sequence) Less(i, j int) bool {
+    return s[i] &lt; s[j]
+}
+func (s Sequence) Swap(i, j int) {
+    s[i], s[j] = s[j], s[i]
+}
+
+// Copy returns a copy of the Sequence.
+func (s Sequence) Copy() Sequence {
+    copy := make(Sequence, 0, len(s))
+    return append(copy, s...)
+}
+
+// Method for printing - sorts the elements before printing.
+func (s Sequence) String() string {
+    s = s.Copy() // Make a copy; don't overwrite argument.
+    sort.Sort(s)
+    str := &quot;[&quot;
+    for i, elem := range s { // Loop is O(N²); will fix that in next example.
+        if i &gt; 0 {
+            str += &quot; &quot;
+        }
+        str += fmt.Sprint(elem)
+    }
+    return str + &quot;]&quot;
+}
+</code></pre>
+<h3 id="类型转换">类型转换</h3>
+<p>Sequence的String方法重复了Sprint早已为切片完成的工作。(而且性能很差，复杂度 O(N<sup>2</sup>) )如果在调用Sprint之前将Sequence转换成简单的[]int,那我们可以共享之前的工作(并有性能优化).</p>
+<pre><code>func (s Sequence) String() string {
+    s = s.Copy()
+    sort.Sort(s)
+    return fmt.Sprint([]int(s))
+}
+</code></pre>
+<p>这个方法是利用了类型转换的技巧从String方法安全的调用Sprintf的另一个例子，因为这两种类型是相同的(Sequence和[]int，如果忽略类型名称的话)，因此在它们之间进行类型转换是合法的。转换不会创建新的值，它只是暂时作为现有值有新类型的作用。(还有一些其他合法的转换，例如从整数到浮点数的转换，它们确实创建了一个新值)<br>
+在Go中，习惯用法是转换表达式的类型以访问不同的方法集。例如，我们可以使用现有的类型sort.IntSlice将示例简化成：</p>
+<pre><code>type Sequence []int
+
+// Method for printing - sorts the elements before printing
+func (s Sequence) String() string {
+    s = s.Copy()
+    sort.IntSlice(s).Sort()
+    return fmt.Sprint([]int(s))
+}
+</code></pre>
+<p>现在我们不必让Sequence实现多个接口(sort, print)，而是使用将数据项转换成多种类型(Sequence, sort.IntSlice, []int)的能力，每种类型都能完成部分工作。在实践中，这种情况不常见，但是可以非常高效。</p>
+<h3 id="接口类型转换和类型断言">接口类型转换和类型断言</h3>
+<p>类型选择是类型转换的一种形式：它们接受一个接口，然后在switch表达式的每一个case中，在某种意义上转换成相应case的类型。这里是一个简化版的fmt.Printf，将一个值用类型转换成一个字符串。如果它本身是string类型，我们就输出真实的string值；如果本身带有String方法，则输出调用该方法的结果。</p>
+<pre><code>type Stringer interface {
+    String() string
+}
+
+var value interface{} // Value provided by caller.
+switch str := value.(type) {
+case string:
+    return str
+case Stringer:
+    return str.String()
+}
+</code></pre>
+<p>第一种情况是具体的值，第二个将接口转换成另一个接口。这种方式对于混合类型来说非常完美。<br>
+如果我们只关心一种类型呢？如果我们知道某值包含一个字符串，而我们只想提取它？一个单一情况的类型选择可以做到，除此之外，类型断言也可以。类型断言接受一个接口值，然后从中提取指定的显式类型的值。语法借鉴了开头的类型选择，但是它需要一个明确的类型，而非type关键字。</p>
+<pre><code>value.(typeName)
+</code></pre>
+<p>结果是一个静态类型typeName的新值。该类型必须是接口保留的具体类型，或者是可以将值转换为第二种接口的类型。为了提取其中string，我们可以这么写：</p>
+<pre><code>str := value.(string)
+</code></pre>
+<p>但是如果值不包含string，程序就会因为运行时错误而崩溃。为了防止这种情况，请使用&quot;, ok&quot;的惯用法来安全的测试该值是否是字符串。</p>
+<pre><code>str, ok := value.(string)
+if ok {
+    fmt.Printf(&quot;string value is: %q\n&quot;, str)
+} else {
+    fmt.Printf(&quot;value is not a string\n&quot;)
+}
+</code></pre>
+<p>如果类型断言失败，则str将仍然存在，并且属于字符串类型，但是会成为零值。<br>
+为了说明该功能，这是举了一个if-else语句，它等效于此部分的类型选择。</p>
+<pre><code>if str, ok := value.(string); ok {
+    return str
+} else if str, ok := value.(Stringer); ok {
+    return str.String()
+}
+</code></pre>
+<h3 id="通用">通用</h3>
+<p>如果类型只是为了实现接口存在，并且永远不会有超出该接口的导出方法，则无需导出类型本身。仅导出接口即可清楚地知道该值除了接口中描述的内容外没有其他另类的行为。它还避免了需要在通用方法的每个实例上重复文档说明。<br>
+在这种情况下，构造函数应返回接口值而不是实现类型。例如，在哈希库中，crc32.NewIEEE和adler32.New都返回接口类型hash.Hash32。在Go程序中将CRC-32算法替换为Adler-32只需更改构造函数调用即可；其余代码不受算法更改的影响。<br>
+一种类似的方法允许将各种<code>crypto</code>包中的流密码算法与它们链接在一起的分组密码分开。 crypto/cipher包中的Block接口指定了块密码的行为，该行为提供了单个数据块的加密。似于bufio包，实现该接口的密码包可用于构造以Stream接口表示的流密码，而无需了解块加密的详细信息。<br>
+crypto/cipher接口如下所示：</p>
+<pre><code>type Block interface {
+    BlockSize() int
+    Encrypt(dst, src []byte)
+    Decrypt(dst, src []byte)
+}
+
+type Stream interface {
+    XORKeyStream(dst, src []byte)
+}
+</code></pre>
+<p>这里是计数器模式(CTR)流的定义，它将快密码转换为流密码。注意，分组密码的详细信息已经被抽象化了：</p>
+<pre><code>// NewCTR returns a Stream that encrypts/decrypts using the given Block in
+// counter mode. The length of iv must be the same as the Block's block size.
+func NewCTR(block Block, iv []byte) Stream
+</code></pre>
+<p>NewCTR不仅适用于一种特定的加密算法和数据源，而且适用于Block接口和任何Stream的任何实现类型。 因为它们返回接口值，所以用其他加密模式替换CTR加密是本地化的更改。 构造函数调用必须进行修改，但是由于周围的代码必须仅将结果视为Stream，因此不会注意到差异。</p>
+<h3 id="接口和方法">接口和方法</h3>
+<p>由于几乎所有东西都可以附加方法，因此几乎所有东西都可以满足接口。 http包中的一个说明性示例定义了Handler接口。 任何实现Handler的对象都可以处理HTTP请求。</p>
+<pre><code>type Handler interface {
+    ServeHTTP(ResponseWriter, *Request)
+}
+</code></pre>
+<p>ResponseWriter本身是一个接口，提供对将响应返回给客户端所需的方法的访问。 这些方法包括标准的Write方法，因此可以在可以使用io.Writer的任何地方使用http.ResponseWriter。 请求是一个结构，其中包含来自客户端的请求的解析表示。<br>
+为简便起见，让我们忽略POST，并假设HTTP请求始终是GET； 简化不会影响处理程序的设置方式。 这是一个简单但完整的处理程序实现，用于计算访问页面的次数。</p>
+<pre><code>// Simple counter server.
+type Counter struct {
+    n int
+}
+
+func (ctr *Counter) ServeHTTP(w http.ResponseWriter, req *http.Request) {
+    ctr.n++
+    fmt.Fprintf(w, &quot;counter = %d\n&quot;, ctr.n)
+}
+</code></pre>
+<p>（保持我们的主题不变，请注意Fprintf如何打印到http.ResponseWriter。）作为参考，以下是将这种服务器附加到URL树上的节点的方法。</p>
+<pre><code>import &quot;net/http&quot;
+...
+ctr := new(Counter)
+http.Handle(&quot;/counter&quot;, ctr)
+</code></pre>
+<p>但是为什么让Counter成为一个结构体？整数就足够了。(接受者必须是一个指针，这样增量才能对调用方可见)</p>
+<pre><code>// Simpler counter server.
+type Counter int
+
+func (ctr *Counter) ServeHTTP(w http.ResponseWriter, req *http.Request) {
+    *ctr++
+    fmt.Fprintf(w, &quot;counter = %d\n&quot;, *ctr)
+}
+</code></pre>
+<p>如果你的程序有一些内部状态需要通知已访问的页面怎么办？可以将管道绑定到网页。</p>
+<pre><code>// A channel that sends a notification on each visit.
+// (Probably want the channel to be buffered.)
+type Chan chan *http.Request
+
+func (ch Chan) ServeHTTP(w http.ResponseWriter, req *http.Request) {
+    ch &lt;- req
+    fmt.Fprint(w, &quot;notification sent&quot;)
+}
+</code></pre>
+<p>最后，假设我们要在on/args上显示调用服务器二进制文件时使用的参数。 编写函数以打印参数很容易。</p>
+<pre><code>func ArgServer() {
+    fmt.Println(os.Args)
+}
+</code></pre>
+<p>我们如何将其变成HTTP服务器？ 我们可以使ArgServer成为某种类型的方法，其值可以忽略，但是有一种更简洁的方法。 由于我们可以为除指针和接口之外的任何类型定义方法，因此我们可以为函数编写方法。 http软件包包含以下代码：</p>
+<pre><code>// The HandlerFunc type is an adapter to allow the use of
+// ordinary functions as HTTP handlers.  If f is a function
+// with the appropriate signature, HandlerFunc(f) is a
+// Handler object that calls f.
+type HandlerFunc func(ResponseWriter, *Request)
+
+// ServeHTTP calls f(w, req).
+func (f HandlerFunc) ServeHTTP(w ResponseWriter, req *Request) {
+    f(w, req)
+}
+</code></pre>
+<p>HandlerFunc是一种带有ServeHTTP方法的类型，因此该类型的值可以处理HTTP请求。 看一下该方法的实现：接收者是一个函数f，该方法调用f。 这可能看起来很奇怪，但是与接收方是管道和在该管道上发送方法没有什么不同。<br>
+为了使ArgServer成为HTTP服务器，我们首先将其修改为具有正确的签名。</p>
+<pre><code>// Argument server.
+func ArgServer(w http.ResponseWriter, req *http.Request) {
+    fmt.Fprintln(w, os.Args)
+}
+</code></pre>
+<p>ArgServer现在具有与HandlerFunc相同的签名，因此可以将其转换为该类型以访问其方法，就像我们将Sequence转换为IntSlice以访问IntSlice.Sort一样。 设置它的代码很简洁：</p>
+<pre><code>http.Handle(&quot;/args&quot;, http.HandlerFunc(ArgServer))
+</code></pre>
+<p>当有人访问页面/ args时，在该页面上安装的处理程序的值为ArgServer和类型HandlerFunc。 HTTP服务器将以ArgServer作为接收器调用该类型的ServeHTTP方法，该方法随后将通过HandlerFunc.ServeHTTP内部的调用f(w，req)调用ArgServer。 然后将显示参数。<br>
+在本节中，我们通过结构，整数，通道和函数制成了HTTP服务器，这都是因为接口只是方法集，可以（几乎）定义任何类型。</p>
+<h2 id="空白标识符">空白标识符</h2>
+<p>在for range循环和map的背景下，我们已经多次提及空白标识符。 可以使用任何类型的任何值来分配或声明空白标识符，并且可以无害地丢弃该值。 这有点像写入Unix/dev/null文件：它表示只写值，用作需要变量但实际值无关的占位符。 它的用途超出了我们已经看到的用途。</p>
+<h3 id="多个赋值中的空白标识符">多个赋值中的空白标识符</h3>
+<p>在for range循环中使用空白标识符是一种特殊情况：多个赋值。<br>
+如果赋值在左侧需要多个值，但是程序不会使用其中一个值，则赋值左侧的空白标识符可以避免创建虚拟变量的需要，并明确说明： 该值将被丢弃。 例如，当调用返回一个值和一个错误但仅错误重要的函数时，请使用空白标识符丢弃不相关的值。</p>
+<pre><code>if _, err := os.Stat(path); os.IsNotExist(err) {
+	fmt.Printf(&quot;%s does not exist\n&quot;, path)
+}
+</code></pre>
+<p>有时，你会看到丢弃该错误值以忽略该错误的代码。 这是可怕的做法。 始终检查错误返回； 提供它们是有原因的。</p>
+<pre><code>// Bad! This code will crash if path does not exist.
+fi, _ := os.Stat(path)
+if fi.IsDir() {
+    fmt.Printf(&quot;%s is a directory\n&quot;, path)
+}
+</code></pre>
+<h3 id="未使用的包和变量">未使用的包和变量</h3>
+<p>导入包或声明变量而不使用它是错误的。 未使用的导入会使程序臃肿，并且编译缓慢，而已初始化但未使用的变量至少会浪费计算量，并且可能表明有一个较大的错误。 然而，当程序正在积极开发中时，经常会出现未使用的导入和变量，并且为了继续进行编译而删除它们，而稍后又需要它们，可能会很烦人。 空白标识符提供了一种解决方法。<br>
+这个程序有两个未使用的导入包（fmt和io）和一个未使用的变量（fd），因此它不会编译，尽管目前为止的代码本身没有错误。</p>
+<pre><code>package main
+
+import (
+    &quot;fmt&quot;
+    &quot;io&quot;
+    &quot;log&quot;
+    &quot;os&quot;
+)
+
+func main() {
+    fd, err := os.Open(&quot;test.go&quot;)
+    if err != nil {
+        log.Fatal(err)
+    }
+    // TODO: use fd.
+}
+</code></pre>
+<p>要使对未使用包的错误进行消除，请使用空白标识符来引用导入包中的符号。 类似地，将未使用的变量fd分配给空白标识符将。这个版本的程序可以编译。</p>
+<pre><code>package main
+
+import (
+    &quot;fmt&quot;
+    &quot;io&quot;
+    &quot;log&quot;
+    &quot;os&quot;
+)
+
+var _ = fmt.Printf // For debugging; delete when done.
+var _ io.Reader    // For debugging; delete when done.
+
+func main() {
+    fd, err := os.Open(&quot;test.go&quot;)
+    if err != nil {
+        log.Fatal(err)
+    }
+    // TODO: use fd.
+    _ = fd
+}
+</code></pre>
+<p>按照惯例，为消除未导入包的错误的全局声明应在导入语句之后并加以注释，以使它们易于查找，并提醒以后进行清理。</p>
+<h3 id="导入的副作用">导入的副作用</h3>
+<p>在之前的例子中，fmt或io的导入最终还是需要被使用或者被删除：空白标识符终归还是有作用的。但是有时候仅出于导入包的副作用而导入一个包，而不用任何使用。例如net/http/pprof包在其init函数期间注册提供调试信息的HTTP处理程序。它具有导出的API，但是大多数只需要注册的处理程序即可访问Web数据。要仅出于副作用导入软件包，可以将包重命名为空白标识符。</p>
+<pre><code>import _ &quot;net/http/pprof&quot;
+</code></pre>
+<p>这样导入的形式可以清晰的表示只用于包的副作用而导入一个包，因为没有任何可能可以使用这个包：在这个源文件中，它甚至没有一个名字。(如果它有名字，但是我们不使用的话，编译器就无法编译了。)</p>
+<h3 id="接口检查">接口检查</h3>
+<p>正如上面对接口的一些讨论，一个类型无需显性说明它实现了某个接口。只要一个类型实现了某个接口的所有方法则代表实现了这个接口。在实际中，大多数接口转换都是静态的，因此可以在编译时进行检查。例如，除非<code>*os.File</code>实现了io.Reader接口，否则将<code>*os.File</code>传递给io.reader不会被编译。<br>
+但是，某些接口检查的确在运行时进行。encoding/json包中又一个例子，它定义了Marshaler接口。当JSON编码器接收到实现了该接口的值后，编码器将调用该值的编码方法，将其转换为JSON，而不是执行标准转换。编码器在运行时使用以下类型断言检查此属性：</p>
+<pre><code>m, ok := val.(json.Marshaler)
+</code></pre>
+<p>如果仅需要询问某个类型是否实现了一个接口，而不实际使用该接口本身（也许作为错误检查的一部分），则可以使用空白标识符忽略类型声明的值：</p>
+<pre><code>if _, ok := val.(json.Marshaler); ok {
+    fmt.Printf(&quot;value %v of type %T implements json.Marshaler\n&quot;, val, val)
+}
+</code></pre>
+<p>出现这种情况的一个地方是，有必要在实现该类型的包中保证它实际上满足接口的情况。 如果某个类型（例如json.RawMessage）需要自定义JSON表示形式，则应实现json.Marshaler，但是没有静态转换会导致编译器自动对此进行验证。 如果类型意外地不满足该接口，则JSON编码器仍将起作用，但将不使用自定义实现。 为了确保实现正确，可以在包中使用使用空白标识符的全局声明：</p>
+<pre><code>var _ json.Marshaler = (*RawMessage)(nil)
+</code></pre>
+<p>在此声明中，涉及将<code>*RawMessage</code>转换为Marshaler的赋值要求<code>*RawMessage</code>实现Marshaler，并且将在编译时检查该属性。如果json.Marshaler接口发生更改，则此程序包将不再编译，我们将注意到需要对其进行更新。<br>
+在此构造中出现空白标识符表示该声明仅存在于类型检查中，而不用于创建变量。但是，请不要对满足接口的每种类型执行这样的操作。通常，只有在代码中不存在静态转换这种罕见的情况下才使用此类声明。</p>
+
+                </div>
+                
+                    <div class="tag-container">
+                        
+                            <a href="https://blog.xabc.site/tag/Uo9mtBIjh/" class="tag">
+                                翻译
+                            </a>
+                        
+                            <a href="https://blog.xabc.site/tag/VKYOe3SsnR/" class="tag">
+                                Golang
+                            </a>
+                        
+                    </div>
+                
+                
+                    <div class="next-post">
+                        <div class="next">下一篇</div>
+                        <a href="https://blog.xabc.site/post/tra_effective_go6/">
+                            <h3 class="post-title">
+                                翻译: Effective Go (6)
+                            </h3>
+                        </a>
+                    </div>
+                
+
+                
+
+            </div>
+
+        </div>
+    </div>
+</div>
+<script src="https://cdn.bootcss.com/aos/3.0.0-beta.6/aos.js"></script>
+<script type="application/javascript">
+
+    AOS.init();
+
+    var app = new Vue({
+        el: '#app',
+        data: {
+            menuVisible: false,
+        },
+    })
+
+</script>
+
+    <script src="https://cdn.bootcss.com/highlight.js/9.18.1/highlight.min.js"></script>
+    <script>
+        hljs.initHighlightingOnLoad()
+    </script>
+
+<script src="https://cdn.bootcss.com/tocbot/4.10.0/tocbot.min.js"></script>
+<script>
+tocbot.init({
+  tocSelector: '.js-toc',
+  contentSelector: '.js-toc-content',
+  headingSelector: 'h1, h2, h3',
+  hasInnerContainers: true,
+});
+const slidBox = document.createElement('div')
+const hitbox = document.createElement('div')
+slidBox.classList.add('slid-btn')
+hitbox.classList.add('show-icon')
+hitbox.classList.add('target-icon')
+slidBox.appendChild(hitbox)
+document.querySelector('.js-toc') && document.querySelector('.js-toc').appendChild(slidBox)
+slidBox.addEventListener('click', e => {
+    // document.querySelector('.slid-btn .target-icon').classList.entries()
+    if (document.querySelector('.slid-btn .target-icon').classList.contains(('hide-icon'))) {
+        document.querySelector('.js-toc').classList.add('show-box')
+        document.querySelector('.js-toc').classList.remove('hide-box')
+        document.querySelector('.slid-btn .target-icon').classList.add('show-icon')
+        document.querySelector('.slid-btn .target-icon').classList.remove('hide-icon')
+    } else {
+        document.querySelector('.js-toc').classList.add('hide-box')
+        document.querySelector('.js-toc').classList.remove('show-box')
+        document.querySelector('.slid-btn .target-icon').classList.add('hide-icon')
+        document.querySelector('.slid-btn .target-icon').classList.remove('show-icon')
+    }
+})
+</script>
+
+
+
+
+</body>
+</html>

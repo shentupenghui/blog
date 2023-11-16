@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+
+<title>kube-apiserver调度器核心实现 | Mr.Shentu</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<link rel="stylesheet" href="https://cdn.bootcss.com/font-awesome/5.12.1/css/all.min.css" crossorigin="anonymous">
+<link rel="shortcut icon" href="https://blog.xabc.site/favicon.ico?v=1700095858984">
+<link rel="stylesheet" href="https://blog.xabc.site/styles/main.css">
+
+
+
+<link href="https://cdn.bootcss.com/aos/3.0.0-beta.6/aos.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js">
+</script>
+
+
+
+    <meta name="description" content="随着k8s的发展，调度器的实现也在变化，本文将从1.23版本源码角度解析k8s调度器的核心实现。
+
+调度器总览
+整个调度过程由kubernetes/pkg/scheduler/scheduler.go#L421的 func (sched *..."/>
+    <meta name="keywords" content="云原生"/>
+    <link href="https://cdn.bootcss.com/tocbot/4.10.0/tocbot.css" rel="stylesheet">
+</head>
+<body>
+<div id="app" class="main">
+
+    <div class="sidebar" :class="{ 'full-height': menuVisible }">
+    <div class="top-container" data-aos="fade-right">
+        <div class="top-header-container">
+            <a class="site-title-container" href="https://blog.xabc.site">
+                <img src="https://blog.xabc.site/images/avatar.jpeg?v=1700095858984" class="site-logo">
+                <h1 class="site-title">Mr.Shentu</h1>
+            </a>
+            <div class="menu-btn" @click="menuVisible = !menuVisible">
+                <div class="line"></div>
+            </div>
+        </div>
+        <div>
+            
+                
+                    <a href="/" class="site-nav">
+                        首页
+                    </a>
+                
+            
+                
+                    <a href="/archives" class="site-nav">
+                        归档
+                    </a>
+                
+            
+                
+                    <a href="/tags" class="site-nav">
+                        标签
+                    </a>
+                
+            
+                
+                    <a href="/post/about" class="site-nav">
+                        关于
+                    </a>
+                
+            
+        </div>
+    </div>
+    <div class="bottom-container" data-aos="flip-up" data-aos-offset="0">
+        <div class="social-container">
+            
+                
+            
+                
+            
+                
+            
+                
+            
+                
+            
+        </div>
+        <div class="site-description">
+            <div>公告板</div>
+            —————————————————
+            <br>
+            永远保持热情❤️
+        </div>
+        <div class="site-footer" style="padding: 20px 0">
+            <div style="text-align: center;color:#939393">© 2021 申屠鹏会 版权所有<br><a href="http://www.beian.miit.gov.cn"style="color:#939393">浙ICP备2023016973号</a></div>
+
+            <div style="width:300px;margin:0 auto; padding:5px 0;">
+                <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAAAXNSR0IArs4c6QAAACBjSFJNAAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAAA8mVYSWZNTQAqAAAACAAHARIAAwAAAAEAAQAAARoABQAAAAEAAABiARsABQAAAAEAAABqASgAAwAAAAEAAgAAATEAAgAAACIAAAByATIAAgAAABQAAACUh2kABAAAAAEAAACoAAAAAAAAAEgAAAABAAAASAAAAAFBZG9iZSBQaG90b3Nob3AgQ0MgMjAxNCAoV2luZG93cykAMjAxNToxMToxMCAxNDowNDo1MAAABJAEAAIAAAAUAAAA3qABAAMAAAABAAEAAKACAAQAAAABAAAAFKADAAQAAAABAAAAFAAAAAAyMDE1OjExOjEwIDE0OjA0OjUwALd18ckAAAAJcEhZcwAACxMAAAsTAQCanBgAAAtJaVRYdFhNTDpjb20uYWRvYmUueG1wAAAAAAA8eDp4bXBtZXRhIHhtbG5zOng9ImFkb2JlOm5zOm1ldGEvIiB4OnhtcHRrPSJYTVAgQ29yZSA1LjQuMCI+CiAgIDxyZGY6UkRGIHhtbG5zOnJkZj0iaHR0cDovL3d3dy53My5vcmcvMTk5OS8wMi8yMi1yZGYtc3ludGF4LW5zIyI+CiAgICAgIDxyZGY6RGVzY3JpcHRpb24gcmRmOmFib3V0PSIiCiAgICAgICAgICAgIHhtbG5zOnhtcE1NPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvbW0vIgogICAgICAgICAgICB4bWxuczpzdEV2dD0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL3NUeXBlL1Jlc291cmNlRXZlbnQjIgogICAgICAgICAgICB4bWxuczpwaG90b3Nob3A9Imh0dHA6Ly9ucy5hZG9iZS5jb20vcGhvdG9zaG9wLzEuMC8iCiAgICAgICAgICAgIHhtbG5zOmV4aWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20vZXhpZi8xLjAvIgogICAgICAgICAgICB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iCiAgICAgICAgICAgIHhtbG5zOmRjPSJodHRwOi8vcHVybC5vcmcvZGMvZWxlbWVudHMvMS4xLyIKICAgICAgICAgICAgeG1sbnM6dGlmZj0iaHR0cDovL25zLmFkb2JlLmNvbS90aWZmLzEuMC8iPgogICAgICAgICA8eG1wTU06SW5zdGFuY2VJRD54bXAuaWlkOjgwYmNhOTg1LTRmOWItNmU0ZC05ZmM5LWU4ZjQ5MjY3ZGY0ZTwveG1wTU06SW5zdGFuY2VJRD4KICAgICAgICAgPHhtcE1NOk9yaWdpbmFsRG9jdW1lbnRJRD54bXAuZGlkOmQwMTdiOTRlLTk0YmQtMjY0MS04ZmY5LWJmN2EwYTM2NzdiMTwveG1wTU06T3JpZ2luYWxEb2N1bWVudElEPgogICAgICAgICA8eG1wTU06RG9jdW1lbnRJRD5hZG9iZTpkb2NpZDpwaG90b3Nob3A6ZWRkYWU4MGMtODc3MC0xMWU1LTg0OWEtYmNmZGE2MDI4ZjJlPC94bXBNTTpEb2N1bWVudElEPgogICAgICAgICA8eG1wTU06SGlzdG9yeT4KICAgICAgICAgICAgPHJkZjpTZXE+CiAgICAgICAgICAgICAgIDxyZGY6bGkgcmRmOnBhcnNlVHlwZT0iUmVzb3VyY2UiPgogICAgICAgICAgICAgICAgICA8c3RFdnQ6c29mdHdhcmVBZ2VudD5BZG9iZSBQaG90b3Nob3AgQ0MgMjAxNCAoV2luZG93cyk8L3N0RXZ0OnNvZnR3YXJlQWdlbnQ+CiAgICAgICAgICAgICAgICAgIDxzdEV2dDp3aGVuPjIwMTUtMTEtMTBUMTQ6MDQ6NTArMDg6MDA8L3N0RXZ0OndoZW4+CiAgICAgICAgICAgICAgICAgIDxzdEV2dDppbnN0YW5jZUlEPnhtcC5paWQ6ZDAxN2I5NGUtOTRiZC0yNjQxLThmZjktYmY3YTBhMzY3N2IxPC9zdEV2dDppbnN0YW5jZUlEPgogICAgICAgICAgICAgICAgICA8c3RFdnQ6YWN0aW9uPmNyZWF0ZWQ8L3N0RXZ0OmFjdGlvbj4KICAgICAgICAgICAgICAgPC9yZGY6bGk+CiAgICAgICAgICAgICAgIDxyZGY6bGkgcmRmOnBhcnNlVHlwZT0iUmVzb3VyY2UiPgogICAgICAgICAgICAgICAgICA8c3RFdnQ6c29mdHdhcmVBZ2VudD5BZG9iZSBQaG90b3Nob3AgQ0MgMjAxNCAoV2luZG93cyk8L3N0RXZ0OnNvZnR3YXJlQWdlbnQ+CiAgICAgICAgICAgICAgICAgIDxzdEV2dDpjaGFuZ2VkPi88L3N0RXZ0OmNoYW5nZWQ+CiAgICAgICAgICAgICAgICAgIDxzdEV2dDp3aGVuPjIwMTUtMTEtMTBUMTQ6MDQ6NTArMDg6MDA8L3N0RXZ0OndoZW4+CiAgICAgICAgICAgICAgICAgIDxzdEV2dDppbnN0YW5jZUlEPnhtcC5paWQ6ODBiY2E5ODUtNGY5Yi02ZTRkLTlmYzktZThmNDkyNjdkZjRlPC9zdEV2dDppbnN0YW5jZUlEPgogICAgICAgICAgICAgICAgICA8c3RFdnQ6YWN0aW9uPnNhdmVkPC9zdEV2dDphY3Rpb24+CiAgICAgICAgICAgICAgIDwvcmRmOmxpPgogICAgICAgICAgICA8L3JkZjpTZXE+CiAgICAgICAgIDwveG1wTU06SGlzdG9yeT4KICAgICAgICAgPHBob3Rvc2hvcDpDb2xvck1vZGU+MzwvcGhvdG9zaG9wOkNvbG9yTW9kZT4KICAgICAgICAgPHBob3Rvc2hvcDpJQ0NQcm9maWxlPnNSR0IgSUVDNjE5NjYtMi4xPC9waG90b3Nob3A6SUNDUHJvZmlsZT4KICAgICAgICAgPHBob3Rvc2hvcDpEb2N1bWVudEFuY2VzdG9ycz4KICAgICAgICAgICAgPHJkZjpCYWc+CiAgICAgICAgICAgICAgIDxyZGY6bGk+M0NCOEZFRThDMkVCRTZFNUE0REE5NzMyODM1NDEyNEU8L3JkZjpsaT4KICAgICAgICAgICAgICAgPHJkZjpsaT5hZG9iZTpkb2NpZDpwaG90b3Nob3A6YmRkZmNmNmYtODc3MC0xMWU1LTg0OWEtYmNmZGE2MDI4ZjJlPC9yZGY6bGk+CiAgICAgICAgICAgIDwvcmRmOkJhZz4KICAgICAgICAgPC9waG90b3Nob3A6RG9jdW1lbnRBbmNlc3RvcnM+CiAgICAgICAgIDxleGlmOlBpeGVsWERpbWVuc2lvbj4yMDwvZXhpZjpQaXhlbFhEaW1lbnNpb24+CiAgICAgICAgIDxleGlmOlBpeGVsWURp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">
+                <a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=33010602010374" style="display:inline-block;text-decoration:none;height:20px;line-height:20px;"><img src="" style="float:left;"/><p style="float:left;height:20px;line-height:20px;margin: 0px 0px 0px 5px; color:#939393;">浙公网安备 33010602010374号</p></a>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+    <div class="main-container">
+
+        <nav style="text-align:right;position:fixed;top:40%;right:1%" class="js-toc show-box"></nav>
+
+
+        <div class="content-container" data-aos="fade-up">
+
+            <div class="post-detail">
+
+                <h2 class="post-title">kube-apiserver调度器核心实现</h2>
+                <div class="post-date">2021-12-07</div>
+                
+
+                <div class="post-content js-toc-content" v-pre>
+
+                    <p>随着k8s的发展，调度器的实现也在变化，本文将从1.23版本源码角度解析k8s调度器的核心实现。</p>
+<!-- more -->
+<h2 id="调度器总览">调度器总览</h2>
+<p>整个调度过程由<code>kubernetes/pkg/scheduler/scheduler.go#L421</code>的 <code>func (sched *Scheduler) scheduleOne(ctx context.Context)</code>完成。这个函数有两百多行，可以分为四个部分：<br>
+<img src="https://blog.xabc.site/post-images/1639380005639.png" alt="" loading="lazy"></p>
+<ol>
+<li>获取待调度Pod对象：通过<code>sched.NextPod()</code>从优先级队列中获取一个优先级最高的待调度Pod资源对象，该过程是阻塞模式的，当优先级队列中不存在任何Pod资源对象时，sched.config.NextPod函数处于等待状态。</li>
+<li>调度阶段：通过<code>sched.Algorithm.Schedule(schedulingCycleCtx, sched.Extenders, fwk, state, pod)</code>调度函数执行预选调度算法和优选调度算法，为Pod资源对象选择一个合适的节点。</li>
+<li>抢占阶段：当高优先级的Pod资源对象没有找到合适的节点时，调度器会通过sched.preempt函数尝试抢占低优先级的Pod资源对象的节点。</li>
+<li>绑定阶段：当调度器为Pod资源对象选择了一个合适的节点时，通过sched.bind函数将合适的节点与Pod资源对象绑定在一起。</li>
+</ol>
+<h2 id="调度过程">调度过程</h2>
+<h3 id="进入过滤阶段前的节点数量计算">进入过滤阶段前的节点数量计算</h3>
+<p>在初始化调度器的时候，kube-scheduler会对节点数量进行优化。如下图：<br>
+路径：<br>
+<img src="https://blog.xabc.site/post-images/1638946974592.png" alt="" loading="lazy"><br>
+其中红框是调度器的一个性能优化，通过PercentageOfNodesToScore机制，在集群节点数量很多的时候，只加载指定百分比的节点，这样在大集群中，可以显著优化调度性能；这个百分比数值可以调整，默认为50，即加载一半的节点；具体的节点数量由一个不复杂的计算过程得出：<br>
+<img src="https://blog.xabc.site/post-images/1638948519356.png" alt="" loading="lazy"><br>
+其中，<code>minFeasibleNodesToFind</code>为预设的参与预选的最小可用节点数，现在的值为100。见上图172行，当集群节点数量小于该值或percentageOfNodesToScore百分比大于等于100时候，直接返回所有节点。当大于100个节点的时候，使用了一个公式，<code>adaptivePercentage = basePercentageOfNodesToScore - numAllNodes/125</code>，翻译一下的话就是<strong>自适应百分比数=默认百分比数-所有节点数/125</strong>，见178行，默认百分比为50，假设有1000个节点，那么<strong>自适应百分比数=50-1000/125=42</strong>；180和181行则是指定了一个百分比下限minFeasibleNodesPercentageToFind，现在的值为5。即前面算出来的百分比如果小于5，则取下限5。按照这个机制，那么<strong>参与过滤的节点数=1000*42%=420个</strong>。当这个节点数小于minFeasibleNodesToFind的时候，则返回minFeasibleNodesToFind。因此，1000个节点的集群最终参与预选的是420个；同理可以计算，5000个节点的集群，参与预选的是5000*(50-5000/125)%=500个。可以看到，尽管节点数量从1000增加到了5000，但参与预选的只从420增加到了500。</p>
+<h3 id="过滤阶段">过滤阶段</h3>
+<p>通过PercentageOfNodesToScore得到参与预选调度的节点数量之后，scheduler会通过<code>podInfo := sched.NextPod()</code>从调度队列中获取pod信息；然后进入Schedule，<strong>这是一个定义了schedule的接口，k8s实现了一个genericScheduler，如果要自定义自己的调度器，实现该接口，然后在deployment中指定用该调度器就行</strong>。</p>
+<pre><code>type ScheduleAlgorithm interface {
+	Schedule(context.Context, []framework.Extender, framework.Framework, *framework.CycleState, *v1.Pod) (scheduleResult ScheduleResult, err error)
+}
+</code></pre>
+<p>进入genericScheduler后，首先就进入预选阶段<code>findNodesThatFitPod</code>，或者称为过滤阶段，此阶段会获得过滤之后可用的所有节点，供下一阶段使用，即<code>feasibleNodes</code>。<br>
+<img src="https://blog.xabc.site/post-images/1639450508280.png" alt="" loading="lazy"><br>
+<code>findNodesThatFitPod</code>供包含以下四部分：<br>
+<img src="https://blog.xabc.site/post-images/1639461490966.png" alt="" loading="lazy"></p>
+<ul>
+<li>fwk.RunPreFilterPlugins：运行过滤前的处理插件。RunPreFilterPlugins 负责运行一组框架已配置的 PreFilter 插件。如果任何插件返回除 Success 之外的任何内容，它将设置返回的*Status::code为non-success 。则调度周期中止。</li>
+<li>g.evaluateNominatedNode：将某个节点单独执行过滤。如果Pod指定了某个Node上运行，这个节点很可能是唯一适合Pod的候选节点，那么会<strong>在过滤所有节点之前，检查该Node</strong>，具体条件为：<code>len(pod.Status.NominatedNodeName) &gt; 0 &amp;&amp; feature.DefaultFeatureGate.Enabled(features.PreferNominatedNode) </code>，这个机制也叫“提名节点”。</li>
+<li>g.findNodesThatPassFilters：将所有节点进行预选过滤。这个函数会创建一个可用node的节点<code>feasibleNodes := make([]*v1.Node, numNodesToFind)</code>，然后通过checkNode遍历node，检查node是否符合运行Pod的条件，即运行所有的预选调度算法(如下所示），如果符合则加入feasibelNodes列表。</li>
+</ul>
+<pre><code>for _, pl := range f.filterPlugins {
+		pluginStatus := f.runFilterPlugin(ctx, pl, state, pod, nodeInfo)
+		if !pluginStatus.IsSuccess() {
+			if !pluginStatus.IsUnschedulable() {
+				// Filter plugins are not supposed to return any status other than
+				// Success or Unschedulable.
+				errStatus := framework.AsStatus(fmt.Errorf(&quot;running %q filter plugin: %w&quot;, pl.Name(), pluginStatus.AsError())).WithFailedPlugin(pl.Name())
+				return map[string]*framework.Status{pl.Name(): errStatus}
+			}
+			pluginStatus.SetFailedPlugin(pl.Name())
+			statuses[pl.Name()] = pluginStatus
+			if !f.runAllFilters {
+				// Exit early if we don't need to run all filters.
+				return statuses
+			}
+		}
+	}
+</code></pre>
+<ul>
+<li>findNodesThatPassExtenders：将上一步经过预选的Node再通过扩展过滤器过滤一遍。这个其实是k8s留给用户的自定义过滤器。它遍历所有的extender来确定是否关心对应的资源，如果关心就会调用Filter接口来进行远程调用<code>feasibleList, failedMap, failedAndUnresolvableMap, err := extender.Filter(pod, feasibleNodes)</code>，并将筛选结果传递给下一个extender，逐步缩小筛选集合。远程调用是一个http的实现，如下图：<br>
+<img src="https://blog.xabc.site/post-images/1639463996230.png" alt="" loading="lazy"><br>
+至此，预选阶段结束。整个预选过程逻辑上很自然，预处理-&gt;过滤-&gt;用户自定义过滤-&gt;结束。<br>
+在预处理阶段(PreFilterPlugin)，官方主要定义了：</li>
+</ul>
+<ol>
+<li>InterPodAffinity: 实现Pod之间的亲和性和反亲和性，InterPodAffinity实现了PreFilterExtensions，因为抢占调度的Pod可能与当前的Pod具有亲和性或者反亲和性；</li>
+<li>NodePorts: 检查Pod请求的端口在Node是否可用，NodePorts未实现PreFilterExtensions;</li>
+<li>NodeResourcesFit: 检查Node是否拥有Pod请求的所有资源，NodeResourcesFit未实现PreFilterEtensions;</li>
+<li>PodTopologySpread: 实现Pod拓扑分布；</li>
+<li>ServiceAffinity: 检查属于某个服务(Service)的Pod与配置的标签所定义的Node集合是否适配，这个插件还支持将属于某个服务的Pod分散到各个Node，ServiceAffinity实现了PreFilterExtensions接口；</li>
+<li>VolumeBinding: 检查Node是否有请求的卷，是否可以绑定请求的卷，VolumeBinding未实现PreFilterExtensions接口；<br>
+过滤插件在早期版本叫做预选算法，但在较新的版本已经删除了/pkg/scheduler/algorithem这个包，因为用过滤更贴切一点。在这个目录下可以找到所有的插件实现：<br>
+<img src="https://blog.xabc.site/post-images/1639465062467.png" alt="" loading="lazy"><br>
+基本上通过名字就知道是做什么的,不赘述，如</li>
+<li>InterPodAffinity: 实现Pod之间的亲和性和反亲和性；</li>
+<li>NodeAffinity: 实现了Node选择器和节点亲和性</li>
+<li>NodeLabel: 根据配置的标签过滤Node；</li>
+<li>NodeName: 检查Pod指定的Node名称与当前Node是否匹配；</li>
+<li>NodePorts: 检查Pod请求的端口在Node是否可用；<br>
+...</li>
+</ol>
+<h3 id="优选阶段">优选阶段</h3>
+<p>预选的结果是true或false，意味着一个节点要么满足Pod的运行要求，要么不满足；得到众多满足的节点后，最终决定Pod调度到哪个节点。<br>
+<img src="https://blog.xabc.site/post-images/1639465250190.png" alt="" loading="lazy"><br>
+在调度器中，优选的过程由<code>prioritizeNodes</code>负责，它会返回一个带分数的节点列表，定义如下：</p>
+<pre><code>// NodeScore is a struct with node name and score.
+type NodeScore struct {
+	Name  string
+	Score int64
+}
+</code></pre>
+<p>最终由<code>selectHost</code>返回一个node名字，作为最终的<code>ScheduleResult</code>.下面进行具体分析。<br>
+<code>prioritizeNodes</code>分为三部分，<strong>运行打分前处理插件，运行所有的打分插件，将所有分数相加</strong>：<br>
+<img src="https://blog.xabc.site/post-images/1639465730476.png" alt="" loading="lazy"><br>
+优选阶段最主要的就是运行各种打分插件，kube-scheduler会调用ScorePlugin对通过FilterPlugin的Node评分，所有ScorePlugin的评分都有一个明确的整数范围，比如[0, 100]，这个过程称之为标准化评分。在标准化评分之后，kube-scheduler将根据配置的插件权重合并所有插件的Node评分得出Node的最终评分。根据Node的最终评分对Node进行排序，得分最高者就是最合适Pod的Node。</p>
+<pre><code>type ScorePlugin interface {
+    Plugin
+    // 计算节点的评分，此时需要注意的是参数Node名字，而不是Node对象。
+    // 如果实现了PreScorePlugin就从CycleState获取状态， 如果没实现，调度框架在创建插件的时候传入了句柄，可以获取指定的Node。
+    // 返回值的评分是一个64位整数，是一个由插件自定义实现取值范围的分数。
+    Score(ctx context.Context, state *CycleState, p *v1.Pod, nodeName string) (int64, *Status)
+    // 返回ScoreExtensions接口，此类设计与PreFilterPlugin相似
+    ScoreExtensions() ScoreExtensions
+}
+
+// ScorePlugin的扩展接口
+type ScoreExtensions interface {
+    // ScorePlugin().Score()返回的分数没有任何约束，但是多个ScorePlugin之间需要标准化分数范围，否则无法合并分数。
+    // 比如ScorePluginA的分数范围是[0, 10]，ScorePluginB的分数范围是[0, 100]，那么ScorePluginA的分数再高对于ScorePluginB的影响也是非常有限的。
+    NormalizeScore(ctx context.Context, state *CycleState, p *v1.Pod, scores NodeScoreList) *Status
+}
+</code></pre>
+<p>实现该接口的插件有：</p>
+<ol>
+<li>ImageLocality: 选择已经存在Pod运行所需容器镜像的Node，这样可以省去下载镜像的过程，对于镜像非常大的容器是一个非常有价值的特性，因为启动时间可以节约几秒甚至是几十秒；</li>
+<li>InterPodAffinity: 实现Pod之间的亲和性和反亲和性；</li>
+<li>NodeAffinity: 实现了Node选择器和节点亲和性</li>
+<li>NodeLabel: 根据配置的标签过滤Node；</li>
+<li>NodePreferAvoidPods: 基于Node的注解 scheduler.alpha.kubernetes.io/preferAvoidPods打分；</li>
+<li>NodeResourcesBalancedAllocation: 调度Pod时，选择资源分配更为均匀的Node；</li>
+<li>NodeResourcesLeastAllocation: 调度Pod时，选择资源分配较少的Node；</li>
+<li>NodeResourcesMostAllocation: 调度Pod时，选择资源分配较多的Node；</li>
+<li>RequestedToCapacityRatio: 根据已分配资源的配置函数选择偏爱Node；</li>
+<li>PodTopologySpread: 实现Pod拓扑分布；</li>
+<li>SelectorSpread: 对于属于Services、ReplicaSets和StatefulSets的Pod，偏好跨多节点部署；</li>
+<li>ServiceAffinity: 检查属于某个服务(Service)的Pod与配置的标签所定义的Node集合是否适配，这个插件还支持将属于某个服务的Pod分散到各个Node；</li>
+<li>TaintToleration: 实现了污点和容忍度；</li>
+</ol>
+<p>打分之后通过<code>selectHost</code>选择最终pod将被调度的节点：</p>
+<pre><code>func (g *genericScheduler) selectHost(nodeScoreList framework.NodeScoreList) (string, error) {
+	if len(nodeScoreList) == 0 {
+		return &quot;&quot;, fmt.Errorf(&quot;empty priorityList&quot;)
+	}
+	maxScore := nodeScoreList[0].Score
+	selected := nodeScoreList[0].Name
+	cntOfMaxScore := 1
+	for _, ns := range nodeScoreList[1:] {
+		if ns.Score &gt; maxScore {
+			maxScore = ns.Score
+			selected = ns.Name
+			cntOfMaxScore = 1
+		} else if ns.Score == maxScore {
+			cntOfMaxScore++
+			if rand.Intn(cntOfMaxScore) == 0 {
+				// Replace the candidate with probability of 1/cntOfMaxScore
+				selected = ns.Name
+			}
+		}
+	}
+	return selected, nil
+}
+</code></pre>
+<p>至此，优选阶段结束。</p>
+<h2 id="总结">总结</h2>
+<p>总结，k8s定义了调度的接口，并实现了genericScheduler（也是k8s中唯一的官方调度器）以及众多的插件，这层抽象其实为开发人员自定义调度器提供了很大的便利。往小的说，各类插件以及扩展插件也提供了丰富的细粒度控制。当然，最简单的还是去根据实际需要调整优选的打分逻辑，使得Pod的调度满足生产需要。</p>
+
+                </div>
+                
+                    <div class="tag-container">
+                        
+                            <a href="https://blog.xabc.site/tag/8gokV-_hJ2/" class="tag">
+                                云原生
+                            </a>
+                        
+                    </div>
+                
+                
+                    <div class="next-post">
+                        <div class="next">下一篇</div>
+                        <a href="https://blog.xabc.site/post/aEUUpZ23h/">
+                            <h3 class="post-title">
+                                谈谈容器-镜像的一二事
+                            </h3>
+                        </a>
+                    </div>
+                
+
+                
+
+            </div>
+
+        </div>
+    </div>
+</div>
+<script src="https://cdn.bootcss.com/aos/3.0.0-beta.6/aos.js"></script>
+<script type="application/javascript">
+
+    AOS.init();
+
+    var app = new Vue({
+        el: '#app',
+        data: {
+            menuVisible: false,
+        },
+    })
+
+</script>
+
+    <script src="https://cdn.bootcss.com/highlight.js/9.18.1/highlight.min.js"></script>
+    <script>
+        hljs.initHighlightingOnLoad()
+    </script>
+
+<script src="https://cdn.bootcss.com/tocbot/4.10.0/tocbot.min.js"></script>
+<script>
+tocbot.init({
+  tocSelector: '.js-toc',
+  contentSelector: '.js-toc-content',
+  headingSelector: 'h1, h2, h3',
+  hasInnerContainers: true,
+});
+const slidBox = document.createElement('div')
+const hitbox = document.createElement('div')
+slidBox.classList.add('slid-btn')
+hitbox.classList.add('show-icon')
+hitbox.classList.add('target-icon')
+slidBox.appendChild(hitbox)
+document.querySelector('.js-toc') && document.querySelector('.js-toc').appendChild(slidBox)
+slidBox.addEventListener('click', e => {
+    // document.querySelector('.slid-btn .target-icon').classList.entries()
+    if (document.querySelector('.slid-btn .target-icon').classList.contains(('hide-icon'))) {
+        document.querySelector('.js-toc').classList.add('show-box')
+        document.querySelector('.js-toc').classList.remove('hide-box')
+        document.querySelector('.slid-btn .target-icon').classList.add('show-icon')
+        document.querySelector('.slid-btn .target-icon').classList.remove('hide-icon')
+    } else {
+        document.querySelector('.js-toc').classList.add('hide-box')
+        document.querySelector('.js-toc').classList.remove('show-box')
+        document.querySelector('.slid-btn .target-icon').classList.add('hide-icon')
+        document.querySelector('.slid-btn .target-icon').classList.remove('show-icon')
+    }
+})
+</script>
+
+
+
+
+</body>
+</html>
